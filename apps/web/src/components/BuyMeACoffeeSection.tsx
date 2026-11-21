@@ -1,81 +1,58 @@
 import React from 'react';
-import { Card, Heading, Text, Badge, BadgeText, Button, ButtonText } from './ui';
+import { Card, Heading, Text, Button, ButtonText } from './ui';
 import { useLanguage } from '../i18n/LanguageContext';
+import { Heart } from 'lucide-react';
 
 export const BuyMeACoffeeSection: React.FC = () => {
   const { lang } = useLanguage();
   const isEn = lang === 'en';
 
-  const tiers = [
-    {
-      id: 1,
-      price: isEn ? '$1 / Rp 10k' : 'Rp 10rb',
-      desc: isEn
-        ? 'Treat the developer to a warm cup of coffee.'
-        : 'Traktir kopi hangat untuk developer.',
-      popular: false,
-    },
-    {
-      id: 2,
-      price: isEn ? '$2 / Rp 25k' : 'Rp 25rb',
-      desc: isEn
-        ? 'Support new features and fresh 3D mascots.'
-        : 'Dukung fitur dan maskot baru.',
-      popular: true,
-    },
-    {
-      id: 3,
-      price: isEn ? '$4 / Rp 50k' : 'Rp 50rb',
-      desc: isEn
-        ? 'Special support to keep PoopPeeLog ad-free.'
-        : 'Dukungan spesial untuk PoopPeeLog.',
-      popular: false,
-    },
-  ];
-
   return (
     <section id="support" className="py-8 md:py-12 bg-background-50">
-      <div className="max-w-5xl mx-auto px-5 sm:px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-          {tiers.map((tier) => (
-            <Card
-              key={tier.id}
-              variant={tier.popular ? 'highlighted' : 'elevated'}
+      <div className="max-w-3xl mx-auto px-5 sm:px-6">
+        <Card
+          variant="highlighted"
+          size="lg"
+          className="relative text-center p-8 sm:p-10 flex flex-col items-center shadow-md bg-white border border-primary-100"
+        >
+          {/* Decorative Mascot / Icon Badge */}
+          <div className="w-16 h-16 rounded-2xl bg-primary-50 border border-primary-100 flex items-center justify-center text-primary-500 mb-5 shadow-xs">
+            <Heart className="w-8 h-8 fill-primary-500 text-primary-500 animate-pulse" />
+          </div>
+
+          <Heading as="h3" size="2xl" className="font-extrabold text-typography-900 tracking-tight">
+            {isEn ? 'Support PoopPeeLog Development' : 'Dukung Pengembangan PoopPeeLog'}
+          </Heading>
+
+          <Text size="md" className="mt-3 text-typography-600 leading-relaxed max-w-xl mx-auto">
+            {isEn
+              ? 'PoopPeeLog is 100% free, privacy-first, and zero-ad. Your donation directly supports server maintenance, custom domain, and developing new features with our mascot trio.'
+              : 'PoopPeeLog 100% gratis, tanpa iklan, dan menjaga privasi penuh. Dukungan sukarela darimu sangat berarti untuk biaya server, domain, serta pembuatan fitur dan maskot baru.'}
+          </Text>
+
+          {/* Single Saweria CTA Button */}
+          <div className="mt-7 w-full max-w-xs">
+            <Button
+              href="https://saweria.co/pooppeelog"
+              target="_blank"
+              rel="noreferrer"
+              action="primary"
               size="lg"
-              className="relative text-center flex flex-col justify-between hover:-translate-y-1"
+              className="w-full py-3.5 px-6 rounded-xl font-bold text-base shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5 inline-flex items-center justify-center gap-2"
             >
-              {tier.popular && (
-                <Badge
-                  action="solidPrimary"
-                  size="lg"
-                  className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1"
-                >
-                  <BadgeText>{isEn ? 'Popular' : 'Populer'}</BadgeText>
-                </Badge>
-              )}
+              <span className="text-xl">☕</span>
+              <ButtonText className="text-base font-bold">
+                {isEn ? 'Dukung via Saweria' : 'Dukung via Saweria'}
+              </ButtonText>
+            </Button>
+          </div>
 
-              <div className="pt-1 pb-6">
-                <Heading as="h3" size="2xl">
-                  {tier.price}
-                </Heading>
-                <Text size="sm" className="mt-2 leading-relaxed max-w-[200px] mx-auto">
-                  {tier.desc}
-                </Text>
-              </div>
-
-              <Button
-                href="https://saweria.co/pooppeelog"
-                target="_blank"
-                rel="noreferrer"
-                action="primary"
-                size="md"
-                className="w-full"
-              >
-                <ButtonText>{isEn ? 'Support via Saweria' : 'Dukung via Saweria'}</ButtonText>
-              </Button>
-            </Card>
-          ))}
-        </div>
+          <Text size="xs" className="mt-4 text-typography-400 font-medium">
+            {isEn
+              ? 'Accepts QRIS, GoPay, OVO, Dana, LinkAja & ShopeePay'
+              : 'Menerima QRIS, GoPay, OVO, DANA, LinkAja & ShopeePay'}
+          </Text>
+        </Card>
       </div>
     </section>
   );

@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "pooppeelog",
-    "userInterfaceStyle": "dark",
+    "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.pooppeelog.app",
@@ -17,7 +17,7 @@
     "android": {
       "package": "com.pooppeelog.app",
       "adaptiveIcon": {
-        "backgroundColor": "#1E1A17",
+        "backgroundColor": "#F8FAFC",
         "foregroundImage": "./assets/images/android-icon-foreground.png",
         "backgroundImage": "./assets/images/android-icon-background.png",
         "monochromeImage": "./assets/images/android-icon-monochrome.png"

@@ -85,6 +85,69 @@ body {
   border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
+/* Subtle Modern Architectural Dot-Grid with Radial Mask Fade */
+.hero-dot-grid {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.38) 1.25px, transparent 1.25px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 78% 72% at 50% 44%, #000 35%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 78% 72% at 50% 44%, #000 35%, transparent 100%);
+}
+
+/* Shimmer Sweep on Primary CTA */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-140%) skewX(-20deg);
+  }
+  100% {
+    transform: translateX(240%) skewX(-20deg);
+  }
+}
+
+.btn-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.28), transparent);
+  transform: translateX(-140%) skewX(-20deg);
+  pointer-events: none;
+}
+
+.btn-shimmer:hover::after {
+  animation: shimmerSweep 0.85s ease-out forwards;
+}
+
+@keyframes auroraDrift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -14px, 0) scale(1.06);
+  }
+}
+
+.animate-aurora {
+  animation: auroraDrift 12s ease-in-out infinite;
+}
+
+@keyframes chipFloatMid {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(5px, -6px, 0);
+  }
+}
+
+.animate-chip-mid {
+  animation: chipFloatMid 5s ease-in-out 1.1s infinite;
+}
+
 /* ========================================================= */
 /* HERO & MASCOT MICRO-ANIMATIONS (GPU-Accelerated)          */
 /* ========================================================= */
@@ -258,6 +321,8 @@ body {
   .animate-phone-float,
   .animate-chip-left,
   .animate-chip-right,
+  .animate-chip-mid,
+  .animate-aurora,
   .animate-mascot-1,
   .animate-mascot-2,
   .animate-mascot-3,
