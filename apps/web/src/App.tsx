@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { GluestackUIProvider } from './components/ui';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { MascotSection } from './components/MascotSection';
@@ -34,24 +35,26 @@ export const App: React.FC = () => {
   if (adminMode) return <AdminDashboard />;
 
   return (
-    <LanguageProvider>
-      <div className="min-h-screen bg-dark-bg text-cream-bg flex flex-col selection:bg-pee-amber selection:text-ink">
-        <Navbar />
-        <main className="flex-1">
-          <HeroSection />
-          <MascotSection />
-          <FeaturesSection />
-          <InteractiveMockup />
-          <BadgesSection />
-          <PrivacyManifesto />
-          <DownloadSection />
-          <BuyMeACoffeeSection />
-          <FeedbackSection />
-          <FAQSection />
-        </main>
-        <Footer />
-      </div>
-    </LanguageProvider>
+    <GluestackUIProvider mode="light">
+      <LanguageProvider>
+        <div className="min-h-screen bg-background-50 text-typography-900 flex flex-col font-sans">
+          <Navbar />
+          <main className="flex-1">
+            <HeroSection />
+            <MascotSection />
+            <FeaturesSection />
+            <InteractiveMockup />
+            <BadgesSection />
+            <PrivacyManifesto />
+            <DownloadSection />
+            <BuyMeACoffeeSection />
+            <FeedbackSection />
+            <FAQSection />
+          </main>
+          <Footer />
+        </div>
+      </LanguageProvider>
+    </GluestackUIProvider>
   );
 };
 

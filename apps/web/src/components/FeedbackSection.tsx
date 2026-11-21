@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { MessageSquarePlus, Send, Sparkles, CheckCircle2, AlertCircle, Heart, Bug, Lightbulb, MessageCircle } from 'lucide-react';
+import { MessageSquarePlus, Send, Sparkles, CheckCircle2, AlertCircle, Heart, Bug, Lightbulb, MessageCircle, Star } from 'lucide-react';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useWebCopy } from '../i18n/translations';
 import { submitFeedback } from '../services/adminApi';
 import { FeedbackCategory } from '../types/admin';
 import { MrPlopSVG, LilDripSVG, SirFlushSVG } from './MascotSVGs';
+import { Card, Heading, Text, Badge, BadgeText, Button, ButtonText, Input, Textarea } from './ui';
 
 const CATEGORY_ICONS: Record<FeedbackCategory, React.ElementType> = {
   SUGGESTION: Lightbulb,
@@ -65,73 +66,69 @@ export const FeedbackSection: React.FC = () => {
   };
 
   return (
-    <section id="feedback" className="py-20 px-4 md:px-8 border-t border-dark-border relative overflow-hidden bg-gradient-to-b from-dark-bg via-dark-surface/40 to-dark-bg">
+    <section id="feedback" className="py-20 px-4 md:px-8 border-t border-[#E2E8F0] relative overflow-hidden bg-[#F8FAFC]">
       {/* Background glow effects */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-pee-amber/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-both-teal/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-both-teal/10 border border-both-teal/20 text-both-teal text-xs font-bold tracking-wide uppercase mb-4">
+          <Badge action="secondary" size="lg" className="mb-4">
             <MessageSquarePlus className="w-4 h-4" />
-            {copy.pill}
-          </div>
-          <h2 className="text-3xl md:text-4xl font-black text-cream-bg tracking-tight mb-3">
+            <BadgeText>{copy.pill}</BadgeText>
+          </Badge>
+          <Heading as="h2" size="2xl" className="mb-3">
             {copy.title}
-          </h2>
-          <p className="text-sm md:text-base text-cream-bg/70 max-w-xl mx-auto font-medium">
+          </Heading>
+          <Text size="md" className="max-w-xl mx-auto">
             {copy.subtitle}
-          </p>
+          </Text>
         </div>
 
-        {/* Content Box */}
-        <div className="bg-dark-surface/90 border border-dark-border rounded-3xl p-6 md:p-10 shadow-2xl relative overflow-hidden backdrop-blur-sm">
+        {/* Content Box (Gluestack Card) */}
+        <Card variant="outline" size="lg" className="shadow-sm relative overflow-hidden">
           {submitted ? (
-            <div className="text-center py-8 space-y-6 animate-fade-in">
+            <div className="text-center py-8 space-y-6 animate-fadeIn">
               <div className="flex items-center justify-center gap-3">
-                <div className="w-14 h-14 bg-poop-brown/20 border border-poop-brown/40 rounded-2xl flex items-center justify-center p-2.5">
+                <div className="w-16 h-16 bg-[#FDE6C9] rounded-2xl flex items-center justify-center p-2.5">
                   <MrPlopSVG />
                 </div>
-                <div className="w-14 h-14 bg-both-teal/20 border border-both-teal/40 rounded-2xl flex items-center justify-center p-2.5">
+                <div className="w-16 h-16 bg-[#C6F6E2] rounded-2xl flex items-center justify-center p-2.5">
                   <SirFlushSVG />
                 </div>
-                <div className="w-14 h-14 bg-pee-amber/20 border border-pee-amber/40 rounded-2xl flex items-center justify-center p-2.5">
+                <div className="w-16 h-16 bg-[#D4F0FF] rounded-2xl flex items-center justify-center p-2.5">
                   <LilDripSVG />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-both-teal text-xs font-bold uppercase tracking-wider bg-both-teal/10 px-3 py-1 rounded-full">
+                <div className="inline-flex items-center gap-2 text-secondary-500 text-xs font-bold uppercase tracking-wider bg-secondary-0 px-3 py-1 rounded-full">
                   <CheckCircle2 className="w-4 h-4" />
                   Sent Successfully
                 </div>
-                <h3 className="text-2xl font-black text-cream-bg">
+                <Heading as="h3" size="xl">
                   {copy.successTitle}
-                </h3>
-                <p className="text-sm text-cream-bg/75 max-w-md mx-auto leading-relaxed">
+                </Heading>
+                <Text size="sm" className="max-w-md mx-auto leading-relaxed">
                   {copy.successDesc}
-                </p>
+                </Text>
               </div>
 
               <div>
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="px-6 py-2.5 rounded-xl bg-dark-bg border border-dark-border hover:border-both-teal text-cream-bg text-sm font-bold transition-all hover:scale-105 active:scale-95"
-                >
-                  {copy.sendAnother}
-                </button>
+                <Button action="white" size="md" onClick={handleReset}>
+                  <ButtonText>{copy.sendAnother}</ButtonText>
+                </Button>
               </div>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Category selector */}
               <div>
-                <label className="block text-xs font-bold text-cream-bg/80 uppercase tracking-wider mb-2.5">
+                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2.5">
                   {copy.categoryLabel}
                 </label>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                   {(['SUGGESTION', 'BUG', 'PRAISE', 'OTHER'] as FeedbackCategory[]).map((cat) => {
                     const isSelected = category === cat;
                     const Icon = CATEGORY_ICONS[cat];
@@ -140,10 +137,10 @@ export const FeedbackSection: React.FC = () => {
                         key={cat}
                         type="button"
                         onClick={() => setCategory(cat)}
-                        className={`flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl border text-xs font-bold transition-all ${
+                        className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-full border text-xs font-bold transition-all ${
                           isSelected
-                            ? 'bg-both-teal text-ink border-both-teal shadow-md shadow-both-teal/20 scale-[1.02]'
-                            : 'bg-dark-bg/60 border-dark-border text-cream-bg/80 hover:border-dark-border/80 hover:bg-dark-bg'
+                            ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+                            : 'bg-background-50 border-outline-200 text-typography-600 hover:border-primary-500/40 hover:bg-background-0'
                         }`}
                       >
                         <Icon className="w-4 h-4" />
@@ -156,85 +153,88 @@ export const FeedbackSection: React.FC = () => {
 
               {/* Rating */}
               <div>
-                <label className="block text-xs font-bold text-cream-bg/80 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
                   {copy.ratingLabel}
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setRating(star)}
-                      className={`text-2xl transition-transform hover:scale-125 focus:outline-none ${
-                        star <= rating ? 'opacity-100 scale-110' : 'opacity-30 grayscale hover:opacity-75'
-                      }`}
+                      className="p-0.5 transition-transform hover:scale-125 focus:outline-none"
                       title={`${star} star`}
                     >
-                      ⭐
+                      <Star
+                        className={`w-7 h-7 ${
+                          star <= rating
+                            ? 'fill-[#FBBF24] text-[#FBBF24]'
+                            : 'fill-transparent text-[#CBD5E1]'
+                        }`}
+                      />
                     </button>
                   ))}
-                  <span className="text-xs font-bold text-cream-bg/60 ml-2">
-                    {rating === 5 ? '🤩 Luar Biasa / Awesome!' : rating >= 4 ? '😊 Puas / Great' : rating >= 3 ? '🙂 Cukup / Good' : '😐 Butuh Perbaikan'}
+                  <span className="text-xs font-bold text-typography-600 ml-2">
+                    {rating === 5 ? 'Luar Biasa / Awesome!' : rating >= 4 ? 'Puas / Great' : rating >= 3 ? 'Cukup / Good' : 'Butuh Perbaikan'}
                   </span>
                 </div>
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-bold text-cream-bg/80 uppercase tracking-wider mb-2">
-                  {copy.messageLabel} <span className="text-emergency-red">*</span>
+                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
+                  {copy.messageLabel} <span className="text-emergency">*</span>
                 </label>
-                <textarea
+                <Textarea
                   required
                   rows={4}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={copy.messagePlaceholder}
-                  className="w-full bg-dark-bg/80 border border-dark-border focus:border-both-teal rounded-2xl p-4 text-sm text-cream-bg placeholder-cream-bg/40 focus:outline-none focus:ring-1 focus:ring-both-teal transition-all resize-y min-h-[100px]"
                 />
               </div>
 
               {/* Email (Optional) */}
               <div>
-                <label className="block text-xs font-bold text-cream-bg/80 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
                   {copy.emailLabel}
                 </label>
-                <input
+                <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={copy.emailPlaceholder}
-                  className="w-full bg-dark-bg/80 border border-dark-border focus:border-both-teal rounded-xl px-4 py-2.5 text-sm text-cream-bg placeholder-cream-bg/40 focus:outline-none focus:ring-1 focus:ring-both-teal transition-all"
                 />
               </div>
 
               {/* Error Alert */}
               {errorMessage && (
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-emergency-red/10 border border-emergency-red/30 text-emergency-red text-xs font-semibold">
+                <div className="flex items-center gap-2 p-3 rounded-xl bg-emergency/10 border border-emergency/30 text-emergency text-xs font-semibold">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
               {/* Submit Button */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="text-[11px] text-cream-bg/50 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-pee-amber" />
-                  <span>Kritik & saran langsung dibaca tim pengembang.</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+                <div className="text-xs text-typography-500 flex items-center gap-1.5">
+                  <Sparkles className="w-4 h-4 text-secondary-500" />
+                  <span>Kritik &amp; saran langsung dibaca tim pengembang.</span>
                 </div>
 
-                <button
+                <Button
                   type="submit"
-                  disabled={submitting || !message.trim()}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pee-amber to-both-teal hover:opacity-95 text-ink text-sm font-black tracking-wide shadow-lg shadow-both-teal/20 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:pointer-events-none"
+                  action="primary"
+                  size="lg"
+                  disabled={submitting}
                 >
                   <Send className="w-4 h-4" />
-                  {submitting ? copy.submitting : copy.submitBtn}
-                </button>
+                  <ButtonText>{submitting ? copy.submitting : copy.submitBtn}</ButtonText>
+                </Button>
               </div>
             </form>
           )}
-        </div>
+        </Card>
       </div>
     </section>
   );

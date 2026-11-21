@@ -100,7 +100,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             {toast.type === 'success' && <CheckCircle2 size={18} color={Colors.bothTeal} />}
             {toast.type === 'delete' && <Trash2 size={18} color={Colors.emergencyRed} />}
             {toast.type === 'error' && <AlertCircle size={18} color={Colors.emergencyRed} />}
-            {toast.type === 'info' && <Info size={18} color={Colors.peeAmber} />}
+            {toast.type === 'info' && <Info size={18} color={Colors.primary} />}
 
             <Text style={styles.toastText} numberOfLines={2}>
               {toast.message}
@@ -125,18 +125,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
-    backgroundColor: 'rgba(34, 29, 25, 0.96)',
+    backgroundColor: '#FFFFFF',
     borderRadius: 22,
-    paddingVertical: 10,
+    paddingVertical: 11,
     paddingHorizontal: 18,
     marginHorizontal: 20,
     maxWidth: Dimensions.get('window').width - 40,
     borderWidth: 1.5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 10,
-    elevation: 12,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.14,
+    shadowRadius: 16,
+    elevation: 10,
   },
   toastSuccess: {
     borderColor: Colors.bothTeal,
@@ -148,10 +148,10 @@ const styles = StyleSheet.create({
     borderColor: Colors.emergencyRed,
   },
   toastInfo: {
-    borderColor: Colors.peeAmber,
+    borderColor: Colors.primary,
   },
   toastText: {
-    color: Colors.creamBg,
+    color: Colors.navy,
     fontSize: 13,
     fontWeight: '800',
     flexShrink: 1,

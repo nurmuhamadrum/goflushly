@@ -59,7 +59,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   lastSyncedAt: null,
   unlockedBadgeQueue: [],
   mapFilter: 'ALL',
-  mapTheme: 'DARK',
+  mapTheme: 'RETRO',
   gpsRadiusMeter: 30,
   appLockEnabled: false,
   language: 'id',

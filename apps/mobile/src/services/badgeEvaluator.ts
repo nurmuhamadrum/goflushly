@@ -17,7 +17,7 @@ export const ALL_BADGES: BadgeDefinition[] = [
     category: 'Awal Perjalanan',
     description: 'Mencatat buang air pertama kali dalam hidupmu di aplikasi!',
     mascot: 'drip',
-    accentColor: Colors.peeAmber,
+    accentColor: Colors.primary,
   },
   {
     id: 'hydration-master',
@@ -33,7 +33,7 @@ export const ALL_BADGES: BadgeDefinition[] = [
     category: 'Eksplorasi',
     description: 'Mencoba toilet di minimal 3 area / distrik berbeda',
     mascot: 'plop',
-    accentColor: Colors.poopLight,
+    accentColor: Colors.poopBrown,
   },
   {
     id: 'flush-royale',

@@ -11,6 +11,7 @@ import {
   Dimensions,
 } from 'react-native';
 import { Colors } from '@/constants/Colors';
+import { Card, Heading } from '@/components/ui';
 import { useAppStore } from '@/src/store/useAppStore';
 import { useMobileI18n } from '@/src/i18n/translations';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
@@ -133,7 +134,7 @@ export default function StatsScreen() {
         mascot: 'drip',
         unlocked: allTotal >= 1,
         progressText: allTotal >= 1 ? 'Selesai' : `${allTotal}/1 log`,
-        accentColor: Colors.peeAmber,
+        accentColor: Colors.primary,
       },
       {
         id: 'hydration-master',
@@ -153,7 +154,7 @@ export default function StatsScreen() {
         mascot: 'plop',
         unlocked: uniqueDistricts >= 3,
         progressText: uniqueDistricts >= 3 ? 'Selesai' : `${uniqueDistricts}/3 lokasi`,
-        accentColor: Colors.poopLight,
+        accentColor: Colors.poopBrown,
       },
       {
         id: 'flush-royale',
@@ -192,11 +193,11 @@ export default function StatsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header Area */}
       <View style={styles.headerArea}>
-        <Text style={styles.pageTitle}>{t.stats.title}</Text>
+        <Heading size="2xl" style={styles.pageTitle}>{t.stats.title}</Heading>
         <Text style={styles.pageSubtitle}>{t.stats.subtitle}</Text>
       </View>
 
@@ -242,17 +243,17 @@ export default function StatsScreen() {
       </View>
 
       <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Streak Hero Banner */}
-        <View style={styles.streakCard}>
-          <View style={{ flex: 1 }}>
+        {/* Streak Hero Banner (Gluestack Navy Card) */}
+        <Card variant="navy" size="lg" style={styles.streakCard}>
+          <View style={{ flex: 1, paddingRight: 12 }}>
             <View style={styles.streakHeaderTagRow}>
-              <Flame size={14} color={Colors.peeAmber} />
+              <Flame size={14} color="#FBBF24" />
               <Text style={styles.streakTag}>STREAK AKTIF</Text>
             </View>
             <View style={styles.streakNumberRow}>
-              <Text style={styles.streakNumber}>{streakDays} Hari</Text>
-              <Text style={styles.streakFlameEmoji}>🔥</Text>
+              <Text style={styles.streakNumber}>{streakDays} Hari 🔥</Text>
             </View>
+            <Text style={styles.streakSubTitle}>Streak</Text>
             <Text style={styles.streakHint}>
               {streakDays >= 3
                 ? 'Luar biasa! Disiplin biologismu terjaga sangat baik.'
@@ -262,51 +263,66 @@ export default function StatsScreen() {
             </Text>
           </View>
 
-          {/* Progress Circle */}
+          {/* Circular Mint Progress Ring */}
           <View style={styles.progressCircle}>
             <Text style={styles.progressText}>
               {logs.length > 0 ? `${Math.min(100, Math.round((streakDays / 7) * 100))}%` : '0%'}
             </Text>
-            <Text style={styles.progressSub}>mingguan</Text>
           </View>
-        </View>
+        </Card>
 
-        {/* 3 MASCOT KPI CARDS: Lil' Drip, Mr. Plop, Sir Flush */}
+        {/* 2 CRISP WHITE MASCOT KPI CARDS (Mr. Plop BAB & Lil' Drip BAK) */}
         <View style={styles.kpiRow}>
-          {/* Card 1: Lil' Drip (Pee) */}
-          <View style={[styles.kpiCard, { borderColor: 'rgba(245, 183, 0, 0.35)' }]}>
-            <View style={styles.kpiHeader}>
-              <View style={[styles.kpiIconWrapper, { backgroundColor: Colors.peeAmber }]}>
-                <LilDripIcon size={20} />
+          {/* Card 1: Mr. Plop (BAB / Poop) */}
+          <View style={styles.kpiCard}>
+            <View style={styles.kpiTopRow}>
+              <View style={[styles.kpiMascotBox, { backgroundColor: '#FDE6C9' }]}>
+                <MrPlopIcon size={34} />
               </View>
-              <Text style={styles.kpiTitle}>LIL' DRIP</Text>
+              <View>
+                <Text style={styles.kpiBigNumber}>{totalPoopIncCombo}x</Text>
+                <Text style={styles.kpiTypeLabel}>BAB</Text>
+              </View>
             </View>
-            <Text style={[styles.kpiNumber, { color: Colors.peeAmber }]}>
-              {totalPeeIncCombo} <Text style={styles.kpiUnit}>Kali</Text>
-            </Text>
-            <View style={styles.kpiFooterTag}>
-              <Text style={styles.kpiStatusPee}>💧 {countPeeOnly} Pee tunggal</Text>
+            <View style={styles.kpiPeriodPill}>
+              <Text style={styles.kpiPeriodText}>
+                {timeRange === 'WEEK'
+                  ? t.stats.week
+                  : timeRange === 'MONTH'
+                  ? t.stats.month
+                  : timeRange === 'YEAR'
+                  ? t.stats.year
+                  : t.stats.all}
+              </Text>
             </View>
           </View>
 
-          {/* Card 2: Mr. Plop (Poop) */}
-          <View style={[styles.kpiCard, { borderColor: 'rgba(201, 138, 88, 0.35)' }]}>
-            <View style={styles.kpiHeader}>
-              <View style={[styles.kpiIconWrapper, { backgroundColor: Colors.poopBrown }]}>
-                <MrPlopIcon size={20} />
+          {/* Card 2: Lil' Drip (BAK / Pee) */}
+          <View style={styles.kpiCard}>
+            <View style={styles.kpiTopRow}>
+              <View style={[styles.kpiMascotBox, { backgroundColor: '#D4F0FF' }]}>
+                <LilDripIcon size={34} />
               </View>
-              <Text style={styles.kpiTitle}>MR. PLOP</Text>
+              <View>
+                <Text style={styles.kpiBigNumber}>{totalPeeIncCombo}x</Text>
+                <Text style={styles.kpiTypeLabel}>BAK</Text>
+              </View>
             </View>
-            <Text style={[styles.kpiNumber, { color: Colors.peachTint }]}>
-              {totalPoopIncCombo} <Text style={styles.kpiUnit}>Kali</Text>
-            </Text>
-            <View style={styles.kpiFooterTag}>
-              <Text style={styles.kpiStatusPoop}>💩 {countPoopOnly} Poop rutin</Text>
+            <View style={styles.kpiPeriodPill}>
+              <Text style={styles.kpiPeriodText}>
+                {timeRange === 'WEEK'
+                  ? t.stats.week
+                  : timeRange === 'MONTH'
+                  ? t.stats.month
+                  : timeRange === 'YEAR'
+                  ? t.stats.year
+                  : t.stats.all}
+              </Text>
             </View>
           </View>
         </View>
 
-        {/* Card 3: Sir Flush (Combo pee + poop / Flush Kloset Bersih) */}
+        {/* Card 3: Sir Flush (Combo BAB & BAK) */}
         <View style={styles.flushHighlightCard}>
           <View style={styles.flushLeft}>
             <View style={styles.flushAvatarWrapper}>
@@ -314,31 +330,31 @@ export default function StatsScreen() {
             </View>
             <View>
               <View style={styles.flushBadgeRow}>
-                <Sparkles size={12} color={Colors.bothTeal} />
-                <Text style={styles.flushTag}>SIR FLUSH • PAKET KOMBO</Text>
+                <Sparkles size={12} color={Colors.accent} />
+                <Text style={styles.flushTag}>SIR FLUSH • KOMBO</Text>
               </View>
-              <Text style={styles.flushTitle}>Pee & Poop Sekaligus</Text>
+              <Text style={styles.flushTitle}>BAB & BAK Sekaligus</Text>
               <Text style={styles.flushSubtitle}>Efisiensi waktu & hidrasi seimbang</Text>
             </View>
           </View>
 
           <View style={styles.flushCountBox}>
-            <Text style={styles.flushCountNumber}>{countCombo}</Text>
-            <Text style={styles.flushCountLabel}>Kali</Text>
+            <Text style={styles.flushCountNumber}>{countCombo}x</Text>
+            <Text style={styles.flushCountLabel}>Kombo</Text>
           </View>
         </View>
 
-        {/* Summary Info Bar: Total Kunjungan & Distrik */}
+        {/* Summary Info Bar */}
         <View style={styles.summaryBar}>
           <View style={styles.summaryBarItem}>
-            <Calendar size={14} color={Colors.peachTint} />
+            <Calendar size={14} color={Colors.primary} />
             <Text style={styles.summaryBarText}>
-              Total Periode Ini: <Text style={styles.summaryBarHighlight}>{totalLogs} Catatan</Text>
+              Total: <Text style={styles.summaryBarHighlight}>{totalLogs} Catatan</Text>
             </Text>
           </View>
           <View style={styles.summaryBarDivider} />
           <View style={styles.summaryBarItem}>
-            <MapPin size={14} color={Colors.bothTeal} />
+            <MapPin size={14} color={Colors.accent} />
             <Text style={styles.summaryBarText}>
               Jelajah: <Text style={styles.summaryBarHighlight}>{uniqueDistricts} Lokasi</Text>
             </Text>
@@ -348,77 +364,81 @@ export default function StatsScreen() {
         {/* SECTION LENCANA & PENCAPAIAN */}
         <View style={styles.badgeSectionHeader}>
           <View>
-            <Text style={styles.sectionHeading}>LENCANA & PRESTASI</Text>
+            <Text style={styles.sectionHeading}>Achievement Badges</Text>
             <Text style={styles.sectionSub}>
               {unlockedBadgeCount} dari {badges.length} lencana telah diraih
             </Text>
           </View>
           <View style={styles.badgeRatioPill}>
-            <Award size={13} color={Colors.peeAmber} />
+            <Award size={13} color={Colors.primary} />
             <Text style={styles.badgeRatioText}>{unlockedBadgeCount}/{badges.length}</Text>
           </View>
         </View>
 
-        {/* Grid Lencana Menarik */}
+        {/* Clean White Achievement Cards */}
         <View style={styles.badgesList}>
-          {badges.map((b) => (
-            <View
-              key={b.id}
-              style={[
-                styles.badgeRowCard,
-                b.unlocked
-                  ? { borderColor: b.accentColor, backgroundColor: 'rgba(46, 40, 35, 0.95)' }
-                  : styles.badgeRowCardLocked,
-              ]}
-            >
+          {badges.map((b) => {
+            const pastelBg =
+              b.mascot === 'drip' ? '#D4F0FF' : b.mascot === 'plop' ? '#FDE6C9' : '#C6F6E2';
+            return (
               <View
+                key={b.id}
                 style={[
-                  styles.badgeIconWrapper,
-                  {
-                    backgroundColor: b.unlocked ? b.accentColor : 'rgba(255, 255, 255, 0.08)',
-                  },
+                  styles.badgeRowCard,
+                  b.unlocked
+                    ? { borderColor: Colors.primary, backgroundColor: '#FFFFFF' }
+                    : styles.badgeRowCardLocked,
                 ]}
               >
-                {b.mascot === 'drip' && <LilDripIcon size={26} />}
-                {b.mascot === 'plop' && <MrPlopIcon size={26} />}
-                {b.mascot === 'flush' && <SirFlushIcon size={26} />}
+                <View
+                  style={[
+                    styles.badgeIconWrapper,
+                    {
+                      backgroundColor: b.unlocked ? pastelBg : '#F1F5F9',
+                    },
+                  ]}
+                >
+                  {b.mascot === 'drip' && <LilDripIcon size={30} />}
+                  {b.mascot === 'plop' && <MrPlopIcon size={30} />}
+                  {b.mascot === 'flush' && <SirFlushIcon size={30} />}
 
-                {!b.unlocked && (
-                  <View style={styles.lockBadgeOverlay}>
-                    <Lock size={10} color="#FFF" />
-                  </View>
-                )}
-              </View>
-
-              <View style={{ flex: 1 }}>
-                <View style={styles.badgeRowHeader}>
-                  <Text
-                    style={[
-                      styles.badgeTitleText,
-                      !b.unlocked && { color: 'rgba(255, 246, 234, 0.5)' },
-                    ]}
-                  >
-                    {b.title}
-                  </Text>
-                  {b.unlocked ? (
-                    <View style={[styles.badgePillUnlocked, { backgroundColor: `${b.accentColor}26` }]}>
-                      <CheckCircle2 size={11} color={b.accentColor} />
-                      <Text style={[styles.badgePillTextUnlocked, { color: b.accentColor }]}>
-                        DIRAIH
-                      </Text>
-                    </View>
-                  ) : (
-                    <View style={styles.badgePillLocked}>
-                      <Text style={styles.badgePillTextLocked}>{b.progressText}</Text>
+                  {!b.unlocked && (
+                    <View style={styles.lockBadgeOverlay}>
+                      <Lock size={10} color={Colors.slate} />
                     </View>
                   )}
                 </View>
 
-                <Text style={styles.badgeCategoryText}>{b.category}</Text>
-                <Text style={styles.badgeDescText}>{b.description}</Text>
+                <View style={{ flex: 1 }}>
+                  <View style={styles.badgeRowHeader}>
+                    <Text
+                      style={[
+                        styles.badgeTitleText,
+                        !b.unlocked && { color: Colors.slate },
+                      ]}
+                    >
+                      {b.title}
+                    </Text>
+                    {b.unlocked ? (
+                      <View style={[styles.badgePillUnlocked, { backgroundColor: 'rgba(0, 186, 157, 0.14)' }]}>
+                        <CheckCircle2 size={11} color={Colors.accent} />
+                        <Text style={[styles.badgePillTextUnlocked, { color: Colors.accent }]}>
+                          DIRAIH
+                        </Text>
+                      </View>
+                    ) : (
+                      <View style={styles.badgePillLocked}>
+                        <Text style={styles.badgePillTextLocked}>{b.progressText}</Text>
+                      </View>
+                    )}
+                  </View>
+
+                  <Text style={styles.badgeCategoryText}>{b.category}</Text>
+                  <Text style={styles.badgeDescText}>{b.description}</Text>
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -465,8 +485,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.darkBorder,
   },
   timePillActive: {
-    backgroundColor: Colors.peeAmber,
-    borderColor: Colors.peeAmber,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   timePillText: {
     fontSize: 11,
@@ -474,7 +494,7 @@ const styles = StyleSheet.create({
     color: Colors.peachTint,
   },
   timePillTextActive: {
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '900',
   },
   content: {
@@ -482,74 +502,68 @@ const styles = StyleSheet.create({
     paddingBottom: 110,
   },
   streakCard: {
-    backgroundColor: 'rgba(46, 40, 35, 0.96)',
-    borderRadius: 22,
-    borderWidth: 1.5,
-    borderColor: 'rgba(245, 183, 0, 0.45)',
-    padding: 16,
+    backgroundColor: Colors.navy,
+    borderRadius: 24,
+    padding: 20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 14,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
-    shadowRadius: 8,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
     elevation: 6,
   },
   streakHeaderTagRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 5,
+    marginBottom: 4,
   },
   streakTag: {
     fontSize: 10,
-    fontWeight: '900',
-    color: Colors.peeAmber,
+    fontWeight: '800',
+    color: Colors.accent,
     letterSpacing: 0.8,
   },
   streakNumberRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 2,
   },
   streakNumber: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '900',
-    color: Colors.creamBg,
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
   },
-  streakFlameEmoji: {
-    fontSize: 22,
+  streakSubTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginTop: -2,
   },
   streakHint: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.75,
-    marginTop: 2,
+    color: '#94A3B8',
+    marginTop: 6,
     lineHeight: 15,
   },
   progressCircle: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-    backgroundColor: 'rgba(47, 184, 172, 0.16)',
-    borderWidth: 2,
-    borderColor: Colors.bothTeal,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(0, 186, 157, 0.14)',
+    borderWidth: 5,
+    borderColor: Colors.accent,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 4,
   },
   progressText: {
-    color: Colors.bothTeal,
-    fontSize: 14,
+    color: '#FFFFFF',
+    fontSize: 17,
     fontWeight: '900',
-  },
-  progressSub: {
-    color: Colors.bothTeal,
-    fontSize: 8,
-    fontWeight: '700',
-    opacity: 0.8,
   },
   kpiRow: {
     flexDirection: 'row',
@@ -558,63 +572,68 @@ const styles = StyleSheet.create({
   },
   kpiCard: {
     flex: 1,
-    backgroundColor: Colors.darkSurface,
-    borderWidth: 1.5,
-    borderRadius: 20,
-    padding: 14,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 22,
+    padding: 16,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    elevation: 2,
   },
-  kpiHeader: {
+  kpiTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
+    marginBottom: 14,
   },
-  kpiIconWrapper: {
-    width: 28,
-    height: 28,
-    borderRadius: 8,
+  kpiMascotBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  kpiTitle: {
-    fontSize: 10,
+  kpiBigNumber: {
+    fontSize: 24,
     fontWeight: '900',
-    color: Colors.creamBg,
-    letterSpacing: 0.6,
+    color: Colors.navy,
+    lineHeight: 28,
   },
-  kpiNumber: {
-    fontSize: 22,
-    fontWeight: '900',
-    marginTop: 8,
-  },
-  kpiUnit: {
+  kpiTypeLabel: {
     fontSize: 12,
-    fontWeight: '700',
-    color: Colors.peachTint,
-    opacity: 0.6,
+    fontWeight: '800',
+    color: Colors.slate,
   },
-  kpiFooterTag: {
-    marginTop: 6,
+  kpiPeriodPill: {
+    backgroundColor: '#F1F5F9',
+    borderRadius: 999,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    alignItems: 'center',
   },
-  kpiStatusPee: {
-    fontSize: 10,
+  kpiPeriodText: {
+    fontSize: 11,
     fontWeight: '700',
-    color: Colors.bothTeal,
-  },
-  kpiStatusPoop: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: Colors.peeAmber,
+    color: Colors.slate,
   },
   flushHighlightCard: {
-    backgroundColor: 'rgba(47, 184, 172, 0.12)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(47, 184, 172, 0.45)',
-    borderRadius: 20,
-    padding: 14,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: Colors.border,
+    borderRadius: 22,
+    padding: 15,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 14,
+    marginBottom: 12,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   flushLeft: {
     flexDirection: 'row',
@@ -623,10 +642,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   flushAvatarWrapper: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: Colors.bothTeal,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
+    backgroundColor: '#C6F6E2',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -638,47 +657,45 @@ const styles = StyleSheet.create({
   flushTag: {
     fontSize: 9,
     fontWeight: '900',
-    color: Colors.bothTeal,
+    color: Colors.accent,
     letterSpacing: 0.6,
   },
   flushTitle: {
     fontSize: 14,
-    fontWeight: '900',
-    color: Colors.creamBg,
+    fontWeight: '800',
+    color: Colors.navy,
     marginTop: 1,
   },
   flushSubtitle: {
-    fontSize: 10,
-    color: Colors.peachTint,
-    opacity: 0.7,
+    fontSize: 11,
+    color: Colors.slate,
     marginTop: 1,
   },
   flushCountBox: {
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 10,
   },
   flushCountNumber: {
     fontSize: 22,
     fontWeight: '900',
-    color: Colors.bothTeal,
+    color: Colors.navy,
   },
   flushCountLabel: {
     fontSize: 10,
     fontWeight: '700',
-    color: Colors.peachTint,
-    opacity: 0.6,
+    color: Colors.slate,
   },
   summaryBar: {
     flexDirection: 'row',
-    backgroundColor: Colors.darkSurface,
-    borderRadius: 14,
-    paddingVertical: 10,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 11,
     paddingHorizontal: 14,
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: Colors.border,
   },
   summaryBarItem: {
     flexDirection: 'row',
@@ -687,17 +704,16 @@ const styles = StyleSheet.create({
   },
   summaryBarText: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.8,
+    color: Colors.slate,
   },
   summaryBarHighlight: {
-    fontWeight: '900',
-    color: Colors.creamBg,
+    fontWeight: '800',
+    color: Colors.navy,
   },
   summaryBarDivider: {
     width: 1,
     height: 16,
-    backgroundColor: Colors.darkBorder,
+    backgroundColor: Colors.border,
   },
   badgeSectionHeader: {
     flexDirection: 'row',
@@ -706,32 +722,31 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   sectionHeading: {
-    fontSize: 12,
+    fontSize: 15,
     fontWeight: '900',
-    color: Colors.creamBg,
-    letterSpacing: 0.8,
+    color: Colors.navy,
+    letterSpacing: -0.2,
   },
   sectionSub: {
-    fontSize: 10,
-    color: Colors.peachTint,
-    opacity: 0.65,
+    fontSize: 11,
+    color: Colors.slate,
     marginTop: 2,
   },
   badgeRatioPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    backgroundColor: 'rgba(245, 183, 0, 0.14)',
+    backgroundColor: '#EEF2FF',
     borderWidth: 1,
-    borderColor: 'rgba(245, 183, 0, 0.35)',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 10,
+    borderColor: 'rgba(36, 71, 249, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 999,
   },
   badgeRatioText: {
     fontSize: 11,
-    fontWeight: '900',
-    color: Colors.peeAmber,
+    fontWeight: '800',
+    color: Colors.primary,
   },
   badgesList: {
     gap: 10,
@@ -740,31 +755,36 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    borderRadius: 18,
-    padding: 12,
+    borderRadius: 20,
+    padding: 14,
     borderWidth: 1.5,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    elevation: 2,
   },
   badgeRowCardLocked: {
-    backgroundColor: 'rgba(35, 30, 26, 0.6)',
-    borderColor: Colors.darkBorder,
-    opacity: 0.75,
+    backgroundColor: '#FFFFFF',
+    borderColor: Colors.border,
+    opacity: 0.85,
   },
   badgeIconWrapper: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 48,
+    height: 48,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
   lockBadgeOverlay: {
     position: 'absolute',
-    bottom: -2,
-    right: -2,
-    backgroundColor: Colors.darkBg,
+    bottom: -3,
+    right: -3,
+    backgroundColor: '#FFFFFF',
     borderRadius: 8,
-    padding: 2,
+    padding: 3,
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: Colors.border,
   },
   badgeRowHeader: {
     flexDirection: 'row',
@@ -773,21 +793,19 @@ const styles = StyleSheet.create({
   },
   badgeTitleText: {
     fontSize: 13,
-    fontWeight: '900',
-    color: Colors.creamBg,
+    fontWeight: '800',
+    color: Colors.navy,
   },
   badgeCategoryText: {
     fontSize: 9,
-    fontWeight: '800',
-    color: Colors.peachTint,
-    opacity: 0.5,
+    fontWeight: '700',
+    color: Colors.muted,
     textTransform: 'uppercase',
-    marginTop: 1,
+    marginTop: 2,
   },
   badgeDescText: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.75,
+    color: Colors.slate,
     marginTop: 3,
     lineHeight: 15,
   },
@@ -795,26 +813,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 3,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
   },
   badgePillTextUnlocked: {
     fontSize: 9,
-    fontWeight: '900',
+    fontWeight: '800',
   },
   badgePillLocked: {
-    backgroundColor: Colors.darkSurface,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    borderRadius: 6,
-    borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    backgroundColor: '#F1F5F9',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 999,
   },
   badgePillTextLocked: {
     fontSize: 9,
     fontWeight: '700',
-    color: Colors.peachTint,
-    opacity: 0.6,
+    color: Colors.slate,
   },
 });

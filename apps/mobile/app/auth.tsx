@@ -9,10 +9,10 @@ import {
   Platform,
   ScrollView,
   StatusBar,
-  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
+import { Button, ButtonText, ButtonSpinner } from '@/components/ui';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
 import {
   signInWithEmail,
@@ -154,7 +154,7 @@ export default function AuthScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       <ScrollView
         contentContainerStyle={styles.scrollContent}
@@ -206,14 +206,14 @@ export default function AuthScreen() {
         {/* Branding Hero & Mascots */}
         <View style={styles.header}>
           <View style={styles.mascotRow}>
-            <View style={[styles.mascotBubble, { backgroundColor: Colors.peeAmber }]}>
-              <LilDripIcon size={32} />
+            <View style={[styles.mascotBubble, { backgroundColor: '#D4F0FF', borderColor: '#FFFFFF' }]}>
+              <LilDripIcon size={34} />
             </View>
-            <View style={[styles.mascotBubble, { backgroundColor: Colors.poopBrown, marginHorizontal: -10, zIndex: 2 }]}>
-              <MrPlopIcon size={32} />
+            <View style={[styles.mascotBubble, { backgroundColor: '#FDE6C9', borderColor: '#FFFFFF', marginHorizontal: -8, zIndex: 2 }]}>
+              <MrPlopIcon size={34} />
             </View>
-            <View style={[styles.mascotBubble, { backgroundColor: Colors.bothTeal }]}>
-              <SirFlushIcon size={32} />
+            <View style={[styles.mascotBubble, { backgroundColor: '#C6F6E2', borderColor: '#FFFFFF' }]}>
+              <SirFlushIcon size={34} />
             </View>
           </View>
 
@@ -308,26 +308,27 @@ export default function AuthScreen() {
             </View>
           )}
 
-          {/* Tombol Utama (Submit) */}
-          <TouchableOpacity
+          {/* Tombol Utama (Gluestack Primary Button) */}
+          <Button
+            action="primary"
+            size="lg"
             style={styles.primaryButton}
             onPress={handleSubmit}
             disabled={isLoading}
-            activeOpacity={0.85}
           >
             {isLoading ? (
-              <ActivityIndicator color="#000" />
+              <ButtonSpinner color="#FFFFFF" />
             ) : (
               <>
-                <Text style={styles.primaryButtonText}>
+                <ButtonText style={styles.primaryButtonText}>
                   {mode === 'SIGN_IN' && t.auth.loginBtn}
                   {mode === 'SIGN_UP' && t.auth.registerBtn}
                   {mode === 'FORGOT_PASSWORD' && t.auth.sendResetBtn}
-                </Text>
-                <ArrowRight size={18} color="#000" />
+                </ButtonText>
+                <ArrowRight size={18} color="#FFFFFF" />
               </>
             )}
-          </TouchableOpacity>
+          </Button>
 
           {/* Pembatas ATAU */}
           {mode !== 'FORGOT_PASSWORD' && (
@@ -503,7 +504,7 @@ const styles = StyleSheet.create({
   forgotText: {
     fontSize: 11,
     fontWeight: '700',
-    color: Colors.peeAmber,
+    color: Colors.primary,
   },
   inputWrapper: {
     flexDirection: 'row',
@@ -526,7 +527,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.peeAmber,
+    backgroundColor: Colors.primary,
     borderRadius: 14,
     height: 48,
     gap: 8,
@@ -535,7 +536,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 13,
     fontWeight: '900',
-    color: '#000',
+    color: '#FFFFFF',
   },
   dividerRow: {
     flexDirection: 'row',
@@ -558,7 +559,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.creamBg,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: Colors.border,
     borderRadius: 14,
     height: 48,
     gap: 10,
@@ -571,7 +574,7 @@ const styles = StyleSheet.create({
   googleButtonText: {
     fontSize: 13,
     fontWeight: '800',
-    color: '#1A1A1A',
+    color: Colors.navy,
   },
   footerSwitch: {
     marginTop: 22,
@@ -591,7 +594,7 @@ const styles = StyleSheet.create({
   switchAction: {
     fontSize: 12,
     fontWeight: '800',
-    color: Colors.peeAmber,
+    color: Colors.primary,
   },
   guestLink: {
     paddingVertical: 6,

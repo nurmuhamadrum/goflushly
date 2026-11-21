@@ -1,10 +1,11 @@
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import '../global.css';
 
-import { useColorScheme } from '@/components/useColorScheme';
+import { GluestackUIProvider } from '@/components/ui';
 import { AnimatedSplashScreen } from '@/src/components/AnimatedSplashScreen';
 import { ToastProvider } from '@/src/context/ToastContext';
 import NetInfo from '@react-native-community/netinfo';
@@ -65,17 +66,17 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="auth" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        </Stack>
-      </ToastProvider>
-    </ThemeProvider>
+    <GluestackUIProvider mode="light">
+      <ThemeProvider value={DefaultTheme}>
+        <ToastProvider>
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="auth" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </ToastProvider>
+      </ThemeProvider>
+    </GluestackUIProvider>
   );
 }

@@ -1,72 +1,80 @@
 import React from 'react';
-import { MrPlopSVG, LilDripSVG, SirFlushSVG } from './MascotSVGs';
-import { Heart } from 'lucide-react';
+import { MrPlopSVG } from './MascotSVGs';
+import { VStack, Heading, Text } from './ui';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useWebCopy } from '../i18n/translations';
 
 export const Footer: React.FC = () => {
   const { lang } = useLanguage();
-  const t = useWebCopy(lang);
+  const isEn = lang === 'en';
 
   return (
-    <footer className="bg-dark-bg text-peach-tint/70 pt-16 pb-12">
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-12 border-b border-dark-border">
-          {/* Logo & Tagline */}
-          <div className="text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-3">
-              <div className="flex items-center -space-x-1.5">
-                <div className="w-8 h-8 rounded-full bg-poop-brown p-0.5 border-2 border-dark-bg shadow">
-                  <MrPlopSVG />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-pee-amber p-0.5 border-2 border-dark-bg shadow">
-                  <LilDripSVG />
-                </div>
-                <div className="w-8 h-8 rounded-full bg-both-teal p-0.5 border-2 border-dark-bg shadow">
-                  <SirFlushSVG />
-                </div>
-              </div>
-              <span className="font-black text-lg text-cream-bg">Poop Pee Log</span>
-            </div>
-            <p className="text-xs text-peach-tint/60 mt-1.5 font-medium">
-              {t.footer.tagline}
-            </p>
+    <footer className="bg-background-0 border-t border-outline-200 pt-12 pb-8 text-typography-600">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10 border-b border-outline-100">
+          {/* Brand Column */}
+          <VStack space="sm" className="col-span-2 md:col-span-1">
+            <a href="#" className="inline-flex items-center gap-2.5">
+              <MrPlopSVG className="w-8 h-8" />
+              <span className="font-extrabold text-lg text-typography-900 tracking-tight">
+                PoopPeeLog
+              </span>
+            </a>
+            <Text size="xs" className="text-typography-500 leading-relaxed">
+              {isEn
+                ? 'Track. Log. Relieved. Your 100% private daily digestive lifelogger.'
+                : 'Track. Log. Lega. Buku harian biologis pribadimu yang 100% lokal.'}
+            </Text>
+          </VStack>
+
+          {/* Produk */}
+          <div>
+            <Heading as="h4" size="sm" className="mb-3">
+              {isEn ? 'Product' : 'Produk'}
+            </Heading>
+            <ul className="space-y-2 text-xs sm:text-sm text-typography-600">
+              <li><a href="#maskot" className="hover:text-primary-500 transition-colors">{isEn ? 'Mascots' : 'Maskot'}</a></li>
+              <li><a href="#fitur" className="hover:text-primary-500 transition-colors">{isEn ? 'Features' : 'Fitur'}</a></li>
+              <li><a href="#preview" className="hover:text-primary-500 transition-colors">{isEn ? 'Interactive Demo' : 'Demo Interaktif'}</a></li>
+              <li><a href="#lencana" className="hover:text-primary-500 transition-colors">{isEn ? 'Badges' : 'Lencana'}</a></li>
+            </ul>
           </div>
 
-          {/* Quick Links & Saweria Button */}
-          <div className="flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs font-semibold text-peach-tint/80">
-              <a href="#fitur" className="hover:text-pee-amber">{t.nav.features}</a>
-              <a href="#maskot" className="hover:text-pee-amber">{t.nav.mascots}</a>
-              <a href="#preview" className="hover:text-pee-amber">{lang === 'en' ? 'Simulator' : 'Simulator'}</a>
-              <a href="#lencana" className="hover:text-pee-amber">{t.nav.badges}</a>
-              <a href="#privasi" className="hover:text-pee-amber">{lang === 'en' ? 'Privacy' : 'Privasi'}</a>
-              <a href="#feedback" className="hover:text-pee-amber">{t.nav.feedback}</a>
-              <a href="#download" className="hover:text-pee-amber">{t.nav.download}</a>
-              <a href="#/admin" className="hover:text-both-teal">Admin</a>
-              <a href="https://github.com/nurmuhamadrum/pooppeelog" target="_blank" rel="noreferrer" className="hover:text-pee-amber">GitHub</a>
-            </div>
+          {/* Privasi */}
+          <div>
+            <Heading as="h4" size="sm" className="mb-3">
+              {isEn ? 'Privacy' : 'Privasi'}
+            </Heading>
+            <ul className="space-y-2 text-xs sm:text-sm text-typography-600">
+              <li><a href="#privasi" className="hover:text-primary-500 transition-colors">{isEn ? 'Local Storage' : 'Privasi Lokal'}</a></li>
+              <li><a href="#faq" className="hover:text-primary-500 transition-colors">FAQ</a></li>
+              <li><a href="#/admin" className="hover:text-primary-500 transition-colors">Admin</a></li>
+            </ul>
+          </div>
 
-            <a
-              href="https://saweria.co/pooppeelog"
-              target="_blank"
-              rel="noreferrer"
-              className="px-4 py-2 rounded-xl bg-[#FAAE2B] text-black font-black text-xs flex items-center gap-2 shadow hover:bg-[#fbb944] transition-transform hover:scale-105 active:scale-95"
-            >
-              <span>☕</span>
-              <span>{t.nav.support}</span>
-            </a>
+          {/* Komunitas */}
+          <div>
+            <Heading as="h4" size="sm" className="mb-3">
+              {isEn ? 'Community' : 'Komunitas'}
+            </Heading>
+            <ul className="space-y-2 text-xs sm:text-sm text-typography-600">
+              <li><a href="#support" className="hover:text-primary-500 transition-colors">{isEn ? 'Support Saweria' : 'Dukung Saweria'}</a></li>
+              <li><a href="#feedback" className="hover:text-primary-500 transition-colors">{isEn ? 'Send Feedback' : 'Kirim Masukan'}</a></li>
+              <li>
+                <a
+                  href="https://github.com/nurmuhamadrum/pooppeelog"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-primary-500 transition-colors"
+                >
+                  GitHub
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
-        {/* Legal Disclaimer & Copyright */}
-        <div className="pt-8 text-center text-[11px] text-peach-tint/50 space-y-2">
-          <p>
-            <strong>{t.footer.disclaimerTitle}</strong> {t.footer.disclaimer}
-          </p>
-          <p className="flex items-center justify-center gap-1 text-peach-tint/60 pt-2">
-            {t.footer.copyright} <Heart className="w-3.5 h-3.5 text-emergency fill-emergency ml-1" />
-          </p>
+        <div className="pt-6 text-center text-xs text-typography-500">
+          Copyright &copy; 2026 PoopPeeLog. {isEn ? 'Not a medical diagnostic tool.' : 'Bukan alat diagnosis medis.'}
         </div>
       </div>
     </footer>

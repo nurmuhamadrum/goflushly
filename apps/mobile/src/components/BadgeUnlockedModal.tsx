@@ -108,7 +108,7 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
 
           {/* Floating Pill Ribbon */}
           <View style={styles.ribbonPill}>
-            <Sparkles size={14} color={Colors.peeAmber} />
+            <Sparkles size={14} color={Colors.accent} />
             <Text style={styles.ribbonText}>{t.badgeModal.ribbon}</Text>
           </View>
 
@@ -118,7 +118,12 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
               styles.avatarRing,
               {
                 borderColor: badge.accentColor,
-                backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                backgroundColor:
+                  badge.mascot === 'drip'
+                    ? '#D4F0FF'
+                    : badge.mascot === 'plop'
+                    ? '#FDE6C9'
+                    : '#C6F6E2',
               },
             ]}
           >
@@ -129,7 +134,7 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
 
           {/* Category & Badge Title */}
           <Text style={styles.categoryText}>{badge.category.toUpperCase()}</Text>
-          <Text style={[styles.title, { color: badge.accentColor }]}>{badge.title}</Text>
+          <Text style={[styles.title, { color: Colors.navy }]}>{badge.title}</Text>
           <Text style={styles.description}>{badge.description}</Text>
 
           {/* Action Buttons */}
@@ -139,16 +144,16 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
               onPress={handleShare}
               activeOpacity={0.85}
             >
-              <Share2 size={16} color={Colors.creamBg} />
+              <Share2 size={16} color={Colors.navy} />
               <Text style={styles.shareButtonText}>{t.badgeModal.share}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={[styles.claimButton, { backgroundColor: badge.accentColor }]}
+              style={[styles.claimButton, { backgroundColor: Colors.primary }]}
               onPress={handleClose}
               activeOpacity={0.85}
             >
-              <Award size={16} color="#000" />
+              <Award size={16} color="#FFFFFF" />
               <Text style={styles.claimButtonText}>{t.badgeModal.claim}</Text>
             </TouchableOpacity>
           </View>
@@ -161,49 +166,49 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.82)',
+    backgroundColor: 'rgba(12, 16, 42, 0.55)',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
   },
   card: {
     width: '100%',
-    backgroundColor: Colors.darkBg,
+    backgroundColor: '#FFFFFF',
     borderRadius: 28,
-    borderWidth: 2,
-    borderColor: 'rgba(245, 183, 0, 0.45)',
+    borderWidth: 1,
+    borderColor: Colors.border,
     padding: 24,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.6,
-    shadowRadius: 20,
-    elevation: 14,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.16,
+    shadowRadius: 24,
+    elevation: 12,
   },
   closeBtn: {
     position: 'absolute',
     top: 16,
     right: 16,
-    padding: 6,
-    borderRadius: 14,
-    backgroundColor: Colors.darkSurface,
+    padding: 8,
+    borderRadius: 16,
+    backgroundColor: '#F1F5F9',
   },
   ribbonPill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(245, 183, 0, 0.15)',
+    backgroundColor: '#E7F7F6',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: 'rgba(245, 183, 0, 0.35)',
+    borderColor: 'rgba(0, 186, 157, 0.25)',
     marginBottom: 18,
   },
   ribbonText: {
     fontSize: 10,
     fontWeight: '900',
-    color: Colors.peeAmber,
+    color: Colors.accent,
     letterSpacing: 0.8,
   },
   avatarRing: {
@@ -218,8 +223,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 10,
     fontWeight: '800',
-    color: Colors.peachTint,
-    opacity: 0.6,
+    color: Colors.muted,
     letterSpacing: 1,
     marginBottom: 4,
   },
@@ -232,8 +236,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 13,
-    color: Colors.peachTint,
-    opacity: 0.85,
+    color: Colors.slate,
     textAlign: 'center',
     lineHeight: 19,
     marginBottom: 22,
@@ -249,30 +252,30 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.darkSurface,
-    borderRadius: 14,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 999,
     paddingVertical: 13,
     gap: 6,
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: Colors.border,
   },
   shareButtonText: {
     fontSize: 13,
     fontWeight: '800',
-    color: Colors.creamBg,
+    color: Colors.navy,
   },
   claimButton: {
     flex: 1.4,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 999,
     paddingVertical: 13,
     gap: 6,
   },
   claimButtonText: {
     fontSize: 13,
     fontWeight: '900',
-    color: '#000',
+    color: '#FFFFFF',
   },
 });

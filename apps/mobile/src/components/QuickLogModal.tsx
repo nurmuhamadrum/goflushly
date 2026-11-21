@@ -14,13 +14,14 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
+import { Button, ButtonText, Heading } from '@/components/ui';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from './MascotIcons';
 import { useAppStore } from '../store/useAppStore';
 import { getCurrentLocationWithAddress } from '../services/location';
 import { useToast } from '../context/ToastContext';
 import { useMobileI18n } from '../i18n/translations';
 import { LogType } from '@poop-pee-log/shared';
-import { X } from 'lucide-react-native';
+import { Check, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 
 interface QuickLogModalProps {
@@ -31,21 +32,17 @@ interface QuickLogModalProps {
 export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }) => {
   const router = useRouter();
   const { showToast } = useToast();
-  const { t } = useMobileI18n();
+  const { lang, t } = useMobileI18n();
+  const isEn = lang === 'en';
   const addLog = useAppStore((state: any) => state.addLog);
-  const updateLogMoodAndNote = useAppStore((state: any) => state.updateLogMoodAndNote);
 
-  const [step, setStep] = useState<'SELECT' | 'MOOD_NOTE'>('SELECT');
-  const [currentCreatedLogId, setCurrentCreatedLogId] = useState<string | null>(null);
-  const [selectedType, setSelectedType] = useState<LogType>('PEE');
+  const [selectedType, setSelectedType] = useState<LogType>('POOP');
   const [selectedMood, setSelectedMood] = useState<string>('Lega Banget');
   const [note, setNote] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Popup & sheet animations
-  const slideAnim = useRef(new Animated.Value(300)).current;
+  const slideAnim = useRef(new Animated.Value(320)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  const scaleAnim = useRef(new Animated.Value(0.92)).current;
 
   useEffect(() => {
     if (visible) {
@@ -58,40 +55,31 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
         }),
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 250,
-          useNativeDriver: true,
-        }),
-        Animated.spring(scaleAnim, {
-          toValue: 1,
-          friction: 7,
-          tension: 70,
+          duration: 220,
           useNativeDriver: true,
         }),
       ]).start();
     } else {
-      slideAnim.setValue(300);
+      slideAnim.setValue(320);
       fadeAnim.setValue(0);
-      scaleAnim.setValue(0.92);
     }
   }, [visible]);
 
-  const handleQuickLog = async (type: LogType) => {
-    // Memberikan haptic feedback responsif instan
+  const handleSelectType = (type: LogType) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    setSelectedType(type);
+  };
+
+  const handleSaveLog = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     setIsSubmitting(true);
-    setSelectedType(type);
-
-    const defaultMood =
-      type === 'PEE' ? 'Lega Banget' : type === 'POOP' ? 'Plong Sekali' : 'Kombo Sukses';
-    setSelectedMood(defaultMood);
 
     try {
       const loc = await getCurrentLocationWithAddress();
       const now = new Date().toISOString();
 
-      // Koordinat presisi asli (blur 50m dihilangkan agar akurat di 1 titik)
-      const createdLog = await addLog({
-        type,
+      await addLog({
+        type: selectedType,
         latitude: loc.latitude,
         longitude: loc.longitude,
         altitude: loc.altitude,
@@ -99,24 +87,31 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
         district: loc.district,
         subdistrict: loc.subdistrict,
         country: loc.country,
-        mood: defaultMood,
-        note: '',
+        mood: selectedMood,
+        note: note.trim(),
         loggedAt: now,
         isBlurred: false,
       });
 
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
-      setCurrentCreatedLogId(createdLog.id);
       setIsSubmitting(false);
 
       const typeLabel =
-        type === 'PEE' ? "Lil' Drip (Pee)" : type === 'POOP' ? 'Mr. Plop (Poop)' : 'Sir Flush (Combo)';
+        selectedType === 'PEE'
+          ? "Lil' Drip (BAK)"
+          : selectedType === 'POOP'
+          ? 'Mr. Plop (BAB)'
+          : 'Sir Flush (Kombo)';
       showToast({
         message: t.quickLog.toastLogged(typeLabel),
         type: 'success',
       });
 
-      setStep('MOOD_NOTE');
+      handleFinish(() => {
+        setTimeout(() => {
+          router.push('/(tabs)/timeline');
+        }, 120);
+      });
     } catch (error) {
       console.error('Error logging:', error);
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
@@ -125,224 +120,154 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
         message: t.quickLog.toastFailed,
         type: 'error',
       });
-      handleFinish();
     }
   };
 
-  const handleSaveMoodAndNote = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
-    if (currentCreatedLogId) {
-      await updateLogMoodAndNote(currentCreatedLogId, selectedMood, note);
-    }
-    showToast({
-      message: t.quickLog.toastSaved,
-      type: 'success',
-    });
-    handleFinish();
-    // Navigasi langsung ke tab Diary (/timeline)
-    setTimeout(() => {
-      router.push('/(tabs)/timeline');
-    }, 150);
-  };
-
-  const handleFinish = () => {
+  const handleFinish = (afterClose?: () => void) => {
     Animated.parallel([
       Animated.timing(slideAnim, {
         toValue: 350,
-        duration: 200,
+        duration: 180,
         easing: Easing.in(Easing.ease),
         useNativeDriver: true,
       }),
       Animated.timing(fadeAnim, {
         toValue: 0,
-        duration: 200,
+        duration: 180,
         useNativeDriver: true,
       }),
     ]).start(() => {
-      setStep('SELECT');
       setNote('');
-      setCurrentCreatedLogId(null);
       onClose();
+      if (afterClose) afterClose();
     });
   };
 
+  const mascotOptions: { type: LogType; name: string; label: string }[] = [
+    { type: 'POOP', name: 'Mr. Plop', label: isEn ? 'Poop' : 'BAB' },
+    { type: 'PEE', name: "Lil' Drip", label: isEn ? 'Pee' : 'BAK' },
+    { type: 'COMBO', name: 'Sir Flush', label: isEn ? 'Both' : 'Keduanya' },
+  ];
+
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={handleFinish}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={() => handleFinish()}>
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
         <Animated.View
           style={[
             styles.sheetContainer,
-            {
-              transform: [
-                { translateY: slideAnim },
-                { scale: scaleAnim },
-              ],
-            },
+            { transform: [{ translateY: slideAnim }] },
           ]}
         >
-          {/* Grabber bar */}
+          {/* Grabber Bar */}
           <View style={styles.grabber} />
 
-          {/* STEP 1: PILIHAN CEPAT 2-TAP (PERSIS MOCKUP) */}
-          {step === 'SELECT' && (
-            <View>
-              <View style={styles.headerRow}>
-                <View>
-                  <Text style={styles.title}>{t.quickLog.title}</Text>
-                  <Text style={styles.subtitle}>
-                    {t.quickLog.subtitle}
-                  </Text>
-                </View>
-                <TouchableOpacity onPress={handleFinish} style={styles.closeBtn}>
-                  <X size={18} color={Colors.peachTint} />
-                </TouchableOpacity>
-              </View>
+          {/* Centered Header matching Mobile Mockup */}
+          <View style={styles.headerRow}>
+            <View style={{ width: 32 }} />
+            <Heading size="xl" style={styles.title}>{isEn ? 'Log Now' : 'Catat Sekarang'}</Heading>
+            <TouchableOpacity onPress={() => handleFinish()} style={styles.closeBtn}>
+              <X size={16} color={Colors.slate} />
+            </TouchableOpacity>
+          </View>
 
-              {/* 2 LARGE ACTION CARDS (LIL DRIP & MR PLOP) */}
-              <View style={styles.gridCards}>
-                {/* LIL' DRIP */}
-                <TouchableOpacity
-                  style={[styles.card, { borderColor: Colors.peeAmber, backgroundColor: 'rgba(245, 183, 0, 0.12)' }]}
-                  onPress={() => handleQuickLog('PEE')}
-                  activeOpacity={0.85}
-                  disabled={isSubmitting}
-                >
-                  <View style={[styles.avatarCircle, { backgroundColor: Colors.peeAmber }]}>
-                    <LilDripIcon size={58} />
-                  </View>
-                  <Text style={[styles.cardName, { color: Colors.peeAmber }]}>LIL' DRIP</Text>
-                  <Text style={styles.cardAction}>{t.quickLog.peeAction}</Text>
-                </TouchableOpacity>
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+            {/* 3 Side-by-Side 3D Mascot Cards (Exact Mobile Mockup Layout) */}
+            <View style={styles.mascotGrid}>
+              {mascotOptions.map((item) => {
+                const isSelected = selectedType === item.type;
+                return (
+                  <TouchableOpacity
+                    key={item.type}
+                    style={[
+                      styles.mascotCard,
+                      isSelected && styles.mascotCardActive,
+                    ]}
+                    onPress={() => handleSelectType(item.type)}
+                    activeOpacity={0.85}
+                    disabled={isSubmitting}
+                  >
+                    {isSelected && (
+                      <View style={styles.checkBadge}>
+                        <Check size={11} color="#FFFFFF" strokeWidth={3} />
+                      </View>
+                    )}
 
-                {/* MR. PLOP */}
-                <TouchableOpacity
-                  style={[styles.card, { borderColor: Colors.poopBrown, backgroundColor: 'rgba(139, 94, 60, 0.16)' }]}
-                  onPress={() => handleQuickLog('POOP')}
-                  activeOpacity={0.85}
-                  disabled={isSubmitting}
-                >
-                  <View style={[styles.avatarCircle, { backgroundColor: Colors.poopBrown }]}>
-                    <MrPlopIcon size={58} />
-                  </View>
-                  <Text style={[styles.cardName, { color: Colors.poopLight }]}>MR. PLOP</Text>
-                  <Text style={styles.cardAction}>{t.quickLog.poopAction}</Text>
-                </TouchableOpacity>
-              </View>
+                    <View style={styles.mascotImgWrap}>
+                      {item.type === 'POOP' && <MrPlopIcon size={58} />}
+                      {item.type === 'PEE' && <LilDripIcon size={58} />}
+                      {item.type === 'COMBO' && <SirFlushIcon size={58} />}
+                    </View>
 
-              {/* SIR FLUSH (FULL WIDTH COMBO) */}
-              <TouchableOpacity
-                style={styles.comboButton}
-                onPress={() => handleQuickLog('COMBO')}
-                activeOpacity={0.85}
-                disabled={isSubmitting}
-              >
-                <View style={styles.comboAvatar}>
-                  <SirFlushIcon size={36} />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.comboTitle}>{t.quickLog.comboTitle}</Text>
-                  <Text style={styles.comboSubtitle}>
-                    {t.quickLog.comboSub}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-
-              <TouchableOpacity style={styles.cancelBtn} onPress={handleFinish}>
-                <Text style={styles.cancelBtnText}>{t.quickLog.cancel}</Text>
-              </TouchableOpacity>
+                    <Text style={styles.mascotName} numberOfLines={1}>
+                      {item.name}
+                    </Text>
+                    <Text style={[styles.mascotLabel, isSelected && styles.mascotLabelActive]}>
+                      {item.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
             </View>
-          )}
 
-          {/* STEP 2: MOOD & NOTE (TERSIMPAN KE DATABASE LOKAL) */}
-          {step === 'MOOD_NOTE' && (
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <View style={styles.moodHeader}>
-                <View style={styles.avatarMini}>
-                  {selectedType === 'PEE' && <LilDripIcon size={30} />}
-                  {selectedType === 'POOP' && <MrPlopIcon size={30} />}
-                  {selectedType === 'COMBO' && <SirFlushIcon size={30} />}
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.moodTag}>{t.quickLog.recordedTag}</Text>
-                  <Text style={styles.moodQuestion}>{t.quickLog.moodQuestion}</Text>
-                </View>
-                <TouchableOpacity onPress={handleFinish}>
-                  <Text style={styles.skipText}>{t.quickLog.skip}</Text>
-                </TouchableOpacity>
-              </View>
+            {/* Mood Section */}
+            <Text style={styles.sectionLabel}>{isEn ? 'Mood' : 'Mood'}</Text>
+            <View style={styles.moodRow}>
+              {t.quickLog.moods.map((m) => {
+                const isSelected = selectedMood === m.key;
+                return (
+                  <TouchableOpacity
+                    key={m.key}
+                    style={[styles.moodChip, isSelected && styles.moodChipActive]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      setSelectedMood(m.key);
+                    }}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.moodEmoji}>{m.emoji}</Text>
+                    <Text style={[styles.moodText, isSelected && styles.moodTextActive]}>
+                      {m.label}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
 
-              {/* Mood Grid */}
-              <Text style={styles.labelSection}>{t.quickLog.chooseMood}</Text>
-              <View style={styles.moodGrid}>
-                {t.quickLog.moods.map((m) => {
-                  const isSelected = selectedMood === m.key;
-                  const activeBg =
-                    m.key === 'Lega Banget'
-                      ? 'rgba(47, 184, 172, 0.25)'
-                      : m.key === 'Nahan Lama'
-                      ? 'rgba(245, 183, 0, 0.25)'
-                      : m.key === 'Momen Darurat'
-                      ? 'rgba(255, 90, 95, 0.25)'
-                      : 'rgba(201, 138, 88, 0.25)';
-                  const border =
-                    m.key === 'Lega Banget'
-                      ? Colors.bothTeal
-                      : m.key === 'Nahan Lama'
-                      ? Colors.peeAmber
-                      : m.key === 'Momen Darurat'
-                      ? Colors.emergencyRed
-                      : Colors.poopLight;
-                  return (
-                    <TouchableOpacity
-                      key={m.key}
-                      style={[
-                        styles.moodCard,
-                        isSelected && {
-                          backgroundColor: activeBg,
-                          borderColor: border,
-                        },
-                      ]}
-                      onPress={() => setSelectedMood(m.key)}
-                    >
-                      <Text style={{ fontSize: 16 }}>{m.emoji}</Text>
-                      <Text
-                        style={[
-                          styles.moodCardText,
-                          isSelected && { color: Colors.creamBg, fontWeight: '900' },
-                        ]}
-                      >
-                        {m.label}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+            {/* Note Input */}
+            <View style={styles.labelRow}>
+              <Text style={styles.sectionLabel}>{isEn ? 'Note' : 'Catatan'}</Text>
+              <Text style={styles.charCount}>{note.length}/100</Text>
+            </View>
+            <TextInput
+              style={styles.noteInput}
+              placeholder={t.quickLog.notePlaceholder}
+              placeholderTextColor={Colors.muted}
+              multiline
+              maxLength={100}
+              textAlignVertical="top"
+              value={note}
+              onChangeText={setNote}
+            />
 
-              {/* Catatan Bebas */}
-              <View style={styles.labelRow}>
-                <Text style={styles.labelSection}>{t.quickLog.noteLabel}</Text>
-                <Text style={styles.charCount}>{note.length}/100</Text>
-              </View>
-              <TextInput
-                style={styles.input}
-                placeholder={t.quickLog.notePlaceholder}
-                placeholderTextColor={Colors.darkBorder}
-                maxLength={100}
-                value={note}
-                onChangeText={setNote}
-              />
+            {/* Full-Width Gluestack Primary Pill Save CTA */}
+            <Button
+              action="primary"
+              size="lg"
+              style={[styles.saveButton, isSubmitting && { opacity: 0.7 }]}
+              onPress={handleSaveLog}
+              disabled={isSubmitting}
+            >
+              <ButtonText style={styles.saveButtonText}>
+                {isEn ? 'Save Record' : 'Simpan Catatan'}
+              </ButtonText>
+            </Button>
+          </ScrollView>
 
-              <TouchableOpacity style={styles.submitBtn} onPress={handleSaveMoodAndNote}>
-                <Text style={styles.submitBtnText}>{t.quickLog.saveAndOpen}</Text>
-              </TouchableOpacity>
-            </ScrollView>
-          )}
-
-          {/* Loading Indicator */}
+          {/* Clean Light Loading Overlay */}
           {isSubmitting && (
-            <View style={styles.loadingBox}>
-              <ActivityIndicator size="large" color={Colors.peeAmber} />
-              <Text style={styles.loadingTxt}>{t.quickLog.recording}</Text>
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color={Colors.primary} />
+              <Text style={styles.loadingText}>{t.quickLog.recording}</Text>
             </View>
           )}
         </Animated.View>
@@ -354,249 +279,207 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.82)',
+    backgroundColor: 'rgba(12, 16, 42, 0.5)',
     justifyContent: 'flex-end',
   },
   sheetContainer: {
-    backgroundColor: Colors.darkSurface,
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
-    borderWidth: 1,
-    borderColor: Colors.darkBorder,
-    padding: 22,
-    paddingBottom: Platform.OS === 'ios' ? 44 : 28,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 38 : 24,
+    maxHeight: '88%',
+    shadowColor: '#0C102A',
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 16,
   },
   grabber: {
-    width: 48,
+    width: 44,
     height: 5,
     borderRadius: 3,
-    backgroundColor: Colors.darkBorder,
+    backgroundColor: '#CBD5E1',
     alignSelf: 'center',
-    marginBottom: 16,
+    marginBottom: 14,
   },
   headerRow: {
     flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 18,
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: '900',
-    color: Colors.creamBg,
-    letterSpacing: -0.5,
-  },
-  subtitle: {
-    fontSize: 12,
-    color: Colors.peachTint,
-    opacity: 0.75,
-    marginTop: 2,
+    color: Colors.navy,
+    letterSpacing: -0.4,
+    textAlign: 'center',
   },
   closeBtn: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: Colors.darkBg,
+    backgroundColor: '#F1F5F9',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  gridCards: {
+  mascotGrid: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
-  },
-  card: {
-    flex: 1,
-    borderRadius: 26,
-    borderWidth: 2,
-    paddingVertical: 18,
-    paddingHorizontal: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatarCircle: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: Colors.darkBg,
-    marginBottom: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 6,
-  },
-  cardName: {
-    fontSize: 15,
-    fontWeight: '900',
-    letterSpacing: 0.5,
-  },
-  cardAction: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: Colors.peachTint,
-    opacity: 0.8,
-    marginTop: 2,
-  },
-  comboButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: 'rgba(47, 184, 172, 0.14)',
-    borderWidth: 2,
-    borderColor: Colors.bothTeal,
-    borderRadius: 22,
-    padding: 12,
-    paddingHorizontal: 14,
-  },
-  comboAvatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: Colors.bothTeal,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: Colors.darkBg,
-  },
-  comboTitle: {
-    fontSize: 13,
-    fontWeight: '900',
-    color: Colors.bothTeal,
-  },
-  comboSubtitle: {
-    fontSize: 10,
-    color: Colors.peachTint,
-    opacity: 0.7,
-    marginTop: 2,
-  },
-  cancelBtn: {
-    alignSelf: 'center',
-    paddingVertical: 12,
-    marginTop: 8,
-  },
-  cancelBtnText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: Colors.peachTint,
-    opacity: 0.6,
-  },
-  moodHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 10,
-    marginBottom: 16,
+    marginBottom: 18,
   },
-  avatarMini: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: Colors.darkBg,
-    borderWidth: 1,
-    borderColor: Colors.darkBorder,
+  mascotCard: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: '#E2E8F0',
+    paddingVertical: 14,
+    paddingHorizontal: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  mascotCardActive: {
+    borderColor: Colors.primary,
+    borderWidth: 2,
+    backgroundColor: '#F5F7FF',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 8,
+    elevation: 3,
+  },
+  checkBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  moodTag: {
-    fontSize: 10,
-    fontWeight: '900',
-    color: Colors.bothTeal,
-    letterSpacing: 0.8,
-  },
-  moodQuestion: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: Colors.creamBg,
-  },
-  skipText: {
-    fontSize: 12,
-    fontWeight: '800',
-    color: Colors.peeAmber,
-  },
-  labelSection: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: Colors.peachTint,
-    opacity: 0.8,
+  mascotImgWrap: {
+    height: 62,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 8,
   },
-  moodGrid: {
+  mascotName: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: Colors.navy,
+    textAlign: 'center',
+  },
+  mascotLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: Colors.slate,
+    marginTop: 2,
+  },
+  mascotLabelActive: {
+    color: Colors.primary,
+    fontWeight: '700',
+  },
+  sectionLabel: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: Colors.navy,
+    marginBottom: 8,
+  },
+  moodRow: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 14,
+    marginBottom: 16,
   },
-  moodCard: {
+  moodChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    width: '48%',
-    backgroundColor: Colors.darkBg,
+    gap: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 999,
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
-    borderRadius: 14,
-    padding: 12,
+    borderColor: '#E2E8F0',
   },
-  moodCardText: {
+  moodChipActive: {
+    backgroundColor: '#EEF2FF',
+    borderColor: Colors.primary,
+  },
+  moodEmoji: {
+    fontSize: 14,
+  },
+  moodText: {
     fontSize: 11,
     fontWeight: '700',
-    color: Colors.peachTint,
+    color: Colors.slate,
+  },
+  moodTextActive: {
+    color: Colors.primary,
+    fontWeight: '800',
   },
   labelRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 4,
   },
   charCount: {
     fontSize: 10,
-    color: Colors.peachTint,
-    opacity: 0.5,
+    fontWeight: '600',
+    color: Colors.muted,
+    marginBottom: 8,
   },
-  input: {
-    backgroundColor: Colors.darkBg,
-    borderRadius: 16,
+  noteInput: {
+    backgroundColor: '#F8FAFC',
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
-    color: Colors.creamBg,
-    padding: 12,
-    fontSize: 12,
-    marginBottom: 16,
+    borderColor: '#E2E8F0',
+    borderRadius: 16,
+    padding: 14,
+    minHeight: 76,
+    fontSize: 13,
+    color: Colors.navy,
+    fontWeight: '500',
+    marginBottom: 18,
   },
-  submitBtn: {
-    backgroundColor: Colors.peeAmber,
-    borderRadius: 18,
-    paddingVertical: 14,
+  saveButton: {
+    backgroundColor: Colors.primary,
+    borderRadius: 999,
+    paddingVertical: 15,
     alignItems: 'center',
-    shadowColor: Colors.peeAmber,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
+    justifyContent: 'center',
+    shadowColor: Colors.primary,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
     elevation: 6,
   },
-  submitBtnText: {
-    color: Colors.ink,
-    fontSize: 13,
-    fontWeight: '900',
+  saveButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: '800',
   },
-  loadingBox: {
+  loadingOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(30, 26, 23, 0.94)',
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 36,
   },
-  loadingTxt: {
+  loadingText: {
     marginTop: 10,
-    fontSize: 12,
-    fontWeight: '800',
-    color: Colors.creamBg,
+    fontSize: 13,
+    fontWeight: '700',
+    color: Colors.navy,
   },
 });

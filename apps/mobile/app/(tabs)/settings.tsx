@@ -311,7 +311,7 @@ export default function ProfileSettingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header Area */}
       <View style={styles.headerArea}>
@@ -338,13 +338,13 @@ export default function ProfileSettingsScreen() {
                 <View
                   style={[
                     styles.guestBadge,
-                    !isAnonymous && { borderColor: 'rgba(245, 183, 0, 0.4)' },
+                    !isAnonymous && { borderColor: 'rgba(36, 71, 249, 0.3)', backgroundColor: '#EEF2FF' },
                   ]}
                 >
                   <Text
                     style={[
                       styles.guestBadgeText,
-                      !isAnonymous && { color: Colors.peeAmber },
+                      !isAnonymous && { color: Colors.primary },
                     ]}
                   >
                     {isAnonymous ? t.settings.localOffline : t.settings.cloudAccount}
@@ -368,13 +368,13 @@ export default function ProfileSettingsScreen() {
             </View>
             <View style={styles.metricDivider} />
             <View style={styles.metricItem}>
-              <Text style={[styles.metricValue, { color: Colors.peeAmber }]}>{totalPee}</Text>
-              <Text style={styles.metricLabel}>Pee</Text>
+              <Text style={[styles.metricValue, { color: Colors.primary }]}>{totalPee}</Text>
+              <Text style={styles.metricLabel}>BAK</Text>
             </View>
             <View style={styles.metricDivider} />
             <View style={styles.metricItem}>
-              <Text style={[styles.metricValue, { color: Colors.poopLight }]}>{totalPoop}</Text>
-              <Text style={styles.metricLabel}>Poop</Text>
+              <Text style={[styles.metricValue, { color: Colors.poopBrown }]}>{totalPoop}</Text>
+              <Text style={styles.metricLabel}>BAB</Text>
             </View>
             <View style={styles.metricDivider} />
             <View style={styles.metricItem}>
@@ -453,7 +453,7 @@ export default function ProfileSettingsScreen() {
             <Switch
               value={appLockEnabled}
               onValueChange={handleToggleAppLock}
-              trackColor={{ false: Colors.darkBorder, true: Colors.peeAmber }}
+              trackColor={{ false: Colors.darkBorder, true: Colors.primary }}
               thumbColor={Colors.creamBg}
             />
           </View>
@@ -1048,16 +1048,16 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   profileCard: {
-    backgroundColor: 'rgba(46, 40, 35, 0.96)',
+    backgroundColor: '#FFFFFF',
     borderRadius: 24,
-    borderWidth: 1.5,
-    borderColor: 'rgba(245, 183, 0, 0.4)',
+    borderWidth: 1,
+    borderColor: Colors.border,
     padding: 18,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 10,
-    elevation: 6,
+    shadowColor: Colors.navy,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
   },
   profileRow: {
     flexDirection: 'row',
@@ -1226,26 +1226,27 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   privacyNoteBox: {
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: '#F8FAFC',
     borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     padding: 10,
     marginTop: 4,
   },
   privacyNoteText: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.8,
+    color: Colors.slate,
     lineHeight: 16,
   },
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0, 0, 0, 0.18)',
+    backgroundColor: '#F8FAFC',
     borderRadius: 14,
     padding: 12,
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: '#E2E8F0',
   },
   actionLeft: {
     flexDirection: 'row',
@@ -1416,7 +1417,7 @@ const styles = StyleSheet.create({
   },
   confirmExportBtn: {
     flex: 2,
-    backgroundColor: Colors.peeAmber,
+    backgroundColor: Colors.primary,
     borderRadius: 14,
     paddingVertical: 12,
     flexDirection: 'row',
@@ -1427,7 +1428,7 @@ const styles = StyleSheet.create({
   confirmExportBtnText: {
     fontSize: 12,
     fontWeight: '900',
-    color: '#000',
+    color: '#FFFFFF',
   },
   confirmDeleteBtn: {
     flex: 2,
@@ -1469,8 +1470,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   themeCardActive: {
-    borderColor: Colors.peeAmber,
-    backgroundColor: 'rgba(245, 183, 0, 0.12)',
+    borderColor: Colors.primary,
+    backgroundColor: 'rgba(36, 71, 249, 0.08)',
   },
   themeOptionTitle: {
     fontSize: 11,

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Zap, ShieldCheck, Cloud, Sparkles, HeartHandshake, MapPin, Flame } from 'lucide-react';
+import { ChevronLeft, Navigation, Layers, Wifi, Battery } from 'lucide-react';
 import { MrPlopSVG, LilDripSVG, SirFlushSVG } from './MascotSVGs';
+import { Box, VStack, HStack, Heading, Text, Button, ButtonText } from './ui';
 import { useLanguage } from '../i18n/LanguageContext';
 import { useWebCopy } from '../i18n/translations';
 import { playMascotSound } from '../utils/mascotSound';
@@ -9,233 +10,241 @@ type ActiveMascot = 'plop' | 'drip' | 'flush';
 
 export const HeroSection: React.FC = () => {
   const { lang } = useLanguage();
+  const isEn = lang === 'en';
   const t = useWebCopy(lang).hero;
 
-  const [activeMascot, setActiveMascot] = useState<ActiveMascot>('flush');
-  const [customBubble, setCustomBubble] = useState<string | null>(null);
-  const [poopWiggle, setPoopWiggle] = useState(false);
+  const [activeMascot, setActiveMascot] = useState<ActiveMascot | null>(null);
+  const [speechBubble, setSpeechBubble] = useState<string | null>(null);
 
-  const triggerBubble = (text: string, mascot?: ActiveMascot) => {
-    setCustomBubble(text);
-    if (mascot) {
-      setActiveMascot(mascot);
-      playMascotSound(mascot);
-    }
-    setPoopWiggle(true);
-    setTimeout(() => setPoopWiggle(false), 800);
+  const handleMascotTap = (mascot: ActiveMascot) => {
+    playMascotSound(mascot);
+    setActiveMascot(mascot);
+    const quote = mascot === 'plop' ? t.plopQuote : mascot === 'drip' ? t.dripQuote : t.flushQuote;
+    setSpeechBubble(quote);
+    setTimeout(() => setActiveMascot(null), 850);
   };
 
-  const mascotBubble = customBubble || t.defaultBubble;
-
   return (
-    <section className="relative overflow-hidden pt-6 pb-14 sm:pt-10 sm:pb-20 md:py-24 border-b border-dark-border bg-gradient-to-b from-dark-bg via-dark-bg/95 to-dark-bg">
-      {/* Ambient gradient glows */}
-      <div className="absolute -top-32 -right-32 w-80 md:w-96 h-80 md:h-96 bg-pee-amber/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -left-32 w-80 md:w-96 h-80 md:h-96 bg-both-teal/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 right-1/4 w-80 md:w-96 h-80 md:h-96 bg-[#C98A58]/10 rounded-full blur-3xl pointer-events-none" />
+    <section className="relative overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24 bg-background-50">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-6 items-center">
+        {/* Left Column: Clean Gluestack Editorial Typography */}
+        <VStack space="lg" className="lg:col-span-6 text-center lg:text-left z-10 items-center lg:items-start">
+          <Text
+            size="md"
+            bold
+            className="text-secondary-500 tracking-tight animate-hero-up"
+          >
+            {isEn ? '100% Offline-First & Private' : '100% Offline-First & Privat'}
+          </Text>
 
-      <div className="max-w-7xl mx-auto px-5 sm:px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
-        {/* Left Column: Headline, Mascot Greetings, & Value Props */}
-        <div className="lg:col-span-7 space-y-4 sm:space-y-5 text-center lg:text-left z-10">
-          {/* Top Pill Badge with animated sparkle */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-surface border border-dark-border text-[11px] sm:text-xs font-bold text-pee-amber shadow-sm hover:scale-105 transition-transform cursor-default">
-            <Sparkles className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} />
-            <span>{t.pill}</span>
-            <span className="text-[10px] bg-pee-amber/20 text-pee-amber px-2 py-0.5 rounded-full font-extrabold">
-              v1.0
-            </span>
-          </div>
+          <Heading
+            as="h1"
+            size="4xl"
+            className="animate-hero-up-1"
+          >
+            Track. Log.
+            <br />
+            Lega.
+          </Heading>
 
-          {/* Main Title */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight text-cream-bg leading-[1.08]">
-            Track. Log.{' '}
-            <span className="relative inline-block text-both-teal">
-              Lega.
-              <svg
-                className="absolute -bottom-2 left-0 w-full h-3 text-pee-amber"
-                viewBox="0 0 100 20"
-                preserveAspectRatio="none"
-              >
-                <path d="M0 15 Q 25 5, 50 15 T 100 15" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
-              </svg>
-            </span>
-          </h1>
+          <Text
+            size="md"
+            className="sm:text-lg text-typography-600 max-w-md leading-relaxed animate-hero-up-2"
+          >
+            {isEn
+              ? 'Your personal daily poop & pee lifelogger. Fast, cute, ad-free, and stored 100% privately on your device.'
+              : 'Catatan harian BAB & BAK pribadimu. Cepat, lucu, bebas iklan, dan 100% hanya tersimpan di perangkatmu.'}
+          </Text>
 
-          {/* Tagline Paragraph */}
-          <p className="text-sm sm:text-base md:text-lg text-peach-tint/90 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
-            {t.taglinePre}
-            <strong>{t.taglineBold1}</strong>
-            {t.taglineMid}
-            <strong>Mr. Plop</strong>, <strong>Lil' Drip</strong>, &amp; <strong>Sir Flush</strong>
-            {t.taglineEnd}
-            <strong>{t.taglineBold2}</strong>
-            {t.taglinePost}
-          </p>
+          {/* Gluestack Pill Buttons */}
+          <HStack space="md" className="pt-2 flex-wrap justify-center lg:justify-start animate-hero-up-3">
+            <Button href="#preview" action="primary" size="lg">
+              <ButtonText>{isEn ? 'Try Interactive Demo' : 'Coba Demo Interaktif'}</ButtonText>
+            </Button>
+            <Button href="#download" action="neutral" size="lg">
+              <ButtonText>{isEn ? 'Coming Soon on iOS & Android' : 'Segera di iOS & Android'}</ButtonText>
+            </Button>
+          </HStack>
 
-          {/* Cute Interactive Mascot Bubble Widget (hidden on mobile to keep hero clean, shown sm+) */}
-          <div className="hidden sm:flex bg-dark-surface/90 border border-dark-border rounded-2xl p-3.5 max-w-xl mx-auto lg:mx-0 items-center gap-3.5 shadow-lg relative group">
-            <div className="flex items-center -space-x-2 flex-shrink-0">
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.plopQuote, 'plop')}
-                className={`w-10 h-10 rounded-full bg-poop-brown p-1 border-2 border-dark-bg shadow-md hover:scale-125 hover:z-20 active:scale-90 transition-all flex items-center justify-center ${
-                  poopWiggle ? 'mascot-bounce-wiggle' : ''
-                }`}
-                title="Mr. Plop"
-              >
-                <MrPlopSVG />
-              </button>
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.dripQuote, 'drip')}
-                className="w-10 h-10 rounded-full bg-pee-amber p-1 border-2 border-dark-bg shadow-md hover:scale-125 hover:z-20 active:scale-90 transition-all flex items-center justify-center"
-                title="Lil' Drip"
-              >
-                <LilDripSVG />
-              </button>
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.flushQuote, 'flush')}
-                className="w-10 h-10 rounded-full bg-both-teal p-1 border-2 border-dark-bg shadow-md hover:scale-125 hover:z-20 active:scale-90 transition-all flex items-center justify-center"
-                title="Sir Flush"
-              >
-                <SirFlushSVG />
-              </button>
+          {/* Interactive Mascot Quote Pill */}
+          {speechBubble && (
+            <Box className="inline-flex items-center gap-2.5 bg-background-0 border border-outline-200 px-4 py-2.5 rounded-2xl shadow-sm text-xs font-semibold text-typography-900 animate-fadeIn">
+              <span className="w-2 h-2 rounded-full bg-secondary-500 animate-pulse" />
+              <span>"{speechBubble}"</span>
+            </Box>
+          )}
+        </VStack>
+
+        {/* Right Column: Large Realistic iPhone Mockup + Floating Chips + Animated 3D Mascot Trio */}
+        <div className="lg:col-span-6 flex justify-center lg:justify-end z-10">
+          <div className="relative w-[340px] sm:w-[440px] h-[515px] sm:h-[580px] flex items-start justify-center pt-2">
+            {/* Soft Ambient Background Glow */}
+            <div className="absolute inset-8 rounded-full bg-gradient-to-tr from-primary-500/10 via-secondary-500/10 to-[#FBBF24]/10 blur-3xl pointer-events-none" />
+
+            {/* Floating Glass Card Left: "100% Lokal" (Overlapping Left Bezel like Reference) */}
+            <div className="absolute left-1 sm:left-4 top-[42%] z-30 bg-white/95 backdrop-blur-md border border-outline-200/80 rounded-2xl px-4 py-3 shadow-bwa-float text-center animate-chip-left">
+              <span className="block text-sm sm:text-base font-extrabold text-typography-900 leading-tight">
+                100%
+              </span>
+              <span className="block text-sm sm:text-base font-extrabold text-typography-900 leading-tight">
+                {isEn ? 'Local' : 'Lokal'}
+              </span>
             </div>
 
-            <div className="flex-1 text-left min-h-[38px] flex flex-col justify-center">
-              <div className="flex items-center gap-1.5 text-[10px] font-bold text-pee-amber uppercase tracking-wider">
-                <HeartHandshake className="w-3 h-3" />
-                <span>{t.mascotSays}</span>
-              </div>
-              <p className="text-xs sm:text-sm font-bold text-cream-bg line-clamp-2 transition-all">
-                {mascotBubble}
-              </p>
+            {/* Floating Glass Card Top-Right: "Log Cepat!" (Overlapping Right Bezel like Reference) */}
+            <div className="absolute right-1 sm:right-3 top-[13%] z-30 bg-white/95 backdrop-blur-md border border-outline-200/80 rounded-2xl px-4 py-3 shadow-bwa-float text-center animate-chip-right">
+              <span className="block text-sm sm:text-base font-extrabold text-typography-900 leading-tight">
+                {isEn ? 'Fast' : 'Log'}
+              </span>
+              <span className="block text-sm sm:text-base font-extrabold text-typography-900 leading-tight">
+                {isEn ? 'Log!' : 'Cepat!'}
+              </span>
             </div>
-          </div>
 
-          {/* 3 Core Tenets Chips (hidden on very small mobile to reduce clutter) */}
-          <div className="hidden sm:flex flex-wrap items-center justify-center lg:justify-start gap-2.5 pt-1 text-xs text-peach-tint font-bold">
-            <span className="flex items-center gap-1.5 bg-dark-surface px-3 py-1.5 rounded-xl border border-dark-border">
-              <Zap className="w-3.5 h-3.5 text-pee-amber" /> {t.chip1}
-            </span>
-            <span className="flex items-center gap-1.5 bg-dark-surface px-3 py-1.5 rounded-xl border border-dark-border">
-              <Cloud className="w-3.5 h-3.5 text-both-teal" /> {t.chip2}
-            </span>
-            <span className="flex items-center gap-1.5 bg-dark-surface px-3 py-1.5 rounded-xl border border-dark-border">
-              <ShieldCheck className="w-3.5 h-3.5 text-drip-blue" /> {t.chip3}
-            </span>
-          </div>
-
-          {/* App Store Download Buttons */}
-          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3.5 pt-2">
-            <a
-              href="#download"
-              className="px-5 py-3 rounded-2xl bg-pee-amber text-ink font-black text-xs flex items-center gap-2.5 shadow-xl shadow-pee-amber/25 hover:scale-105 active:scale-95 transition-all group"
-            >
-              <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M3.609 1.814L13.792 12 3.61 22.186a1.996 1.996 0 0 1-.61-1.436V3.25c0-.555.225-1.057.609-1.436zm11.597 11.599l2.709 2.709-12.08 6.942 9.371-9.651zm0-2.826L5.835 1.936l12.08 6.942-2.709 2.709zm1.414 1.413l3.652 2.096c.866.497.866 1.309 0 1.806l-3.652 2.096-2.42-2.42 2.42-2.578z" />
-              </svg>
-              <div className="text-left">
-                <div className="flex items-center gap-1.5 leading-none">
-                  <span className="text-[9px] block font-semibold opacity-80">{t.playSub}</span>
-                  <span className="text-[8px] bg-ink/15 text-ink font-extrabold px-1.5 py-0.5 rounded-full uppercase">{t.soon}</span>
+            {/* Large Proportioned iPhone 16 Pro Frame (Matches Attached Reference Size) */}
+            <div className="relative w-[268px] sm:w-[300px] h-[475px] sm:h-[535px] rounded-[3rem] border-[8px] border-[#0C102A] bg-white shadow-2xl overflow-hidden flex flex-col animate-phone-float">
+              {/* iOS Status Bar + Dynamic Island */}
+              <div className="relative pt-3 pb-1 px-6 bg-white flex items-center justify-between z-20">
+                <span className="text-[11px] font-bold text-[#0C102A]">9:41</span>
+                <div className="w-24 h-5 bg-[#0C102A] rounded-full" />
+                <div className="flex items-center gap-1 text-[#0C102A]">
+                  <Wifi className="w-3 h-3" />
+                  <Battery className="w-3.5 h-3.5 fill-current" />
                 </div>
-                <span className="text-xs font-black">Google Play</span>
               </div>
-            </a>
 
-            <a
-              href="#download"
-              className="px-5 py-3 rounded-2xl bg-dark-surface border border-dark-border text-cream-bg font-black text-xs flex items-center gap-2.5 hover:bg-dark-border hover:border-both-teal/40 transition-all group"
-            >
-              <svg className="w-5 h-5 flex-shrink-0 text-peach-tint group-hover:text-cream-bg" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.61-.75 1.04-1.8 1.01-2.87-.96.04-2.06.64-2.7 1.39-.56.65-1.07 1.71-1.02 2.75 1.07.08 2.1-.53 2.71-1.27z" />
-              </svg>
-              <div className="text-left">
-                <div className="flex items-center gap-1.5 leading-none">
-                  <span className="text-[9px] block font-semibold opacity-80 text-peach-tint/70">{t.appSub}</span>
-                  <span className="text-[8px] bg-both-teal/20 text-both-teal font-extrabold px-1.5 py-0.5 rounded-full uppercase">{t.soon}</span>
+              {/* Navigation Header: "< Personal Map" */}
+              <div className="pt-1 pb-2.5 px-4 bg-white border-b border-outline-100 flex items-center justify-between z-20">
+                <ChevronLeft className="w-4 h-4 text-typography-900" />
+                <span className="text-xs font-extrabold text-typography-900">Personal Map</span>
+                <span className="w-4" />
+              </div>
+
+              {/* Bright Pastel City Map Canvas (Exact Reference Style) */}
+              <div className="relative flex-1 bg-[#F6F5F0] overflow-hidden">
+                <svg
+                  viewBox="0 0 300 440"
+                  className="w-full h-full object-cover"
+                  preserveAspectRatio="xMidYMid slice"
+                >
+                  {/* Clean Off-White City Blocks */}
+                  <rect width="300" height="440" fill="#F5F4EE" />
+
+                  {/* Soft Mint Green Parks */}
+                  <path d="M120 0 L300 0 L300 135 L205 160 L155 75 Z" fill="#C9F2D4" />
+                  <path d="M0 115 L75 235 L110 340 L0 365 Z" fill="#C9F2D4" />
+                  <path d="M195 230 L300 205 L300 325 L215 305 Z" fill="#C9F2D4" />
+
+                  {/* Sky Blue Water / River */}
+                  <path d="M0 175 L58 290 L135 330 L300 275 L300 325 L135 380 L0 395 Z" fill="#9EDAFB" />
+
+                  {/* Crisp White Street Grid */}
+                  <path d="M0 80 L300 145" stroke="#FFFFFF" strokeWidth="10" />
+                  <path d="M90 0 L175 440" stroke="#FFFFFF" strokeWidth="11" />
+                  <path d="M225 0 L125 255 L295 340" stroke="#FFFFFF" strokeWidth="9" fill="none" />
+                  <path d="M0 215 L300 145" stroke="#FFFFFF" strokeWidth="8" />
+                  <path d="M40 0 L15 240" stroke="#FFFFFF" strokeWidth="7" />
+                  <path d="M150 55 L260 40" stroke="#FFFFFF" strokeWidth="6" />
+                  <path d="M35 150 L185 118" stroke="#FFFFFF" strokeWidth="6" />
+                </svg>
+
+                {/* Pin 1 (Top-Left): Mr. Plop in Warm Peach Circle + Gold Dot */}
+                <div className="absolute top-[7%] left-[18%] flex flex-col items-center animate-pin-pulse">
+                  <div className="w-12 h-12 rounded-full bg-[#FDE6C9] p-1.5 border-2 border-white shadow-md flex items-center justify-center">
+                    <MrPlopSVG className="w-8 h-8" />
+                  </div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] border-2 border-white shadow-xs mt-0.5" />
                 </div>
-                <span className="text-xs font-black">App Store</span>
+
+                {/* Pin 2 (Upper-Right): Sir Flush in Soft Sky Circle + Blue Dot */}
+                <div className="absolute top-[22%] right-[13%] flex flex-col items-center animate-pin-pulse-delayed">
+                  <div className="w-12 h-12 rounded-full bg-[#D4F0FF] p-1.5 border-2 border-white shadow-md flex items-center justify-center">
+                    <SirFlushSVG className="w-8 h-8" />
+                  </div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary-500 border-2 border-white shadow-xs mt-0.5" />
+                </div>
+
+                {/* Pin 3 (Center): Lil' Drip in Warm Peach Circle + Gold Dot */}
+                <div className="absolute top-[41%] left-[41%] flex flex-col items-center animate-pin-pulse">
+                  <div className="w-12 h-12 rounded-full bg-[#FDE6C9] p-1.5 border-2 border-white shadow-md flex items-center justify-center">
+                    <LilDripSVG className="w-8 h-8" />
+                  </div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#FBBF24] border-2 border-white shadow-xs mt-0.5" />
+                </div>
+
+                {/* Pin 4 (Lower-Left): Lil' Drip in Soft Sky Circle + Blue Dot */}
+                <div className="absolute top-[60%] left-[12%] flex flex-col items-center animate-pin-pulse-delayed">
+                  <div className="w-12 h-12 rounded-full bg-[#D4F0FF] p-1.5 border-2 border-white shadow-md flex items-center justify-center">
+                    <LilDripSVG className="w-8 h-8" />
+                  </div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-primary-500 border-2 border-white shadow-xs mt-0.5" />
+                </div>
+
+                {/* Floating Map Controls on Bottom Right */}
+                <div className="absolute right-3 bottom-16 flex flex-col gap-2 z-10">
+                  <div className="w-8 h-8 rounded-full bg-white shadow-md border border-outline-100 flex items-center justify-center text-typography-900">
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-white shadow-md border border-outline-100 flex items-center justify-center text-typography-900">
+                    <Navigation className="w-4 h-4" />
+                  </div>
+                </div>
               </div>
-            </a>
-          </div>
 
-          <p className="text-[11px] text-peach-tint/60 pt-0.5">{t.footnote}</p>
-        </div>
-
-        {/* Right Column: Animated Mascot Stage (placed above text on mobile) */}
-        <div className="order-first lg:order-last lg:col-span-5 flex flex-col items-center justify-center relative py-2 sm:py-6">
-          <div className="relative w-[260px] h-[190px] sm:w-[380px] sm:h-[380px] flex items-center justify-center">
-            <div className="absolute inset-4 sm:inset-6 rounded-full bg-gradient-to-tr from-poop-brown/25 via-pee-amber/20 to-both-teal/25 blur-2xl pointer-events-none" />
-
-            <div className="hidden sm:block absolute inset-2 rounded-full border border-dashed border-dark-border/80 orbit-spin-slow pointer-events-none">
-              <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-pee-amber shadow-lg shadow-pee-amber/50" />
-              <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-both-teal shadow-lg shadow-both-teal/50" />
+              {/* Clean Bottom Bar Peek inside Phone */}
+              <div className="h-11 bg-white border-t border-outline-100 px-6 flex items-center justify-between">
+                <div className="w-6 h-1.5 rounded-full bg-primary-500/40" />
+                <div className="w-20 h-1 rounded-full bg-[#0C102A]/20" />
+                <div className="w-6 h-1.5 rounded-full bg-outline-200" />
+              </div>
             </div>
 
-            <div className="hidden sm:block absolute inset-12 rounded-full border border-dark-border/60 orbit-spin-reverse pointer-events-none">
-              <span className="absolute top-1/2 -right-1.5 -translate-y-1/2 w-2.5 h-2.5 rounded-full bg-drip-blue shadow-lg shadow-drip-blue/50" />
-            </div>
+            {/* Animated 3D Mascot Trio Standing Proudly in Front of Phone Bottom */}
+            <div className="absolute bottom-0 inset-x-0 flex items-end justify-center gap-0 sm:gap-2 z-30 pointer-events-none">
+              {/* 1. Mr. Plop (Left) */}
+              <div className="flex flex-col items-center -mr-2 sm:-mr-1">
+                <button
+                  type="button"
+                  onClick={() => handleMascotTap('plop')}
+                  title="Mr. Plop — Tap me!"
+                  className={`pointer-events-auto w-28 h-28 sm:w-32 sm:h-32 transition-transform duration-300 hover:scale-110 hover:-rotate-3 active:scale-95 focus:outline-none ${
+                    activeMascot === 'plop' ? 'mascot-bounce-wiggle' : 'animate-mascot-1'
+                  }`}
+                >
+                  <MrPlopSVG className="w-full h-full drop-shadow-xl" />
+                </button>
+                <div className="w-16 h-2.5 rounded-full bg-[#0C102A]/20 blur-[3px] -mt-2 animate-shadow-1" />
+              </div>
 
-            <div className="hidden sm:flex absolute top-4 left-0 sm:-left-2 z-20 bg-dark-surface/95 backdrop-blur border border-dark-border px-3 py-1.5 rounded-2xl shadow-xl items-center gap-1.5 text-[11px] font-black text-pee-amber mascot-float">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{t.stageChip1}</span>
-            </div>
+              {/* 2. Lil' Drip (Center Front) */}
+              <div className="flex flex-col items-center z-10 translate-y-1">
+                <button
+                  type="button"
+                  onClick={() => handleMascotTap('drip')}
+                  title="Lil' Drip — Tap me!"
+                  className={`pointer-events-auto w-28 h-28 sm:w-32 sm:h-32 transition-transform duration-300 hover:scale-110 active:scale-95 focus:outline-none ${
+                    activeMascot === 'drip' ? 'mascot-bounce-wiggle' : 'animate-mascot-2'
+                  }`}
+                >
+                  <LilDripSVG className="w-full h-full drop-shadow-xl" />
+                </button>
+                <div className="w-14 h-2.5 rounded-full bg-[#0C102A]/20 blur-[3px] -mt-2 animate-shadow-2" />
+              </div>
 
-            <div className="hidden sm:flex absolute top-8 right-0 sm:-right-2 z-20 bg-dark-surface/95 backdrop-blur border border-dark-border px-3 py-1.5 rounded-2xl shadow-xl items-center gap-1.5 text-[11px] font-black text-both-teal mascot-float-delayed">
-              <Flame className="w-3.5 h-3.5 text-emergency" />
-              <span>{t.stageChip2}</span>
-            </div>
-
-            <div className="hidden sm:flex absolute bottom-3 left-1/2 -translate-x-1/2 z-20 bg-dark-surface/95 backdrop-blur border border-dark-border px-3.5 py-1.5 rounded-full shadow-xl items-center gap-1.5 text-[11px] font-bold text-cream-bg whitespace-nowrap">
-              <Sparkles className="w-3.5 h-3.5 text-pee-amber" />
-              <span>{t.stageHint}</span>
-            </div>
-
-            <div className="relative z-10 flex items-end justify-center -space-x-4 sm:-space-x-5">
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.plopQuote, 'plop')}
-                className={`group relative w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-poop-brown p-2.5 sm:p-3 border-4 border-dark-bg shadow-2xl mascot-bounce-wiggle mascot-interactive flex items-center justify-center transition-all ${
-                  activeMascot === 'plop' ? 'ring-4 ring-pee-amber/60 z-20' : 'opacity-95'
-                }`}
-                title="Mr. Plop (Poop)"
-              >
-                <MrPlopSVG />
-                <span className="hidden sm:inline-block absolute -bottom-2.5 bg-dark-bg border border-dark-border text-[9px] font-black text-peach-tint px-2 py-0.5 rounded-full shadow">
-                  Mr. Plop
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.flushQuote, 'flush')}
-                className={`group relative w-24 h-24 sm:w-36 sm:h-36 -translate-y-4 sm:-translate-y-6 rounded-[1.75rem] sm:rounded-[2rem] bg-both-teal p-3 sm:p-3.5 border-4 border-dark-bg shadow-2xl shadow-both-teal/25 mascot-float mascot-interactive flex items-center justify-center transition-all ${
-                  activeMascot === 'flush' ? 'ring-4 ring-both-teal/60 z-30' : 'z-20'
-                }`}
-                title="Sir Flush (Combo)"
-              >
-                <SirFlushSVG />
-                <span className="hidden sm:inline-block absolute -bottom-2.5 bg-dark-bg border border-both-teal/50 text-[10px] font-black text-both-teal px-2.5 py-0.5 rounded-full shadow">
-                  Sir Flush
-                </span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => triggerBubble(t.dripQuote, 'drip')}
-                className={`group relative w-20 h-20 sm:w-28 sm:h-28 rounded-3xl bg-pee-amber p-2.5 sm:p-3 border-4 border-dark-bg shadow-2xl mascot-float-delayed mascot-interactive flex items-center justify-center transition-all ${
-                  activeMascot === 'drip' ? 'ring-4 ring-drip-blue/60 z-20' : 'opacity-95'
-                }`}
-                title="Lil' Drip (Pee)"
-              >
-                <LilDripSVG />
-                <span className="hidden sm:inline-block absolute -bottom-2.5 bg-dark-bg border border-dark-border text-[9px] font-black text-pee-amber px-2 py-0.5 rounded-full shadow">
-                  Lil' Drip
-                </span>
-              </button>
+              {/* 3. Sir Flush (Right) */}
+              <div className="flex flex-col items-center -ml-2 sm:-ml-1">
+                <button
+                  type="button"
+                  onClick={() => handleMascotTap('flush')}
+                  title="Sir Flush — Tap me!"
+                  className={`pointer-events-auto w-32 h-32 sm:w-36 sm:h-36 transition-transform duration-300 hover:scale-110 hover:rotate-3 active:scale-95 focus:outline-none ${
+                    activeMascot === 'flush' ? 'mascot-bounce-wiggle' : 'animate-mascot-3'
+                  }`}
+                >
+                  <SirFlushSVG className="w-full h-full drop-shadow-xl" />
+                </button>
+                <div className="w-16 h-2.5 rounded-full bg-[#0C102A]/20 blur-[3px] -mt-2 animate-shadow-3" />
+              </div>
             </div>
           </div>
         </div>

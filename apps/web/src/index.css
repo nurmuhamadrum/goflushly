@@ -2,126 +2,270 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Gluestack UI Semantic Theme Tokens (Light BWA Palette) */
 :root {
-  color-scheme: dark;
+  color-scheme: light;
+
+  /* Primary: Royal Blue #2447F9 */
+  --color-primary-0: 238 242 255;
+  --color-primary-50: 224 231 255;
+  --color-primary-100: 199 210 254;
+  --color-primary-200: 165 180 252;
+  --color-primary-300: 129 140 248;
+  --color-primary-400: 79 107 252;
+  --color-primary-500: 36 71 249;
+  --color-primary-600: 26 56 212;
+  --color-primary-700: 21 44 176;
+  --color-primary-800: 18 36 143;
+  --color-primary-900: 14 28 110;
+  --color-primary-950: 10 19 77;
+
+  /* Secondary: Mint Teal #00BA9D */
+  --color-secondary-0: 231 247 246;
+  --color-secondary-50: 198 246 226;
+  --color-secondary-100: 167 243 208;
+  --color-secondary-200: 110 231 183;
+  --color-secondary-300: 52 211 153;
+  --color-secondary-400: 16 196 165;
+  --color-secondary-500: 0 186 157;
+  --color-secondary-600: 0 155 131;
+  --color-secondary-700: 0 128 108;
+  --color-secondary-800: 0 100 84;
+  --color-secondary-900: 0 77 65;
+  --color-secondary-950: 0 51 43;
+
+  /* Typography */
+  --color-typography-0: 255 255 255;
+  --color-typography-50: 248 250 252;
+  --color-typography-100: 241 245 249;
+  --color-typography-200: 226 232 240;
+  --color-typography-300: 203 213 225;
+  --color-typography-400: 148 163 184;
+  --color-typography-500: 100 116 139;
+  --color-typography-600: 71 85 105;
+  --color-typography-700: 51 65 85;
+  --color-typography-800: 30 41 59;
+  --color-typography-900: 12 16 42;
+  --color-typography-950: 6 9 26;
+
+  /* Surfaces & Outlines */
+  --color-background-0: 255 255 255;
+  --color-background-50: 248 250 252;
+  --color-background-100: 241 245 249;
+  --color-background-200: 232 238 245;
+  --color-background-900: 12 16 42;
+
+  --color-outline-100: 241 245 249;
+  --color-outline-200: 226 232 240;
+  --color-outline-300: 203 213 225;
 }
 
 body {
   margin: 0;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: #1E1A17;
-  color: #FFF6EA;
+  font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+  background-color: #F8FAFC;
+  color: #0C102A;
   overflow-x: hidden;
-  cursor: url('/cursors/mr-plop.svg') 16 16, auto;
+  -webkit-font-smoothing: antialiased;
 }
 
-a,
-button,
-[role='button'],
-select,
-.mascot-interactive {
-  cursor: url('/cursors/mr-plop-pointer.svg') 16 16, pointer;
-}
-
-/* Custom map pattern for interactive preview */
+/* Custom light map pattern */
 .map-pattern {
-  background-color: #1E1A17;
-  background-image: radial-gradient(#3D352E 1.5px, transparent 1.5px), radial-gradient(#3D352E 1.5px, #1E1A17 1.5px);
+  background-color: #F5F1E6;
+  background-image: radial-gradient(#E2E8F0 1.5px, transparent 1.5px), radial-gradient(#E2E8F0 1.5px, #F5F1E6 1.5px);
   background-size: 24px 24px;
   background-position: 0 0, 12px 12px;
 }
 
-/* Phone frame realistic shadow */
-.phone-shadow {
-  box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.7), 0 0 0 10px #2E2823, 0 0 0 12px #3D352E;
-}
-
-/* Glassmorphism surfaces */
+/* Light Glassmorphism */
 .glass-surface {
-  background: rgba(46, 40, 35, 0.85);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(61, 53, 46, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.9);
 }
 
-/* Mascot Kawaii Animations */
+/* ========================================================= */
+/* HERO & MASCOT MICRO-ANIMATIONS (GPU-Accelerated)          */
+/* ========================================================= */
+
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes phoneFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes chipFloatLeft {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-4px, -7px, 0);
+  }
+}
+
+@keyframes chipFloatRight {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(4px, -8px, 0);
+  }
+}
+
+@keyframes mascotIdleBob {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-7px) scale(1.025);
+  }
+}
+
+@keyframes shadowBreath {
+  0%, 100% {
+    transform: scaleX(1);
+    opacity: 0.22;
+  }
+  50% {
+    transform: scaleX(0.82);
+    opacity: 0.12;
+  }
+}
+
+@keyframes pinPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
 @keyframes bounceWiggle {
   0%, 100% {
     transform: translateY(0) scale(1) rotate(0deg);
   }
   25% {
-    transform: translateY(-8px) scale(1.05) rotate(-3deg);
+    transform: translateY(-12px) scale(1.08) rotate(-4deg);
   }
-  50% {
-    transform: translateY(0) scale(0.97) rotate(0deg);
+  55% {
+    transform: translateY(-2px) scale(0.96) rotate(2deg);
   }
   75% {
-    transform: translateY(-5px) scale(1.03) rotate(3deg);
+    transform: translateY(-7px) scale(1.04) rotate(-2deg);
   }
 }
 
-@keyframes eyeBlink {
-  0%, 92%, 100% {
-    transform: scaleY(1);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
-  96% {
-    transform: scaleY(0.1);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-@keyframes softFloat {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
+.animate-hero-up {
+  animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-hero-up-1 {
+  animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.08s both;
+}
+
+.animate-hero-up-2 {
+  animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.16s both;
+}
+
+.animate-hero-up-3 {
+  animation: heroFadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.24s both;
+}
+
+.animate-phone-float {
+  animation: phoneFloat 5.2s ease-in-out infinite;
+}
+
+.animate-chip-left {
+  animation: chipFloatLeft 4.2s ease-in-out infinite;
+}
+
+.animate-chip-right {
+  animation: chipFloatRight 4.6s ease-in-out 0.6s infinite;
+}
+
+.animate-mascot-1 {
+  animation: mascotIdleBob 3.2s ease-in-out infinite;
+}
+
+.animate-mascot-2 {
+  animation: mascotIdleBob 3.2s ease-in-out 0.55s infinite;
+}
+
+.animate-mascot-3 {
+  animation: mascotIdleBob 3.2s ease-in-out 1.1s infinite;
+}
+
+.animate-shadow-1 {
+  animation: shadowBreath 3.2s ease-in-out infinite;
+}
+
+.animate-shadow-2 {
+  animation: shadowBreath 3.2s ease-in-out 0.55s infinite;
+}
+
+.animate-shadow-3 {
+  animation: shadowBreath 3.2s ease-in-out 1.1s infinite;
+}
+
+.animate-pin-pulse {
+  animation: pinPulse 2.8s ease-in-out infinite;
+}
+
+.animate-pin-pulse-delayed {
+  animation: pinPulse 2.8s ease-in-out 1.1s infinite;
 }
 
 .mascot-bounce-wiggle {
-  animation: bounceWiggle 2.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  animation: bounceWiggle 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both !important;
 }
 
-.mascot-float {
-  animation: softFloat 3s ease-in-out infinite;
+.animate-fadeIn {
+  animation: fadeIn 0.25s ease-out both;
 }
 
-.mascot-interactive {
-  cursor: pointer;
-  user-select: none;
-  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.mascot-interactive:hover {
-  transform: scale(1.12) rotate(2deg);
-}
-
-.mascot-interactive:active {
-  transform: scale(0.92) rotate(-3deg);
-}
-
-.mascot-eyes {
-  transform-origin: center;
-  animation: eyeBlink 4s infinite;
-}
-
-@keyframes orbitSpin {
-  from {
-    transform: rotate(0deg);
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-up,
+  .animate-hero-up-1,
+  .animate-hero-up-2,
+  .animate-hero-up-3,
+  .animate-phone-float,
+  .animate-chip-left,
+  .animate-chip-right,
+  .animate-mascot-1,
+  .animate-mascot-2,
+  .animate-mascot-3,
+  .animate-shadow-1,
+  .animate-shadow-2,
+  .animate-shadow-3,
+  .animate-pin-pulse,
+  .animate-pin-pulse-delayed {
+    animation: none !important;
   }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.orbit-spin-slow {
-  animation: orbitSpin 36s linear infinite;
-}
-
-.orbit-spin-reverse {
-  animation: orbitSpin 28s linear infinite reverse;
-}
-
-.mascot-float-delayed {
-  animation: softFloat 3.4s ease-in-out 0.8s infinite;
 }

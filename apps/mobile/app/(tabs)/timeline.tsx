@@ -356,9 +356,9 @@ export default function TimelineScreen() {
       minute: '2-digit',
     });
 
-    const badgeBg = isPee ? Colors.peeAmber : isPoop ? Colors.poopBrown : Colors.bothTeal;
+    const badgeBg = isPee ? '#D4F0FF' : isPoop ? '#FDE6C9' : '#C6F6E2';
     const badgeTitle = isPee
-      ? "Lil' Drip (Kencing)"
+      ? "Lil' Drip (BAK)"
       : isPoop
       ? 'Mr. Plop (BAB)'
       : 'Sir Flush (Keduanya)';
@@ -372,9 +372,9 @@ export default function TimelineScreen() {
         <View style={styles.cardHeader}>
           {/* Avatar Icon */}
           <View style={[styles.avatarBox, { backgroundColor: badgeBg }]}>
-            {isPee && <LilDripIcon size={24} />}
-            {isPoop && <MrPlopIcon size={24} />}
-            {isCombo && <SirFlushIcon size={24} />}
+            {isPee && <LilDripIcon size={28} />}
+            {isPoop && <MrPlopIcon size={28} />}
+            {isCombo && <SirFlushIcon size={28} />}
           </View>
 
           {/* Core Info */}
@@ -383,7 +383,7 @@ export default function TimelineScreen() {
               <Text
                 style={[
                   styles.typeTitle,
-                  { color: isPee ? Colors.peeAmber : isPoop ? Colors.poopLight : Colors.bothTeal },
+                  { color: isPee ? Colors.primary : isPoop ? Colors.poopBrown : Colors.bothTeal },
                 ]}
               >
                 {badgeTitle}
@@ -421,14 +421,14 @@ export default function TimelineScreen() {
 
   const renderSectionHeader = ({ section: { title } }: { section: { title: string } }) => (
     <View style={styles.sectionHeaderContainer}>
-      <Calendar size={14} color={Colors.peeAmber} />
+      <Calendar size={14} color={Colors.primary} />
       <Text style={styles.sectionHeaderText}>{title}</Text>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       {/* Header Area */}
       <View style={styles.headerArea}>
@@ -518,7 +518,7 @@ export default function TimelineScreen() {
                 timeFilter === 'CUSTOM' && styles.calendarIconBadgeActive,
               ]}
             >
-              <Calendar size={13} color={timeFilter === 'CUSTOM' ? Colors.ink : Colors.bothTeal} />
+              <Calendar size={13} color={timeFilter === 'CUSTOM' ? '#FFFFFF' : Colors.bothTeal} />
             </View>
             <Text
               style={[
@@ -671,7 +671,7 @@ export default function TimelineScreen() {
 
                 {/* Catatan Bebas / Message */}
                 <View style={styles.detailRow}>
-                  <Info size={16} color={Colors.poopLight} />
+                  <Info size={16} color={Colors.poopBrown} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.detailLabel}>{t.timeline.detailNote}</Text>
                     <Text style={[styles.detailValue, { fontStyle: selectedDetailLog.note ? 'normal' : 'italic' }]}>
@@ -977,8 +977,8 @@ const styles = StyleSheet.create({
     borderColor: Colors.darkBorder,
   },
   filterPillActive: {
-    backgroundColor: Colors.peeAmber,
-    borderColor: Colors.peeAmber,
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
   },
   filterPillActiveCustom: {
     backgroundColor: Colors.bothTeal,
@@ -1026,7 +1026,7 @@ const styles = StyleSheet.create({
     color: Colors.bothTeal,
   },
   calendarFilterButtonTextActive: {
-    color: Colors.ink,
+    color: '#FFFFFF',
     fontWeight: '900',
   },
   filterPillText: {
@@ -1035,7 +1035,7 @@ const styles = StyleSheet.create({
     color: Colors.peachTint,
   },
   filterPillTextActive: {
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '900',
   },
   filterPillTextActiveDark: {
@@ -1112,28 +1112,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   moodPill: {
-    backgroundColor: 'rgba(245, 183, 0, 0.12)',
+    backgroundColor: '#EEF2FF',
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingVertical: 3,
+    borderRadius: 8,
     alignSelf: 'flex-start',
     marginTop: 6,
   },
   moodPillText: {
     fontSize: 10,
     fontWeight: '800',
-    color: Colors.peeAmber,
+    color: Colors.primary,
   },
   noteBox: {
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
-    borderRadius: 10,
-    padding: 8,
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderRadius: 12,
+    padding: 10,
     marginTop: 10,
   },
   noteText: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.85,
+    color: Colors.slate,
     fontStyle: 'italic',
   },
   emptyContainer: {
@@ -1442,7 +1443,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   pickerDoneBtnText: {
-    color: Colors.ink,
+    color: '#FFFFFF',
     fontSize: 11,
     fontWeight: '900',
   },

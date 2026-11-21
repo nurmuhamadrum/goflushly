@@ -3,6 +3,7 @@ import { getBadges, CONTENT_UPDATED_EVENT } from '../data/contentStore';
 import { EditableBadge } from '../types/admin';
 import { MrPlopSVG, LilDripSVG, SirFlushSVG } from './MascotSVGs';
 import { Award, Compass, Flame, MapPin, Mountain } from 'lucide-react';
+import { Card, Badge, BadgeText, Heading, Text, VStack } from './ui';
 import { isSupabaseConfigured } from '../lib/supabase';
 import { fetchBadgesFromSupabase } from '../services/adminApi';
 import { useLanguage } from '../i18n/LanguageContext';
@@ -34,30 +35,30 @@ export const BadgesSection: React.FC = () => {
   const getBadgeIcon = (iconName: string) => {
     switch (iconName) {
       case 'award':
-        return <Award className="w-5 h-5 text-pee-amber" />;
+        return <Award className="w-3.5 h-3.5 text-primary-500" />;
       case 'compass':
-        return <Compass className="w-5 h-5 text-poop-brown" />;
+        return <Compass className="w-3.5 h-3.5 text-poop-brown" />;
       case 'flame':
-        return <Flame className="w-5 h-5 text-emergency" />;
+        return <Flame className="w-3.5 h-3.5 text-emergency" />;
       case 'map-pin':
-        return <MapPin className="w-5 h-5 text-drip-blue" />;
+        return <MapPin className="w-3.5 h-3.5 text-primary-500" />;
       case 'mountain':
-        return <Mountain className="w-5 h-5 text-both-teal" />;
+        return <Mountain className="w-3.5 h-3.5 text-secondary-500" />;
       default:
-        return <Award className="w-5 h-5 text-pee-amber" />;
+        return <Award className="w-3.5 h-3.5 text-primary-500" />;
     }
   };
 
   const getMascotBgColor = (mascot: string) => {
     switch (mascot) {
       case 'MR_PLOP':
-        return 'bg-poop-brown';
+        return 'bg-[#FDE6C9]';
       case 'LIL_DRIP':
-        return 'bg-pee-amber';
+        return 'bg-[#D4F0FF]';
       case 'SIR_FLUSH':
-        return 'bg-both-teal';
+        return 'bg-[#C6F6E2]';
       default:
-        return 'bg-pee-amber';
+        return 'bg-[#D4F0FF]';
     }
   };
 
@@ -75,65 +76,65 @@ export const BadgesSection: React.FC = () => {
   };
 
   return (
-    <section id="lencana" className="py-14 sm:py-20 md:py-28 border-b border-dark-border">
-      <div className="max-w-7xl mx-auto px-5 sm:px-6">
+    <section id="lencana" className="py-16 sm:py-20 md:py-24 bg-background-50 border-b border-outline-100">
+      <div className="max-w-6xl mx-auto px-5 sm:px-6">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-dark-surface border border-dark-border text-xs font-bold text-pee-amber mb-3">
-            <Award className="w-3.5 h-3.5" /> {t.pill}
-          </div>
-          <h2 className="text-2xl sm:text-5xl font-black text-cream-bg tracking-tight">
+        <VStack space="sm" className="text-center max-w-2xl mx-auto mb-12 items-center">
+          <Badge action="secondary" size="lg">
+            <Award className="w-3.5 h-3.5" />
+            <BadgeText>{t.pill}</BadgeText>
+          </Badge>
+          <Heading as="h2" size="2xl">
             {t.title}
-          </h2>
-          <p className="text-peach-tint/80 text-xs sm:text-base mt-3 leading-relaxed">
+          </Heading>
+          <Text size="sm" className="leading-relaxed">
             {t.subtitle}
-          </p>
-        </div>
+          </Text>
+        </VStack>
 
-        {/* Badges Grid: compact horizontal rows on mobile, 2/5-col cards on tablet/desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-5">
+        {/* Badges Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
           {badges.map((badge) => (
-            <div
+            <Card
               key={badge.id}
-              className="group bg-dark-surface border border-dark-border rounded-2xl sm:rounded-3xl p-4 sm:p-6 text-left sm:text-center hover:border-pee-amber/60 hover:shadow-xl hover:shadow-pee-amber/10 transition-all flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-4 sm:gap-0"
+              variant="elevated"
+              size="sm"
+              className="group p-4 sm:p-5 text-left sm:text-center hover:border-primary-500/60 hover:-translate-y-1 flex flex-row sm:flex-col items-center sm:items-stretch justify-between gap-4 sm:gap-0"
             >
               <div className="flex flex-row sm:flex-col items-center sm:items-stretch gap-3.5 sm:gap-0 flex-1 min-w-0">
-                {/* Mascot Icon Container */}
                 <div
-                  className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full ${getMascotBgColor(
+                  className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl ${getMascotBgColor(
                     badge.mascot
-                  )} border-2 border-dark-bg p-2 sm:mx-auto sm:mb-4 shadow-lg group-hover:scale-110 transition-transform flex items-center justify-center flex-shrink-0`}
+                  )} p-2.5 sm:mx-auto sm:mb-4 shadow-xs group-hover:scale-110 transition-transform flex items-center justify-center flex-shrink-0`}
                 >
                   {getMascotSVG(badge.mascot)}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-dark-bg text-[9px] sm:text-[10px] font-bold text-peach-tint/70 mb-1 sm:mb-2 border border-dark-border">
+                  <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-background-50 text-[10px] font-bold text-typography-600 mb-1.5 border border-outline-200">
                     {getBadgeIcon(badge.iconName)}
                     <span>{badge.category}</span>
                   </div>
 
-                  <h3 className="font-black text-sm sm:text-base text-cream-bg mb-0.5 sm:mb-1.5 truncate sm:whitespace-normal">
+                  <Heading as="h3" size="sm" className="mb-1 truncate sm:whitespace-normal">
                     {lang === 'en' && badge.titleEn ? badge.titleEn : badge.title}
-                  </h3>
-                  <p className="text-peach-tint/70 text-[11px] sm:text-xs leading-relaxed line-clamp-2 sm:line-clamp-none">
+                  </Heading>
+                  <Text size="xs" className="leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {lang === 'en' && badge.descriptionEn ? badge.descriptionEn : badge.description}
-                  </p>
+                  </Text>
 
-                  {/* Mobile requirement pill */}
-                  <span className="sm:hidden inline-block mt-2 text-[10px] text-both-teal font-extrabold bg-both-teal/10 px-2 py-0.5 rounded-md">
-                    🎯 {lang === 'en' && badge.requirementTextEn ? badge.requirementTextEn : badge.requirementText}
+                  <span className="sm:hidden inline-block mt-2 text-[10px] text-secondary-500 font-bold bg-secondary-0 px-2.5 py-0.5 rounded-full">
+                    {lang === 'en' && badge.requirementTextEn ? badge.requirementTextEn : badge.requirementText}
                   </span>
                 </div>
               </div>
 
-              {/* Desktop requirement footer */}
-              <div className="hidden sm:block mt-5 pt-3 border-t border-dark-border/60">
-                <span className="text-[10px] text-both-teal font-extrabold bg-both-teal/10 px-2 py-1 rounded-md block">
-                  🎯 {lang === 'en' && badge.requirementTextEn ? badge.requirementTextEn : badge.requirementText}
+              <div className="hidden sm:block mt-4 pt-3 border-t border-outline-100">
+                <span className="text-[10px] text-secondary-500 font-bold bg-secondary-0 px-2.5 py-1 rounded-full block">
+                  {lang === 'en' && badge.requirementTextEn ? badge.requirementTextEn : badge.requirementText}
                 </span>
               </div>
-            </div>
+            </Card>
           ))}
         </div>
       </div>

@@ -1,85 +1,71 @@
 import React from 'react';
-import { EyeOff, UserX, Trash2, FileSpreadsheet } from 'lucide-react';
-import { SirFlushSVG } from './MascotSVGs';
+import { WifiOff, Lock, Ban, FileJson } from 'lucide-react';
+import { Card, VStack, Heading, Text, Button, ButtonText } from './ui';
 import { useLanguage } from '../i18n/LanguageContext';
-import { useWebCopy } from '../i18n/translations';
 
 export const PrivacyManifesto: React.FC = () => {
   const { lang } = useLanguage();
-  const t = useWebCopy(lang).privacy;
   const isEn = lang === 'en';
 
+  const pillars = [
+    { icon: WifiOff, label: 'Offline-First' },
+    { icon: Lock, label: isEn ? 'Biometric Lock' : 'Kunci Biometrik' },
+    { icon: Ban, label: isEn ? 'Zero Ads' : 'Tanpa Iklan' },
+    { icon: FileJson, label: isEn ? 'JSON Data Export' : 'Ekspor Data JSON' },
+  ];
+
   return (
-    <section id="privasi" className="py-20 md:py-28 border-b border-dark-border bg-dark-bg/80">
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="w-16 h-16 rounded-3xl bg-both-teal/20 border border-both-teal/40 p-2 mx-auto mb-6 shadow-xl flex items-center justify-center">
-          <SirFlushSVG />
-        </div>
+    <section id="privasi" className="py-12 md:py-16 bg-background-50">
+      <div className="max-w-5xl mx-auto px-5 sm:px-6">
+        <Card variant="navy" size="xl" className="relative overflow-hidden">
+          <div className="absolute -top-28 -right-28 w-80 h-80 rounded-full bg-primary-500/20 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-28 -left-28 w-80 h-80 rounded-full bg-secondary-500/15 blur-3xl pointer-events-none" />
 
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <span className="text-xs font-black uppercase tracking-wider text-both-teal bg-both-teal/10 border border-both-teal/30 px-3 py-1 rounded-full">
-            {t.pill}
-          </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-cream-bg tracking-tight mt-3">
-            {t.title}
-          </h2>
-          <p className="text-peach-tint/80 text-sm sm:text-base mt-3 leading-relaxed">
-            {t.subtitle}
-          </p>
-        </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
+            <VStack space="md" className="lg:col-span-6 text-center lg:text-left items-center lg:items-start">
+              <Text size="sm" bold className="text-secondary-500">
+                {isEn ? 'Uncompromising Privacy' : 'Privasi Tanpa Kompromi'}
+              </Text>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          <div className="bg-dark-surface border border-dark-border p-6 rounded-3xl flex items-start gap-4">
-            <div className="w-11 h-11 rounded-2xl bg-both-teal/20 border border-both-teal/40 flex items-center justify-center text-both-teal flex-shrink-0">
-              <UserX className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base text-cream-bg">{t.c1Title}</h3>
-              <p className="text-xs text-peach-tint/70 mt-1 leading-relaxed">{t.c1Desc}</p>
+              <Heading as="h2" size="2xl" className="text-white leading-tight">
+                {isEn
+                  ? '100% Local Privacy. Not a Public Toilet Finder.'
+                  : '100% Privasi Lokal. Bukan Pencari Toilet Umum.'}
+              </Heading>
+
+              <Text size="sm" className="text-typography-400 leading-relaxed max-w-md">
+                {isEn
+                  ? 'All your personal records stay exclusively on your device with zero third-party ad trackers or social oversharing.'
+                  : 'Semua catatan tersimpan eksklusif di perangkatmu tanpa server pelacak iklan maupun feed sosial.'}
+              </Text>
+
+              <div className="pt-2">
+                <Button href="#faq" action="primary" size="md">
+                  <ButtonText>{isEn ? 'Learn About Privacy' : 'Pelajari Privasi'}</ButtonText>
+                </Button>
+              </div>
+            </VStack>
+
+            <div className="lg:col-span-6 grid grid-cols-2 gap-3.5 sm:gap-4">
+              {pillars.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <Card
+                    key={item.label}
+                    variant="outline"
+                    size="md"
+                    className="rounded-2xl flex flex-col items-center justify-center text-center gap-3 hover:-translate-y-1"
+                  >
+                    <Icon className="w-7 h-7 text-typography-900 stroke-[2.2]" />
+                    <Text as="span" size="sm" bold className="text-typography-900 leading-tight">
+                      {item.label}
+                    </Text>
+                  </Card>
+                );
+              })}
             </div>
           </div>
-
-          <div className="bg-dark-surface border border-dark-border p-6 rounded-3xl flex items-start gap-4">
-            <div className="w-11 h-11 rounded-2xl bg-pee-amber/20 border border-pee-amber/40 flex items-center justify-center text-pee-amber flex-shrink-0">
-              <EyeOff className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base text-cream-bg">{t.c2Title}</h3>
-              <p className="text-xs text-peach-tint/70 mt-1 leading-relaxed">{t.c2Desc}</p>
-            </div>
-          </div>
-
-          <div className="bg-dark-surface border border-dark-border p-6 rounded-3xl flex items-start gap-4">
-            <div className="w-11 h-11 rounded-2xl bg-poop-brown/20 border border-poop-brown/40 flex items-center justify-center text-poop-brown flex-shrink-0">
-              <FileSpreadsheet className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base text-cream-bg">{t.c3Title}</h3>
-              <p className="text-xs text-peach-tint/70 mt-1 leading-relaxed">{t.c3Desc}</p>
-            </div>
-          </div>
-
-          <div className="bg-dark-surface border border-dark-border p-6 rounded-3xl flex items-start gap-4">
-            <div className="w-11 h-11 rounded-2xl bg-emergency/20 border border-emergency/40 flex items-center justify-center text-emergency flex-shrink-0">
-              <Trash2 className="w-6 h-6" />
-            </div>
-            <div>
-              <h3 className="font-bold text-base text-cream-bg">{t.c4Title}</h3>
-              <p className="text-xs text-peach-tint/70 mt-1 leading-relaxed">{t.c4Desc}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-dark-surface border-2 border-both-teal/30 rounded-3xl p-8 text-center relative overflow-hidden">
-          <p className="text-sm sm:text-base text-cream-bg font-semibold italic max-w-2xl mx-auto leading-relaxed">
-            {isEn
-              ? '"We designed Poop Pee Log so you can smile proudly at your personal relief trail without ever worrying that your restroom habits will become ad targeting data."'
-              : '"Kami merancang Poop Pee Log agar Anda bisa tersenyum puas melihat jejak lega Anda tanpa perlu khawatir suatu hari data toilet Anda dijadikan target iklan pop-up."'}
-          </p>
-          <div className="mt-4 text-xs text-both-teal font-extrabold uppercase tracking-wider">
-            {isEn ? '— Poop Pee Log Team' : '— Tim Poop Pee Log'}
-          </div>
-        </div>
+        </Card>
       </div>
     </section>
   );

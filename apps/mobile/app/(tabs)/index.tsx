@@ -272,7 +272,7 @@ export default function MapScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="dark-content" />
 
       {/* 1. NATIVE MAP VIEW */}
       <MapView
@@ -373,7 +373,8 @@ export default function MapScreen() {
           const isSelected = selectedGroup?.key === group.key;
           const count = group.logs.length;
 
-          const markerBg = isPee ? Colors.peeAmber : isPoop ? Colors.poopBrown : Colors.bothTeal;
+          const markerBorder = isPee ? '#93C5FD' : isPoop ? '#F5CBA7' : '#6EE7B7';
+          const markerAccent = isPee ? Colors.primary : isPoop ? Colors.poopBrown : Colors.bothTeal;
 
           return (
             <Marker
@@ -386,20 +387,20 @@ export default function MapScreen() {
               {/* Outer fixed canvas wrapper untuk mencegah clipping/terpotong di iOS & Android */}
               <View style={styles.markerAnchorWrapper}>
                 <View style={styles.markerContainer}>
-                  {/* Pin Circle Mascot Avatar */}
+                  {/* Pin Circle Mascot Avatar (Clean White Circle + 3D Mascot) */}
                   <View
                     style={[
                       styles.pinCircle,
                       {
-                        backgroundColor: markerBg,
-                        borderColor: isSelected ? '#FFFFFF' : Colors.darkBg,
+                        backgroundColor: '#FFFFFF',
+                        borderColor: isSelected ? Colors.primary : markerBorder,
                       },
                       isSelected && styles.pinCircleSelected,
                     ]}
                   >
-                    {isPee && <LilDripIcon size={20} />}
-                    {isPoop && <MrPlopIcon size={20} />}
-                    {isCombo && <SirFlushIcon size={20} />}
+                    {isPee && <LilDripIcon size={26} />}
+                    {isPoop && <MrPlopIcon size={26} />}
+                    {isCombo && <SirFlushIcon size={26} />}
 
                     {/* Badge Counter jika lebih dari 1 log di titik ini */}
                     {count > 1 && (
@@ -410,10 +411,10 @@ export default function MapScreen() {
                   </View>
 
                   {/* Tiny needle pointer */}
-                  <View style={[styles.pinNeedle, { backgroundColor: markerBg }]} />
+                  <View style={[styles.pinNeedle, { backgroundColor: isSelected ? Colors.primary : '#FFFFFF' }]} />
 
                   {/* Pulsing selection ring glow */}
-                  {isSelected && <View style={[styles.selectionPulse, { borderColor: markerBg }]} />}
+                  {isSelected && <View style={[styles.selectionPulse, { borderColor: markerAccent }]} />}
                 </View>
               </View>
             </Marker>
@@ -519,7 +520,7 @@ export default function MapScreen() {
                 (l) => String(l.type || '').toUpperCase() === mapFilter
               ) || selectedGroup.latestLog;
         const pType = String(popupLog.type || '').toUpperCase();
-        const pBg = pType === 'PEE' ? Colors.peeAmber : pType === 'POOP' ? Colors.poopBrown : Colors.bothTeal;
+        const pBg = pType === 'PEE' ? '#D4F0FF' : pType === 'POOP' ? '#FDE6C9' : '#C6F6E2';
 
         return (
           <View style={styles.popupCard}>
@@ -615,7 +616,7 @@ export default function MapScreen() {
                 </View>
                 <View style={styles.statDivider} />
                 <View style={styles.statSummaryItem}>
-                  <Text style={[styles.statSummaryNumber, { color: Colors.peeAmber }]}>
+                  <Text style={[styles.statSummaryNumber, { color: Colors.primary }]}>
                     {selectedGroup.logs.filter((l) => String(l.type).toUpperCase() === 'PEE').length}
                   </Text>
                   <Text style={styles.statSummaryLabel}>Pee</Text>
@@ -725,14 +726,14 @@ const styles = StyleSheet.create({
   },
   filterPillsScroll: {
     flexDirection: 'row',
-    backgroundColor: 'rgba(46, 40, 35, 0.94)',
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
     borderRadius: 24,
     padding: 4,
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: '#E2E8F0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.35,
+    shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 6,
     gap: 4,
@@ -745,7 +746,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   pillActive: {
-    backgroundColor: Colors.peeAmber,
+    backgroundColor: Colors.primary,
   },
   pillActiveFlush: {
     backgroundColor: Colors.bothTeal,
@@ -753,14 +754,14 @@ const styles = StyleSheet.create({
   pillText: {
     fontSize: 11,
     fontWeight: '700',
-    color: Colors.peachTint,
+    color: '#475569',
   },
   pillTextActive: {
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '900',
   },
   pillTextActiveDark: {
-    color: '#000',
+    color: '#FFFFFF',
     fontWeight: '900',
   },
   mapInfoPillRow: {
@@ -774,17 +775,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(30, 26, 23, 0.94)',
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
     borderRadius: 20,
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'rgba(61, 53, 46, 0.9)',
+    borderColor: '#E2E8F0',
     maxWidth: '55%',
-    shadowColor: '#000',
+    shadowColor: '#0C102A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 4,
   },
   liveIndicatorDot: {
@@ -796,11 +797,11 @@ const styles = StyleSheet.create({
   locationAreaText: {
     fontSize: 11,
     fontWeight: '800',
-    color: Colors.creamBg,
+    color: Colors.navy,
     flexShrink: 1,
   },
   liveBadge: {
-    backgroundColor: 'rgba(56, 178, 172, 0.18)',
+    backgroundColor: 'rgba(0, 186, 157, 0.14)',
     paddingHorizontal: 5,
     paddingVertical: 1.5,
     borderRadius: 6,
@@ -815,27 +816,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(30, 26, 23, 0.88)',
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
     borderRadius: 20,
-    paddingVertical: 4,
+    paddingVertical: 5,
     paddingHorizontal: 10,
     borderWidth: 1,
-    borderColor: 'rgba(61, 53, 46, 0.8)',
-    shadowColor: '#000',
+    borderColor: '#E2E8F0',
+    shadowColor: '#0C102A',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
+    shadowOpacity: 0.08,
+    shadowRadius: 6,
     elevation: 4,
   },
   mapInfoPillText: {
     fontSize: 10,
-    color: Colors.peachTint,
-    opacity: 0.9,
+    color: Colors.slate,
   },
   infoPillDivider: {
     width: 1,
     height: 12,
-    backgroundColor: Colors.darkBorder,
+    backgroundColor: '#E2E8F0',
   },
   recenterBtn: {
     position: 'absolute',
@@ -844,16 +844,16 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(46, 40, 35, 0.95)',
-    borderWidth: 1.5,
-    borderColor: Colors.darkBorder,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
+    shadowColor: '#0C102A',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
+    shadowOpacity: 0.12,
     shadowRadius: 8,
-    elevation: 8,
+    elevation: 6,
   },
   // User Location Radar & Dot Styles
   userLocationMarkerContainer: {
@@ -913,23 +913,23 @@ const styles = StyleSheet.create({
     height: 48,
   },
   pinCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    borderWidth: 2,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    borderWidth: 2.5,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.35,
-    shadowRadius: 4,
+    shadowColor: '#0C102A',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.16,
+    shadowRadius: 5,
     elevation: 5,
   },
   pinCircleSelected: {
     borderWidth: 2.5,
-    borderColor: '#FFF',
-    shadowColor: '#FFF',
-    shadowOpacity: 0.5,
+    borderColor: Colors.primary,
+    shadowColor: Colors.primary,
+    shadowOpacity: 0.35,
   },
   countBadge: {
     position: 'absolute',
@@ -970,14 +970,14 @@ const styles = StyleSheet.create({
     bottom: 92,
     left: 16,
     right: 16,
-    backgroundColor: 'rgba(46, 40, 35, 0.98)',
+    backgroundColor: '#FFFFFF',
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: '#E2E8F0',
     borderRadius: 24,
     padding: 14,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.45,
+    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 10,
   },
@@ -1001,23 +1001,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   popupTitle: {
-    color: Colors.creamBg,
+    color: '#0C102A',
     fontSize: 13,
     fontWeight: '900',
   },
   popupTime: {
-    color: Colors.peachTint,
-    opacity: 0.6,
+    color: '#94A3B8',
     fontSize: 10,
   },
   popupLocation: {
-    color: Colors.peachTint,
+    color: '#475569',
     fontSize: 11,
     fontWeight: '700',
     marginTop: 2,
   },
   popupNote: {
-    color: Colors.peeAmber,
+    color: Colors.primary,
     fontSize: 11,
     fontStyle: 'italic',
     marginTop: 3,
@@ -1029,7 +1028,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(61, 53, 46, 0.7)',
+    borderTopColor: '#F1F5F9',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -1043,25 +1042,25 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(245, 183, 0, 0.15)',
+    backgroundColor: '#EBF5FC',
     paddingVertical: 5,
     paddingHorizontal: 10,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: 'rgba(245, 183, 0, 0.4)',
+    borderColor: 'rgba(36, 71, 249, 0.25)',
   },
   detailButtonText: {
-    color: Colors.peeAmber,
+    color: Colors.primary,
     fontSize: 11,
     fontWeight: '900',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(12, 16, 42, 0.45)',
     justifyContent: 'flex-end',
   },
   modalContent: {
-    backgroundColor: Colors.darkBg,
+    backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 28,
     borderTopRightRadius: 28,
     paddingHorizontal: 20,
@@ -1069,7 +1068,7 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 40 : 24,
     maxHeight: '82%',
     borderWidth: 1,
-    borderColor: Colors.darkBorder,
+    borderColor: '#E2E8F0',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1176,7 +1175,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(245, 183, 0, 0.12)',
+    backgroundColor: '#EEF2FF',
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
     paddingVertical: 3,
@@ -1186,21 +1185,22 @@ const styles = StyleSheet.create({
   logItemMoodText: {
     fontSize: 10,
     fontWeight: '800',
-    color: Colors.peeAmber,
+    color: Colors.primary,
   },
   logItemNoteBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     gap: 5,
     marginTop: 6,
-    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    backgroundColor: '#F8FAFC',
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
     padding: 8,
-    borderRadius: 8,
+    borderRadius: 10,
   },
   logItemNoteText: {
     fontSize: 11,
-    color: Colors.peachTint,
-    opacity: 0.9,
+    color: Colors.slate,
     flex: 1,
   },
 });
