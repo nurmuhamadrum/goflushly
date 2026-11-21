@@ -1,7 +1,7 @@
 # Figma Design System & Mascot Specification
-# Poop Pee Log ("Track. Log. Lega.")
+# GoFlushly ("Track. Log. Lega.")
 
-Dokumen ini merupakan panduan resmi spesifikasi desain antarmuka (**UI/UX Specification**) dan aset visual untuk aplikasi **Poop Pee Log**, menggunakan palet warna resmi serta 3 karakter maskot utama: **Mr. Plop**, **Lil' Drip**, dan **Sir Flush**.
+Dokumen ini merupakan panduan resmi spesifikasi desain antarmuka (**UI/UX Specification**) dan aset visual untuk aplikasi **GoFlushly**, menggunakan palet warna resmi serta 3 karakter maskot utama: **Mr. Plop**, **Lil' Drip**, dan **Sir Flush**.
 
 ---
 

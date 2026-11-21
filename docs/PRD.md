@@ -1,5 +1,5 @@
 # Product Requirements Document (PRD)
-# Poop Pee Log ("Track. Log. Lega.")
+# GoFlushly ("Track. Log. Lega.")
 
 **Versi Dokumen**: 1.0.0 (MVP Fase 1)  
 **Tanggal**: 9 November 2026  
@@ -18,7 +18,7 @@ Sebagian besar aplikasi di pasaran terbagi menjadi dua kategori ekstrem:
 1. **Aplikasi Medis / Klinis**: Menggunakan Bristol Stool Scale yang kaku dan penuh jargon medis, membuat pengguna canggung untuk menggunakannya secara harian.
 2. **Aplikasi Fasilitas Publik / Toilet Finder**: Berfokus mencari toilet umum terdekat dan memberikan rating kebersihan kloset, padahal pengguna seringkali hanya ingin mencatat sejarah pribadi mereka sendiri.
 
-**Poop Pee Log** hadir mengisi kekosongan tersebut sebagai **personal lifelogger & diary** buang air yang menyenangkan, estetik, dan sat-set. Konsepnya seperti Strava atau Foursquare Swarm, tetapi 100% didedikasikan untuk rekam jejak biologis pribadi pengguna.
+**GoFlushly** hadir mengisi kekosongan tersebut sebagai **personal lifelogger & diary** buang air yang menyenangkan, estetik, dan sat-set. Konsepnya seperti Strava atau Foursquare Swarm, tetapi 100% didedikasikan untuk rekam jejak biologis pribadi pengguna.
 
 ### 1.2 Visi & Tagline
 > **Visi**: *"Menjadi buku harian biologis personal paling sat-set, seru, dan aman di dunia untuk mendokumentasikan jejak lega pengguna tanpa rasa canggung atau was-was privasi."*

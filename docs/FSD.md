@@ -1,5 +1,5 @@
 # Functional Specification Document (FSD)
-# Poop Pee Log ("Track. Log. Lega.")
+# GoFlushly ("Track. Log. Lega.")
 
 **Versi Dokumen**: 1.0.0 (MVP Fase 1)  
 **Status**: Disetujui (Approved)  
@@ -48,7 +48,7 @@
 ### 2.1 Layar Kunci / App Lock (`/(auth)/lock.tsx`)
 - **Tujuan**: Mengamankan data pribadi saat aplikasi dibuka kembali atau saat aplikasi tidak aktif di latar belakang lebih dari 15 detik.
 - **Elemen UI**:
-  - Logo Poop Pee Log minimalis dengan ikon gembok halus.
+  - Logo GoFlushly minimalis dengan ikon gembok halus.
   - 4 Indikator Dot PIN (lingkaran kosong/terisi).
   - Virtual Keypad angka 0–9, tombol backspace, dan tombol Biometrik.
   - Tombol trigger pemindaian biometrik (FaceID pada iOS / Fingerprint pada Android).

@@ -48,14 +48,14 @@ export default function AuthScreen() {
   };
 
   const handleSwitchMode = (newMode: AuthMode) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     clearMessages();
     setMode(newMode);
   };
 
   const handleSubmit = async () => {
     clearMessages();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
 
     if (!email.trim()) {
       setErrorMessage('Harap masukkan alamat email Anda.');
@@ -96,7 +96,7 @@ export default function AuthScreen() {
       if (res.success) {
         if (res.user) {
           setUser(res.user.id, res.user.email, false);
-          syncWithCloud().catch(() => {});
+          syncWithCloud().catch(() => { });
         }
         setSuccessMessage(res.message || 'Pendaftaran berhasil!');
         setTimeout(() => {
@@ -114,28 +114,28 @@ export default function AuthScreen() {
     setIsLoading(false);
 
     if (res.success && res.user) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
       setUser(res.user.id, res.user.email, false);
-      syncWithCloud().catch(() => {});
+      syncWithCloud().catch(() => { });
       router.replace('/(tabs)');
     } else {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => { });
       setErrorMessage(res.error || 'Email atau kata sandi tidak sesuai');
     }
   };
 
   const handleGoogleSignIn = async () => {
     clearMessages();
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     setIsLoading(true);
 
     const res = await signInWithGoogle();
     setIsLoading(false);
 
     if (res.success && res.user) {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
       setUser(res.user.id, res.user.email, false);
-      syncWithCloud().catch(() => {});
+      syncWithCloud().catch(() => { });
       router.replace('/(tabs)');
     } else {
       if (res.error && !res.error.includes('dibatalkan')) {
@@ -145,7 +145,7 @@ export default function AuthScreen() {
   };
 
   const handleContinueAsGuest = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     router.replace('/(tabs)');
   };
 
@@ -217,7 +217,7 @@ export default function AuthScreen() {
             </View>
           </View>
 
-          <Text style={styles.appTitle}>POOP PEE LOG</Text>
+          <Text style={styles.appTitle}>GoFlushly</Text>
           <Text style={styles.tagline}>
             {mode === 'SIGN_IN' &&
               (isEn ? 'Sign in to backup & sync your biological logs' : 'Masuk untuk mencadangkan & sinkron riwayat biologis')}

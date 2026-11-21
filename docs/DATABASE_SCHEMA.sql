@@ -1,7 +1,7 @@
 -- ==============================================================================
--- DATABASE SCHEMA: POOP PEE LOG (PostgreSQL 15 + PostGIS)
+-- DATABASE SCHEMA: GoFlushly (PostgreSQL 15 + PostGIS)
 -- ==============================================================================
--- Deskripsi: Skema basis data lengkap untuk aplikasi Poop Pee Log di Supabase.
+-- Deskripsi: Skema basis data lengkap untuk aplikasi GoFlushly di Supabase.
 -- Mencakup tabel logs, badges, user_badges, profiles, indeks PostGIS,
 -- fungsi trigger, Row Level Security (RLS), dan seed data lencana.
 -- ==============================================================================

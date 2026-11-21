@@ -7,7 +7,7 @@ export async function checkBiometricsAvailable(): Promise<boolean> {
 }
 
 export async function authenticateWithBiometrics(
-  promptMessage = 'Buka Kunci Poop Pee Log'
+  promptMessage = 'Buka Kunci GoFlushly'
 ): Promise<boolean> {
   try {
     const isAvailable = await checkBiometricsAvailable();

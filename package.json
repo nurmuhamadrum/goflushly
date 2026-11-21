@@ -10,6 +10,8 @@
     "dev:web": "npm --workspace=@go-flushly/web run dev",
     "build:web": "npm --workspace=@go-flushly/web run build",
     "preview:web": "npm --workspace=@go-flushly/web run preview",
-    "dev:mobile": "npm --workspace=@go-flushly/mobile run start"
+    "dev:mobile": "npm --workspace=@go-flushly/mobile run start",
+    "dev:mobile:ios": "npm --workspace=@go-flushly/mobile run ios",
+    "prebuild:ios": "npm --workspace=@go-flushly/mobile exec expo prebuild --platform ios"
   }
 }

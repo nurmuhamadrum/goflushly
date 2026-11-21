@@ -1,5 +1,5 @@
 # Arsitektur Monorepo & Panduan Teknis
-# Poop Pee Log ("Track. Log. Lega.")
+# GoFlushly ("Track. Log. Lega.")
 
 Dokumen ini mendefinisikan struktur repositori monorepo, pembagian paket, konfigurasi dependensi bersama, dan panduan inisialisasi proyek menggunakan **Turborepo** dan **npm / pnpm workspaces**.
 

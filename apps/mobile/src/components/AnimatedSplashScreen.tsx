@@ -92,7 +92,7 @@ export const AnimatedSplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) 
         ]),
       ]),
 
-      // 3. Judul Brand "Poop Pee Log" muncul
+      // 3. Judul Brand "GoFlushly" muncul
       Animated.parallel([
         Animated.timing(titleFade, {
           toValue: 1,

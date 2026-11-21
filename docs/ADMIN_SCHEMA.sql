@@ -1,5 +1,5 @@
 -- ==============================================================================
--- ADMIN DASHBOARD SCHEMA & RPC MIGRATION (Poop Pee Log)
+-- ADMIN DASHBOARD SCHEMA & RPC MIGRATION (GoFlushly)
 -- ==============================================================================
 -- Jalankan script ini di Supabase SQL Editor untuk mengaktifkan:
 -- 1. Role Admin pada tabel public.profiles
@@ -121,9 +121,9 @@ VALUES
 (
     'faq_1',
     'Apakah aplikasi ini bisa mencari toilet umum terdekat?',
-    'Tidak. Poop Pee Log BUKAN aplikasi pencari toilet umum. Aplikasi ini adalah buku harian pribadi (personal diary & tracker) untuk mendokumentasikan tempat dan waktu di mana Anda sendiri buang air, layaknya aplikasi Strava untuk aktivitas biologis.',
+    'Tidak. GoFlushly BUKAN aplikasi pencari toilet umum. Aplikasi ini adalah buku harian pribadi (personal diary & tracker) untuk mendokumentasikan tempat dan waktu di mana Anda sendiri buang air, layaknya aplikasi Strava untuk aktivitas biologis.',
     'Can this app find the nearest public toilet?',
-    'No. Poop Pee Log is NOT a public toilet finder. It is a personal biological diary and tracker to log where and when you relieve yourself, just like Strava for your bathroom habits.',
+    'No. GoFlushly is NOT a public toilet finder. It is a personal biological diary and tracker to log where and when you relieve yourself, just like Strava for your bathroom habits.',
     1,
     TRUE
 ),
@@ -139,18 +139,18 @@ VALUES
 (
     'faq_3',
     'Apakah teman atau orang lain bisa melihat catatan saya?',
-    'Sama sekali tidak bisa. Poop Pee Log menganut prinsip Zero Social. Tidak ada feed pertemanan, tidak ada tautan publik, dan tidak ada leaderboard. Data Anda diisolasi menggunakan Row Level Security (RLS) dan kunci aplikasi PIN/Biometrik.',
+    'Sama sekali tidak bisa. GoFlushly menganut prinsip Zero Social. Tidak ada feed pertemanan, tidak ada tautan publik, dan tidak ada leaderboard. Data Anda diisolasi menggunakan Row Level Security (RLS) dan kunci aplikasi PIN/Biometrik.',
     'Can friends or other people see my logs?',
-    'Never. Poop Pee Log follows a strict Zero Social principle. There are no friend feeds, no public links, and no leaderboards. Your data is isolated with Row Level Security (RLS) and biometric app lock.',
+    'Never. GoFlushly follows a strict Zero Social principle. There are no friend feeds, no public links, and no leaderboards. Your data is isolated with Row Level Security (RLS) and biometric app lock.',
     3,
     TRUE
 ),
 (
     'faq_4',
     'Apakah saya bisa mencatat log saat tidak ada sinyal internet?',
-    'Tentu saja! Poop Pee Log dibangun dengan arsitektur Offline-First. Anda bisa mencatat di toilet basement mall atau di puncak gunung tanpa sinyal. Data akan tersimpan di memori HP Anda dan disinkronkan otomatis saat terhubung ke internet.',
+    'Tentu saja! GoFlushly dibangun dengan arsitektur Offline-First. Anda bisa mencatat di toilet basement mall atau di puncak gunung tanpa sinyal. Data akan tersimpan di memori HP Anda dan disinkronkan otomatis saat terhubung ke internet.',
     'Can I record a log when there is no internet connection?',
-    'Of course! Poop Pee Log is built with an Offline-First architecture. You can log in a basement restroom or on a mountain peak without signal. Logs are stored locally on your phone and auto-sync when back online.',
+    'Of course! GoFlushly is built with an Offline-First architecture. You can log in a basement restroom or on a mountain peak without signal. Logs are stored locally on your phone and auto-sync when back online.',
     4,
     TRUE
 ),

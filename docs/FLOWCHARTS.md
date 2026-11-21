@@ -1,7 +1,7 @@
 # Flowchart Sistem & Panduan Alur Kerja
-# Poop Pee Log ("Track. Log. Lega.")
+# GoFlushly ("Track. Log. Lega.")
 
-Dokumen ini memuat diagram alur interaktif berbasis **Mermaid** dan penjelasan teks step-by-step terperinci untuk 6 alur utama aplikasi Poop Pee Log:
+Dokumen ini memuat diagram alur interaktif berbasis **Mermaid** dan penjelasan teks step-by-step terperinci untuk 6 alur utama aplikasi GoFlushly:
 1. **Flow Onboarding, Anonymous Auth & App Lock**
 2. **Flow 3-Detik Log Pee/Poop (Core Engine)**
 3. **Flow Lihat Detail Pin & Clustering di Peta**
