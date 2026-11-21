@@ -20,7 +20,7 @@ import { darkMapStyle, retroMapStyle } from '@/constants/MapStyle';
 import { useAppStore } from '@/src/store/useAppStore';
 import { useMobileI18n } from '@/src/i18n/translations';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
-import { Log } from '@poop-pee-log/shared';
+import { Log } from '@go-flushly/shared';
 import {
   Navigation,
   X,

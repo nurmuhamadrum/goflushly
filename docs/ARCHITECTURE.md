@@ -8,7 +8,7 @@ Dokumen ini mendefinisikan struktur repositori monorepo, pembagian paket, konfig
 ## 1. Topologi Repositori & Pembagian Paket
 
 ```
-poop-pee-log/
+go-flushly/
 ├── apps/
 │   ├── web/                        # WEBSITE LANDING PAGE (React 19 + Vite + Tailwind CSS)
 │   │   ├── public/                 # Favicon, OpenGraph, aset lencana preview
@@ -93,15 +93,15 @@ poop-pee-log/
 ### 3.1 `package.json` (Root)
 ```json
 {
-  "name": "poop-pee-log",
+  "name": "go-flushly",
   "private": true,
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "dev:web": "turbo run dev --filter=@poop-pee-log/web",
-    "dev:mobile": "turbo run start --filter=@poop-pee-log/mobile",
+    "dev:web": "turbo run dev --filter=@go-flushly/web",
+    "dev:mobile": "turbo run start --filter=@go-flushly/mobile",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "test": "turbo run test"

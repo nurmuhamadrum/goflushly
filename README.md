@@ -166,14 +166,14 @@ Buka **SQL Editor** pada dashboard proyek Supabase Anda dan jalankan secara beru
 
 #### Menjalankan Website Landing Page & Admin:
 ```bash
-npm run dev --workspace=@poop-pee-log/web
+npm run dev --workspace=@go-flushly/web
 ```
 - Akses Landing Page: `http://localhost:5173`
 - Akses Admin Portal: `http://localhost:5173/#/admin`
 
 #### Menjalankan Aplikasi Mobile (Expo):
 ```bash
-npm run start --workspace=@poop-pee-log/mobile
+npm run start --workspace=@go-flushly/mobile
 ```
 - Tekan `i` untuk membuka iOS Simulator.
 - Tekan `a` untuk membuka Android Emulator.
@@ -185,7 +185,7 @@ npm run start --workspace=@poop-pee-log/mobile
 ./node_modules/.bin/tsc -p apps/mobile/tsconfig.json --noEmit
 
 # Validasi Build Web
-npm run build --workspace=@poop-pee-log/web
+npm run build --workspace=@go-flushly/web
 ```
 
 ---

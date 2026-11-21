@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { AppLanguage, Log } from '@poop-pee-log/shared';
+import { AppLanguage, Log } from '@go-flushly/shared';
 import * as SecureStore from 'expo-secure-store';
 import {
   getLocalLogs,

@@ -1,5 +1,5 @@
 {
-  "name": "poop-pee-log-monorepo",
+  "name": "go-flushly-monorepo",
   "version": "1.0.0",
   "private": true,
   "workspaces": [
@@ -7,9 +7,9 @@
     "packages/*"
   ],
   "scripts": {
-    "dev:web": "npm --workspace=@poop-pee-log/web run dev",
-    "build:web": "npm --workspace=@poop-pee-log/web run build",
-    "preview:web": "npm --workspace=@poop-pee-log/web run preview",
-    "dev:mobile": "npm --workspace=@poop-pee-log/mobile run start"
+    "dev:web": "npm --workspace=@go-flushly/web run dev",
+    "build:web": "npm --workspace=@go-flushly/web run build",
+    "preview:web": "npm --workspace=@go-flushly/web run preview",
+    "dev:mobile": "npm --workspace=@go-flushly/mobile run start"
   }
 }

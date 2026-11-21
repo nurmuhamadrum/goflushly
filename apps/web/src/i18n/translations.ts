@@ -1,4 +1,4 @@
-import { AppLanguage } from '@poop-pee-log/shared';
+import { AppLanguage } from '@go-flushly/shared';
 
 export const WEB_COPY = {
   en: {

@@ -1,4 +1,4 @@
-import { Log } from '@poop-pee-log/shared';
+import { Log } from '@go-flushly/shared';
 import { Colors } from '@/constants/Colors';
 
 export interface BadgeDefinition {

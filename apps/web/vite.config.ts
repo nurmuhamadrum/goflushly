@@ -6,7 +6,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@poop-pee-log/shared': path.resolve(__dirname, '../../packages/shared/src'),
+      '@go-flushly/shared': path.resolve(__dirname, '../../packages/shared/src'),
     },
   },
   server: {

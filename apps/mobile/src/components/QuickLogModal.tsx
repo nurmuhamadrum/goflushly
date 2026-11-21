@@ -20,7 +20,7 @@ import { useAppStore } from '../store/useAppStore';
 import { getCurrentLocationWithAddress } from '../services/location';
 import { useToast } from '../context/ToastContext';
 import { useMobileI18n } from '../i18n/translations';
-import { LogType } from '@poop-pee-log/shared';
+import { LogType } from '@go-flushly/shared';
 import { Check, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 

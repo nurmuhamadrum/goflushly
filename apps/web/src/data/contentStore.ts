@@ -1,5 +1,5 @@
 import { EditableFAQ, EditableBadge } from '../types/admin';
-import { INITIAL_BADGES } from '@poop-pee-log/shared';
+import { INITIAL_BADGES } from '@go-flushly/shared';
 
 const FAQ_KEY = 'ppl_admin_faqs';
 const BADGE_KEY = 'ppl_admin_badges';

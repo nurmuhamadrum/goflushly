@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { Log } from '@poop-pee-log/shared';
+import { Log } from '@go-flushly/shared';
 
 const DB_NAME = 'goflushly.db';
 

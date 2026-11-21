@@ -5,7 +5,7 @@ import {
   insertMultipleLocalLogs,
   getLocalLogs,
 } from '../db/sqlite';
-import { Log } from '@poop-pee-log/shared';
+import { Log } from '@go-flushly/shared';
 import * as Crypto from 'expo-crypto';
 
 export interface SyncResult {

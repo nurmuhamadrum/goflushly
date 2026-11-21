@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AppLanguage } from '@poop-pee-log/shared';
+import { AppLanguage } from '@go-flushly/shared';
 
 const STORAGE_KEY = 'ppl_lang';
 

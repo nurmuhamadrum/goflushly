@@ -1,10 +1,10 @@
 {
-  "name": "@poop-pee-log/mobile",
+  "name": "@go-flushly/mobile",
   "version": "1.0.0",
   "main": "expo-router/entry",
   "dependencies": {
     "@gluestack-ui/utils": "^5.0.6",
-    "@poop-pee-log/shared": "*",
+    "@go-flushly/shared": "*",
     "@react-native-community/datetimepicker": "^9.2.1",
     "@react-native-community/netinfo": "^12.0.1",
     "@supabase/supabase-js": "^2.119.0",

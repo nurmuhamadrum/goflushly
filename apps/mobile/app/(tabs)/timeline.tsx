@@ -21,7 +21,7 @@ import { useAppStore } from '@/src/store/useAppStore';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
 import { useToast } from '@/src/context/ToastContext';
 import { useMobileI18n } from '@/src/i18n/translations';
-import { Log } from '@poop-pee-log/shared';
+import { Log } from '@go-flushly/shared';
 import {
   Trash2,
   MapPin,
