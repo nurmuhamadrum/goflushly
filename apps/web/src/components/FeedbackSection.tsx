@@ -4,7 +4,6 @@ import { useLanguage } from '../i18n/LanguageContext';
 import { useWebCopy } from '../i18n/translations';
 import { submitFeedback } from '../services/adminApi';
 import { FeedbackCategory } from '../types/admin';
-import { MrPlopSVG, LilDripSVG, SirFlushSVG } from './MascotSVGs';
 import { Card, Heading, Text, Badge, BadgeText, Button, ButtonText, Input, Textarea } from './ui';
 
 const CATEGORY_ICONS: Record<FeedbackCategory, React.ElementType> = {
@@ -66,58 +65,59 @@ export const FeedbackSection: React.FC = () => {
   };
 
   return (
-    <section id="feedback" className="py-20 px-4 md:px-8 border-t border-[#E2E8F0] relative overflow-hidden bg-[#F8FAFC]">
+    <section id="feedback" className="py-20 md:py-28 px-4 md:px-8 border-t border-outline-100 relative overflow-hidden bg-[#F8FAFC]">
       {/* Background glow effects */}
       <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-96 h-96 bg-secondary-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto relative z-10">
+      <div className="max-w-3xl mx-auto relative z-10">
         {/* Header */}
-        <div className="text-center mb-10">
-          <Badge action="secondary" size="lg" className="mb-4">
-            <MessageSquarePlus className="w-4 h-4" />
+        <div className="text-center mb-12">
+          <Badge action="secondary" size="lg" className="mb-3.5 shadow-xs">
+            <MessageSquarePlus className="w-3.5 h-3.5" />
             <BadgeText>{copy.pill}</BadgeText>
           </Badge>
-          <Heading as="h2" size="2xl" className="mb-3">
+          <Heading as="h2" size="2xl" className="font-extrabold text-typography-900 tracking-tight mb-3">
             {copy.title}
           </Heading>
-          <Text size="md" className="max-w-xl mx-auto">
+          <Text size="sm" className="max-w-lg mx-auto text-typography-600 leading-relaxed">
             {copy.subtitle}
           </Text>
         </div>
 
         {/* Content Box (Gluestack Card) */}
-        <Card variant="outline" size="lg" className="shadow-sm relative overflow-hidden">
+        <Card variant="elevated" size="lg" className="shadow-lg relative overflow-hidden rounded-3xl p-6 sm:p-10 bg-white border border-outline-100">
           {submitted ? (
             <div className="text-center py-8 space-y-6 animate-fadeIn">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-16 h-16 bg-[#FDE6C9] rounded-2xl flex items-center justify-center p-2.5">
-                  <MrPlopSVG />
+              {/* 3D Mascot Trio Celebration */}
+              <div className="flex items-center justify-center gap-4">
+                <div className="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center p-2 shadow-sm border border-amber-100">
+                  <img src="/mascots/mr-plop.png" alt="Mr Plop" className="w-12 h-12 object-contain" />
                 </div>
-                <div className="w-16 h-16 bg-[#C6F6E2] rounded-2xl flex items-center justify-center p-2.5">
-                  <SirFlushSVG />
+                <div className="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center p-2 shadow-md border border-emerald-100 transform scale-110">
+                  <img src="/mascots/sir-flush.png" alt="Sir Flush" className="w-16 h-16 object-contain" />
                 </div>
-                <div className="w-16 h-16 bg-[#D4F0FF] rounded-2xl flex items-center justify-center p-2.5">
-                  <LilDripSVG />
+                <div className="w-16 h-16 bg-sky-50 rounded-2xl flex items-center justify-center p-2 shadow-sm border border-sky-100">
+                  <img src="/mascots/lil-drip.png" alt="Lil Drip" className="w-12 h-12 object-contain" />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <div className="inline-flex items-center gap-2 text-secondary-500 text-xs font-bold uppercase tracking-wider bg-secondary-0 px-3 py-1 rounded-full">
-                  <CheckCircle2 className="w-4 h-4" />
-                  Sent Successfully
+                <div className="inline-flex items-center gap-2 text-secondary-600 text-xs font-black uppercase tracking-wider bg-secondary-50 px-3.5 py-1 rounded-full border border-secondary-100">
+                  <CheckCircle2 className="w-4 h-4 text-secondary-500" />
+                  Terkirim dengan Sukses
                 </div>
-                <Heading as="h3" size="xl">
+                <Heading as="h3" size="xl" className="font-extrabold text-typography-900">
                   {copy.successTitle}
                 </Heading>
-                <Text size="sm" className="max-w-md mx-auto leading-relaxed">
+                <Text size="sm" className="max-w-md mx-auto leading-relaxed text-typography-600">
                   {copy.successDesc}
                 </Text>
               </div>
 
               <div>
-                <Button action="white" size="md" onClick={handleReset}>
-                  <ButtonText>{copy.sendAnother}</ButtonText>
+                <Button action="white" size="md" onClick={handleReset} className="rounded-xl border border-outline-200">
+                  <ButtonText className="font-bold">{copy.sendAnother}</ButtonText>
                 </Button>
               </div>
             </div>
@@ -125,7 +125,7 @@ export const FeedbackSection: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Category selector */}
               <div>
-                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2.5">
+                <label className="block text-xs font-black text-typography-800 uppercase tracking-wider mb-3">
                   {copy.categoryLabel}
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
@@ -137,13 +137,13 @@ export const FeedbackSection: React.FC = () => {
                         key={cat}
                         type="button"
                         onClick={() => setCategory(cat)}
-                        className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-full border text-xs font-bold transition-all ${
+                        className={`flex items-center justify-center gap-2 px-3.5 py-3 rounded-2xl border text-xs font-black transition-all ${
                           isSelected
-                            ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
-                            : 'bg-background-50 border-outline-200 text-typography-600 hover:border-primary-500/40 hover:bg-background-0'
+                            ? 'bg-primary-500 text-white border-primary-500 shadow-md transform scale-[1.02]'
+                            : 'bg-background-50 border-outline-200 text-typography-600 hover:border-primary-400 hover:bg-white'
                         }`}
                       >
-                        <Icon className="w-4 h-4" />
+                        <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-primary-500'}`} />
                         <span>{copy.categories[cat]}</span>
                       </button>
                     );
@@ -152,37 +152,40 @@ export const FeedbackSection: React.FC = () => {
               </div>
 
               {/* Rating */}
-              <div>
-                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
-                  {copy.ratingLabel}
-                </label>
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <label className="block text-xs font-black text-typography-800 uppercase tracking-wider mb-1">
+                    {copy.ratingLabel}
+                  </label>
+                  <span className="text-xs font-bold text-typography-600">
+                    {rating === 5 ? '🌟 Luar Biasa / Awesome!' : rating >= 4 ? '😊 Puas / Great' : rating >= 3 ? '👌 Cukup / Good' : '🔧 Butuh Perbaikan'}
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-1.5">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setRating(star)}
-                      className="p-0.5 transition-transform hover:scale-125 focus:outline-none"
+                      className="p-1 transition-transform hover:scale-125 focus:outline-none"
                       title={`${star} star`}
                     >
                       <Star
                         className={`w-7 h-7 ${
                           star <= rating
-                            ? 'fill-[#FBBF24] text-[#FBBF24]'
-                            : 'fill-transparent text-[#CBD5E1]'
+                            ? 'fill-[#FBBF24] text-[#FBBF24] drop-shadow-xs'
+                            : 'fill-transparent text-slate-300'
                         }`}
                       />
                     </button>
                   ))}
-                  <span className="text-xs font-bold text-typography-600 ml-2">
-                    {rating === 5 ? 'Luar Biasa / Awesome!' : rating >= 4 ? 'Puas / Great' : rating >= 3 ? 'Cukup / Good' : 'Butuh Perbaikan'}
-                  </span>
                 </div>
               </div>
 
               {/* Message */}
               <div>
-                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-black text-typography-800 uppercase tracking-wider mb-2">
                   {copy.messageLabel} <span className="text-emergency">*</span>
                 </label>
                 <Textarea
@@ -191,12 +194,13 @@ export const FeedbackSection: React.FC = () => {
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder={copy.messagePlaceholder}
+                  className="rounded-2xl border-outline-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-all text-sm leading-relaxed"
                 />
               </div>
 
               {/* Email (Optional) */}
               <div>
-                <label className="block text-xs font-bold text-typography-600 uppercase tracking-wider mb-2">
+                <label className="block text-xs font-black text-typography-800 uppercase tracking-wider mb-2">
                   {copy.emailLabel}
                 </label>
                 <Input
@@ -204,19 +208,20 @@ export const FeedbackSection: React.FC = () => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={copy.emailPlaceholder}
+                  className="rounded-2xl border-outline-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition-all text-sm"
                 />
               </div>
 
               {/* Error Alert */}
               {errorMessage && (
-                <div className="flex items-center gap-2 p-3 rounded-xl bg-emergency/10 border border-emergency/30 text-emergency text-xs font-semibold">
+                <div className="flex items-center gap-2 p-3.5 rounded-2xl bg-emergency/10 border border-emergency/30 text-emergency text-xs font-bold animate-shake">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{errorMessage}</span>
                 </div>
               )}
 
               {/* Submit Button */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-3 border-t border-slate-100">
                 <div className="text-xs text-typography-500 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-secondary-500" />
                   <span>Kritik &amp; saran langsung dibaca tim pengembang.</span>
@@ -227,9 +232,10 @@ export const FeedbackSection: React.FC = () => {
                   action="primary"
                   size="lg"
                   disabled={submitting}
+                  className="rounded-xl px-7 py-3 shadow-md hover:shadow-lg transition-all"
                 >
                   <Send className="w-4 h-4" />
-                  <ButtonText>{submitting ? copy.submitting : copy.submitBtn}</ButtonText>
+                  <ButtonText className="font-extrabold">{submitting ? copy.submitting : copy.submitBtn}</ButtonText>
                 </Button>
               </div>
             </form>
@@ -239,4 +245,3 @@ export const FeedbackSection: React.FC = () => {
     </section>
   );
 };
-
