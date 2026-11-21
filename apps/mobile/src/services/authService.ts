@@ -88,7 +88,7 @@ export async function resetPasswordForEmail(email: string): Promise<AuthResponse
 export async function signInWithGoogle(): Promise<AuthResponse> {
   try {
     const redirectUrl = makeRedirectUri({
-      scheme: 'pooppeelog',
+      scheme: 'goflushly',
       path: 'auth/callback',
     });
 

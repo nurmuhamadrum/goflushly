@@ -143,7 +143,7 @@ export default function ProfileSettingsScreen() {
 
   const handleExecuteLogout = async () => {
     try {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
       handleCloseLogoutModal();
       await signOut();
       setUser('guest-local', null, true);
@@ -306,7 +306,7 @@ export default function ProfileSettingsScreen() {
   };
 
   const openDonationSaweria = () => {
-    Linking.openURL('https://saweria.co/pooppeelog');
+    Linking.openURL('https://saweria.co/goflushly');
   };
 
   return (
@@ -414,7 +414,7 @@ export default function ProfileSettingsScreen() {
                   <TouchableOpacity
                     key={code}
                     onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
                       setLanguage(code);
                     }}
                     style={[
@@ -490,7 +490,7 @@ export default function ProfileSettingsScreen() {
                       isActive && styles.themeCardActive,
                     ]}
                     onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
                       setMapTheme(item.id);
                     }}
                     activeOpacity={0.8}
@@ -527,7 +527,7 @@ export default function ProfileSettingsScreen() {
                       isSelected && styles.radiusChipActive,
                     ]}
                     onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
                       setGpsRadiusMeter(r);
                     }}
                     activeOpacity={0.8}
@@ -561,7 +561,7 @@ export default function ProfileSettingsScreen() {
               if (isAnonymous) {
                 router.push('/auth');
               } else {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
                 setLogoutModalVisible(true);
               }
             }}
@@ -618,9 +618,9 @@ export default function ProfileSettingsScreen() {
                 <Text style={styles.actionDesc}>
                   {lastSyncedAt
                     ? `${t.settings.lastSynced} ${new Date(lastSyncedAt).toLocaleTimeString(lang === 'en' ? 'en-US' : 'id-ID', {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}`
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}`
                     : t.settings.syncPrompt}
                 </Text>
               </View>
@@ -683,7 +683,7 @@ export default function ProfileSettingsScreen() {
           <TouchableOpacity
             style={styles.actionRow}
             onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
               setFeedbackModalVisible(true);
             }}
           >

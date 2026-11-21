@@ -61,7 +61,7 @@ export const Footer: React.FC = () => {
               <li><a href="#feedback" className="hover:text-primary-500 transition-colors">{isEn ? 'Send Feedback' : 'Kirim Masukan'}</a></li>
               <li>
                 <a
-                  href="https://github.com/nurmuhamadrum/pooppeelog"
+                  href="https://github.com/nurmuhamadrum/goflushly"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-primary-500 transition-colors"

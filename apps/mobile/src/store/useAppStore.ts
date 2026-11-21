@@ -94,7 +94,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       }
 
       const loadedLogs = await getLocalLogs();
-      const savedLang = await SecureStore.getItemAsync('pooppeelog_language').catch(() => null);
+      const savedLang = await SecureStore.getItemAsync('goflushly_language').catch(() => null);
       const activeLang: AppLanguage = savedLang === 'id' || savedLang === 'en' ? savedLang : 'id';
 
       set({
@@ -107,7 +107,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       });
 
       // Jalankan sinkronisasi background secara halus saat start
-      get().syncWithCloud().catch(() => {});
+      get().syncWithCloud().catch(() => { });
     } catch (error) {
       console.error('Failed to initialize local store:', error);
       set({ isLoading: false });
@@ -224,6 +224,6 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleAppLock: () => set((state) => ({ appLockEnabled: !state.appLockEnabled })),
   setLanguage: async (language: AppLanguage) => {
     set({ language });
-    await SecureStore.setItemAsync('pooppeelog_language', language).catch(() => {});
+    await SecureStore.setItemAsync('goflushly_language', language).catch(() => { });
   },
 }));

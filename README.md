@@ -11,7 +11,7 @@
 [![Expo](https://img.shields.io/badge/Expo-SDK_52+-000020.svg)](https://expo.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/TailwindCSS-3.4-38B2AC.svg)](https://tailwindcss.com/)
 [![Supabase](https://img.shields.io/badge/Backend-Supabase_PostgreSQL-3ECF8E.svg)](https://supabase.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/nurmuhamadrum/pooppeelog/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/nurmuhamadrum/goflushly/pulls)
 
 [📱 Fitur Utama](#-fitur-unggulan) • [📱 Antarmuka Aplikasi](#-antarmuka-aplikasi) • [🎭 Trio Maskot](#-trio-maskot-resmi) • [🛠️ Menjalankan Proyek](#-panduan-instalasi--menjalankan-proyek) • [📚 Dokumentasi](#-indeks-dokumentasi-lengkap)
 
@@ -88,7 +88,7 @@ Untuk mengubah rutinitas biologis menjadi pengalaman yang ceria dan santai, GoFl
 Proyek ini dikelola menggunakan struktur **Turborepo** monorepo yang bersih dan terisolasi:
 
 ```text
-pooppeelog/
+goflushly/
 ├── apps/
 │   ├── mobile/                    # Aplikasi Mobile (Expo SDK 52+, React Native, Expo Router)
 │   │   ├── app/                   # File-based routing Expo Router ((tabs), auth, dll.)
@@ -135,8 +135,8 @@ pooppeelog/
 
 ### 1. Kloning Repositori & Pasang Dependensi
 ```bash
-git clone https://github.com/nurmuhamadrum/pooppeelog.git
-cd pooppeelog
+git clone https://github.com/nurmuhamadrum/goflushly.git
+cd goflushly
 
 # Pasang seluruh dependensi monorepo
 npm install
@@ -210,7 +210,7 @@ Seluruh aspek produk dan teknis didokumentasikan secara rinci di direktori `docs
 GoFlushly dibuat sebagai proyek independen yang **100% bebas iklan** dan **tidak pernah menjual data pengguna**. Anda dapat mendukung biaya server dan kopi pengembangan melalui Saweria:
 
 <div align="center">
-  <a href="https://saweria.co/pooppeelog" target="_blank">
+  <a href="https://saweria.co/goflushly" target="_blank">
     <img src="https://img.shields.io/badge/Saweria-Traktir%20Kopi-FAAE2B?style=for-the-badge&logo=coffee&logoColor=black" alt="Dukung di Saweria" />
   </a>
 </div>

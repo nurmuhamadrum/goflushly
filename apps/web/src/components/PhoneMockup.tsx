@@ -230,11 +230,10 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
                         key={f}
                         type="button"
                         onClick={() => setMapFilter(f)}
-                        className={`px-2.5 py-1 rounded-full transition-all ${
-                          isActive
+                        className={`px-2.5 py-1 rounded-full transition-all ${isActive
                             ? 'bg-primary-500 text-white shadow-xs'
                             : 'text-typography-600 hover:text-typography-900'
-                        }`}
+                          }`}
                       >
                         {label}
                       </button>
@@ -281,14 +280,12 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
                     key={pin.id}
                     onClick={() => setSelectedPinId(pin.id)}
                     style={{ top: `${pin.y}%`, left: `${pin.x}%` }}
-                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all flex flex-col items-center z-10 ${
-                      isSelected ? 'scale-110 z-20' : 'hover:scale-105'
-                    }`}
+                    className={`absolute transform -translate-x-1/2 -translate-y-1/2 transition-all flex flex-col items-center z-10 ${isSelected ? 'scale-110 z-20' : 'hover:scale-105'
+                      }`}
                   >
                     <div
-                      className={`w-10 h-10 rounded-full ${getPastelBg(pin.type)} border-2 ${
-                        isSelected ? 'border-primary-500 ring-2 ring-primary-500/25 shadow-lg' : 'border-white shadow-md'
-                      } p-1 flex items-center justify-center`}
+                      className={`w-10 h-10 rounded-full ${getPastelBg(pin.type)} border-2 ${isSelected ? 'border-primary-500 ring-2 ring-primary-500/25 shadow-lg' : 'border-white shadow-md'
+                        } p-1 flex items-center justify-center`}
                     >
                       {pin.type === 'pee' && <LilDripSVG className="w-7 h-7" />}
                       {pin.type === 'poop' && <MrPlopSVG className="w-7 h-7" />}
@@ -377,11 +374,10 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
                       type="button"
                       key={item.id}
                       onClick={() => setSelectedQuickType(item.id)}
-                      className={`relative p-2.5 rounded-2xl border transition-all flex flex-col items-center text-center ${
-                        active
+                      className={`relative p-2.5 rounded-2xl border transition-all flex flex-col items-center text-center ${active
                           ? 'border-2 border-primary-500 bg-primary-0/50 shadow-sm'
                           : 'border-outline-200 bg-white hover:border-outline-300'
-                      }`}
+                        }`}
                     >
                       {active && (
                         <span className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary-500 text-white flex items-center justify-center">
@@ -412,11 +408,10 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
                       type="button"
                       key={m}
                       onClick={() => setSelectedMood(m)}
-                      className={`px-2.5 py-1.5 rounded-full text-[10px] font-bold border transition-all ${
-                        active
+                      className={`px-2.5 py-1.5 rounded-full text-[10px] font-bold border transition-all ${active
                           ? 'bg-primary-0 border-primary-500 text-primary-500'
                           : 'bg-background-50 border-outline-200 text-typography-600 hover:text-typography-900'
-                      }`}
+                        }`}
                     >
                       {m}
                     </button>
@@ -664,7 +659,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
                       100% PRIVAT
                     </span>
                   </div>
-                  <span className="text-[10px] text-typography-500 block mt-0.5">user@pooppeelog.app</span>
+                  <span className="text-[10px] text-typography-500 block mt-0.5">user@goflushly.app</span>
                 </div>
               </div>
 
@@ -796,9 +791,8 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
         <button
           type="button"
           onClick={() => setScreen('map')}
-          className={`flex flex-col items-center gap-0.5 transition-colors ${
-            activeScreen === 'map' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
-          }`}
+          className={`flex flex-col items-center gap-0.5 transition-colors ${activeScreen === 'map' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
+            }`}
         >
           <MapPin className="w-5 h-5" />
           <span className="text-[10px]">Peta</span>
@@ -807,9 +801,8 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
         <button
           type="button"
           onClick={() => setScreen('timeline')}
-          className={`flex flex-col items-center gap-0.5 transition-colors ${
-            activeScreen === 'timeline' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
-          }`}
+          className={`flex flex-col items-center gap-0.5 transition-colors ${activeScreen === 'timeline' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
+            }`}
         >
           <Calendar className="w-5 h-5" />
           <span className="text-[10px]">Diary</span>
@@ -830,9 +823,8 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
         <button
           type="button"
           onClick={() => setScreen('stats')}
-          className={`flex flex-col items-center gap-0.5 transition-colors ${
-            activeScreen === 'stats' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
-          }`}
+          className={`flex flex-col items-center gap-0.5 transition-colors ${activeScreen === 'stats' ? 'text-primary-500 font-bold' : 'text-typography-400 hover:text-typography-900'
+            }`}
         >
           <BarChart3 className="w-5 h-5" />
           <span className="text-[10px]">Stats</span>
@@ -841,11 +833,10 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
         <button
           type="button"
           onClick={() => setScreen('profile')}
-          className={`flex flex-col items-center gap-0.5 transition-colors ${
-            activeScreen === 'profile' || activeScreen === 'auth'
+          className={`flex flex-col items-center gap-0.5 transition-colors ${activeScreen === 'profile' || activeScreen === 'auth'
               ? 'text-primary-500 font-bold'
               : 'text-typography-400 hover:text-typography-900'
-          }`}
+            }`}
         >
           <User className="w-5 h-5" />
           <span className="text-[10px]">Profil</span>

@@ -48,7 +48,7 @@ export const DownloadSection: React.FC = () => {
             </div>
 
             <a
-              href="https://github.com/nurmuhamadrum/pooppeelog"
+              href="https://github.com/nurmuhamadrum/goflushly"
               target="_blank"
               rel="noreferrer"
               aria-label="GitHub Repository"

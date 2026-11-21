@@ -27,7 +27,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
  * Memastikan ID guest adalah format UUID standar yang valid untuk database PostgreSQL.
  */
 export async function getOrCreateGuestUser(): Promise<string> {
-  const GUEST_ID_KEY = 'pooppeelog_guest_user_id';
+  const GUEST_ID_KEY = 'goflushly_guest_user_id';
   let guestId = await SecureStore.getItemAsync(GUEST_ID_KEY);
 
   // Validasi format UUID standar (36 karakter dengan 4 tanda '-')

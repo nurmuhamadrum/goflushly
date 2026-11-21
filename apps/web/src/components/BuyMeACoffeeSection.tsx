@@ -33,7 +33,7 @@ export const BuyMeACoffeeSection: React.FC = () => {
           {/* Single Saweria CTA Button */}
           <div className="mt-7 w-full max-w-xs">
             <Button
-              href="https://saweria.co/pooppeelog"
+              href="https://saweria.co/goflushly"
               target="_blank"
               rel="noreferrer"
               action="primary"
