@@ -195,7 +195,7 @@ export const AnimatedSplashScreen: React.FC<SplashScreenProps> = ({ onFinish }) 
             alignItems: 'center',
           }}
         >
-          <Text style={styles.appName}>Poop Pee Log</Text>
+          <Text style={styles.appName}>GoFlushly</Text>
         </Animated.View>
 
         {/* Tagline "Track. Log. Lega." */}

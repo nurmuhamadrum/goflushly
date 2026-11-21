@@ -1,9 +1,9 @@
 <div align="center">
 
-# 🚽 Poop Pee Log 🧻
-### *"Track. Log. Lega."*
+# 🚽 GoFlushly 💧
+### *"Track. Log. Plong."*
 
-**Aplikasi *personal biological lifelogger* buang air kecil (Pee) dan buang air besar (Poop) yang sat-set 3-detik, 100% privat, estetik, dan menyenangkan.**
+**Aplikasi *personal digestive & hydration tracker* yang sat-set 3-detik, 100% privat, clean, soft, dan ramah.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
@@ -21,7 +21,7 @@
 
 ## 📱 Antarmuka Aplikasi
 
-Aplikasi **Poop Pee Log** (Mobile App & Web Simulator) mengusung tema *Warm Dark Canvas* (`#1E1A17`), kontras ramah mata, dan alur sat-set:
+Aplikasi **GoFlushly** (Mobile App & Web Simulator) mengusung desain yang clean, soft, dan ramah, kontras nyaman di mata, dan alur sat-set:
 
 | 🗺️ **1. Peta Pribadi Realtime** | ⚡ **2. Quick Log 3-Detik** | 📖 **3. Buku Harian & Streak** |
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ Aplikasi **Poop Pee Log** (Mobile App & Web Simulator) mengusung tema *Warm Dark
 
 ## 🌟 Konsep & Filosofi Produk
 
-Poop Pee Log dirancang murni untuk kepuasan pribadi (*personal biological satisfaction*), layaknya **Strava**, namun khusus mencatat jejak kelegaan diri sendiri:
+GoFlushly dirancang murni untuk kepuasan pribadi (*personal biological satisfaction*), layaknya **Strava**, namun khusus mencatat jejak kelegaan diri sendiri:
 
 - ❌ **Bukan aplikasi pencari toilet umum**: Tidak menampilkan daftar toilet umum terdekat atau fasilitas umum.
 - ❌ **Bukan aplikasi ulasan / rating kloset**: Tidak ada review kebersihan atau foto fasilitas umum.
@@ -43,7 +43,7 @@ Poop Pee Log dirancang murni untuk kepuasan pribadi (*personal biological satisf
 
 ## 🎭 Trio Maskot Resmi
 
-Untuk mengubah rutinitas biologis menjadi pengalaman yang ceria dan santai, Poop Pee Log ditemani oleh trio maskot ramah dengan warna token resmi aplikasi:
+Untuk mengubah rutinitas biologis menjadi pengalaman yang ceria dan santai, GoFlushly ditemani oleh trio maskot ramah dengan warna token resmi aplikasi:
 
 | Maskot | Peran & Identitas | Warna Token Resmi | Kepribadian & Fungsi |
 | :---: | :--- | :---: | :--- |
@@ -207,7 +207,7 @@ Seluruh aspek produk dan teknis didokumentasikan secara rinci di direktori `docs
 
 ## ☕ Dukung Pengembang
 
-Poop Pee Log dibuat sebagai proyek independen yang **100% bebas iklan** dan **tidak pernah menjual data pengguna**. Anda dapat mendukung biaya server dan kopi pengembangan melalui Saweria:
+GoFlushly dibuat sebagai proyek independen yang **100% bebas iklan** dan **tidak pernah menjual data pengguna**. Anda dapat mendukung biaya server dan kopi pengembangan melalui Saweria:
 
 <div align="center">
   <a href="https://saweria.co/pooppeelog" target="_blank">
@@ -220,7 +220,7 @@ Poop Pee Log dibuat sebagai proyek independen yang **100% bebas iklan** dan **ti
 ## ⚠️ Medical Disclaimer
 
 > **Pernyataan Medis:**  
-> Poop Pee Log dirancang sebagai buku harian catatan pribadi mandiri (*self-tracking lifelogger*). Aplikasi ini **bukan perangkat medis** dan tidak dimaksudkan untuk mendiagnosis, mengobati, menyembuhkan, atau mencegah penyakit maupun keluhan klinis apa pun. Selalu konsultasikan dengan dokter atau tenaga medis profesional bersertifikat apabila Anda mengalami masalah kesehatan pencernaan atau saluran kemih.
+> GoFlushly dirancang sebagai buku harian catatan pribadi mandiri (*self-tracking lifelogger*). Aplikasi ini **bukan perangkat medis** dan tidak dimaksudkan untuk mendiagnosis, mengobati, menyembuhkan, atau mencegah penyakit maupun keluhan klinis apa pun. Selalu konsultasikan dengan dokter atau tenaga medis profesional bersertifikat apabila Anda mengalami masalah kesehatan pencernaan atau saluran kemih.
 
 ---
 
@@ -229,5 +229,5 @@ Poop Pee Log dibuat sebagai proyek independen yang **100% bebas iklan** dan **ti
 Didistribusikan di bawah Lisensi **MIT**. Lihat berkas [LICENSE](./LICENSE) untuk informasi lebih lanjut.
 
 <div align="center">
-  <sub>Dibuat dengan ❤️ dan rasa lega oleh <b>Tim Poop Pee Log</b> © 2026. Seluruh hak cipta dilindungi undang-undang.</sub>
+  <sub>Dibuat dengan ❤️ dan rasa lega oleh <b>Tim GoFlushly</b> © 2026. Seluruh hak cipta dilindungi undang-undang.</sub>
 </div>

@@ -740,7 +740,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
               <SirFlushSVG className="w-10 h-10" />
             </div>
 
-            <h3 className="text-base font-black text-typography-900">PoopPeeLog</h3>
+            <h3 className="text-base font-black text-typography-900">GoFlushly</h3>
             <p className="text-[10px] text-typography-500 mb-4 text-center">
               Masuk untuk cadangkan riwayat secara privat
             </p>
@@ -749,7 +749,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
               <div>
                 <label className="text-[9px] font-bold text-typography-600 uppercase block mb-1">Email</label>
                 <div className="h-9 px-3 rounded-xl bg-background-50 border border-outline-200 flex items-center text-xs text-typography-900">
-                  user@pooppeelog.app
+                  user@goflushly.app
                 </div>
               </div>
               <div>

@@ -28,7 +28,7 @@ export const AdminDashboard: React.FC = () => {
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    document.title = 'Admin · Poop Pee Log';
+    document.title = 'Admin · GoFlushly';
     checkCurrentAdminSession()
       .then((res) => {
         if (res.authenticated) {
@@ -81,7 +81,7 @@ export const AdminDashboard: React.FC = () => {
             <SirFlushSVG />
           </div>
           <div className="min-w-0">
-            <div className="font-black text-sm">Poop Pee Log</div>
+            <div className="font-black text-sm">GoFlushly Admin</div>
             <div className="text-[10px] font-bold text-both-teal uppercase tracking-wider truncate">
               {adminEmail || 'Admin Supabase'}
             </div>

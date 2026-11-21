@@ -32,8 +32,8 @@ export const InteractiveMockup: React.FC = () => {
           </Heading>
           <Text size="sm" className="leading-relaxed text-typography-600 max-w-lg">
             {isEn
-              ? "Switch tabs or click buttons inside the phone screen to experience PoopPeeLog's fluid, snappy flow."
-              : 'Pilih tab di bawah atau sentuh tombol di dalam layar HP simulator untuk merasakan alur sat-set PoopPeeLog.'}
+              ? "Switch tabs or click buttons inside the phone screen to experience GoFlushly's fluid, snappy flow."
+              : 'Pilih tab di bawah atau sentuh tombol di dalam layar HP simulator untuk merasakan alur sat-set GoFlushly.'}
           </Text>
 
           {/* Segmented Control iOS / macOS Style */}

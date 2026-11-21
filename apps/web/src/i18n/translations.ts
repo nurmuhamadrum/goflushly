@@ -40,7 +40,7 @@ export const WEB_COPY = {
     mascots: {
       pill: 'Meet Your Friendly Trio',
       title: 'Three Mascots, One Relief',
-      subtitle: 'Poop Pee Log makes a personal daily habit feel lighthearted, adorable, and joyful. Tap any mascot to hear what they say!',
+      subtitle: 'GoFlushly makes daily digestive rhythms and hydration feel lighthearted, clean, and joyful. Tap any mascot to hear what they say!',
       tapHint: 'Tap',
       plopRole: 'Poop Companion',
       plopDesc: 'A warm chocolate swirl with bright eyes and a sweet smile. Ready to celebrate every healthy bowel movement without awkwardness.',
@@ -74,7 +74,7 @@ export const WEB_COPY = {
     mockup: {
       pill: 'Live Interactive Simulator',
       title: 'Try the App Right on Screen',
-      subtitle: 'Choose a screen below or tap buttons inside the phone simulator to experience Poop Pee Log\'s snappy flow.',
+      subtitle: 'Choose a screen below or tap buttons inside the phone simulator to experience GoFlushly\'s snappy flow.',
       screens: {
         map: 'Personal Map',
         'quick-log': 'Quick Log (+)',
@@ -91,7 +91,7 @@ export const WEB_COPY = {
     },
     privacy: {
       pill: 'Absolute Privacy Principles',
-      title: 'Poop Pee Log Privacy Manifesto',
+      title: 'GoFlushly Privacy Manifesto',
       subtitle: 'Bathroom habits are among the most personal routines of every human. We never treat them as ad inventory or oversharing content.',
       c1Title: '100% Zero Social',
       c1Desc: 'No friend lists, no public links, no leaderboards, and no community map of other people\'s logs. Your map belongs strictly to you.',
@@ -105,7 +105,7 @@ export const WEB_COPY = {
     download: {
       pill: 'Under Active Development',
       title: 'Ready to Record Your First Relief?',
-      subtitle: 'Poop Pee Log is coming soon to Android & iOS. Bookmark this page or star our repository for early access.',
+      subtitle: 'GoFlushly is coming soon to Android & iOS. Bookmark this page or star our repository for early access.',
       playLabel: 'Google Play (Coming Soon)',
       iosLabel: 'App Store (Coming Soon)',
       github: 'Open Source on GitHub',
@@ -113,13 +113,13 @@ export const WEB_COPY = {
     coffee: {
       pill: 'Support Indie Development',
       title: 'Treat the Mascot Trio to Coffee!',
-      subtitle: 'Poop Pee Log is 100% ad-free and never sells your data. Support us so it stays free forever!',
+      subtitle: 'GoFlushly is 100% ad-free and never sells your data. Support us so it stays free forever!',
       cta: 'Support via Saweria',
       note: '100% of contributions go directly to server, map APIs, and mobile app releases.',
     },
     feedback: {
       pill: 'Critique & Suggestions',
-      title: 'Help Us Make Poop Pee Log Better',
+      title: 'Help Us Make GoFlushly Better',
       subtitle: 'Have ideas, feature requests, or encountered a bug? Your feedback directly shapes our future updates!',
       categories: {
         SUGGESTION: 'Suggestion',
@@ -136,19 +136,19 @@ export const WEB_COPY = {
       submitBtn: 'Send Feedback',
       submitting: 'Sending...',
       successTitle: 'Thank You for Your Feedback!',
-      successDesc: 'Our mascot trio received your message. Every note helps us improve Poop Pee Log!',
+      successDesc: 'Our mascot trio received your message. Every note helps us improve GoFlushly!',
       sendAnother: 'Send Another Note',
       errorMsg: 'Failed to send feedback. Please try again.',
     },
     faq: {
       pill: 'Frequently Asked Questions',
-      title: 'Poop Pee Log FAQ',
+      title: 'GoFlushly FAQ',
     },
     footer: {
-      tagline: 'Track. Log. Lega. — Your #1 personal biological lifelogger.',
+      tagline: 'Track. Log. Relieved. — Your clean, soft & private daily digestive companion.',
       disclaimerTitle: 'Medical Disclaimer:',
-      disclaimer: 'Poop Pee Log is designed as a self-tracking personal diary. It is not a medical device and is not intended to diagnose, treat, or prevent any disease. Please consult a healthcare professional for digestive or urinary concerns.',
-      copyright: 'Made with love by the Poop Pee Log Team © 2026. All rights reserved.',
+      disclaimer: 'GoFlushly is designed as a self-tracking personal diary. It is not a medical device and is not intended to diagnose, treat, or prevent any disease. Please consult a healthcare professional for digestive or urinary concerns.',
+      copyright: 'Made with love by the GoFlushly Team © 2026. All rights reserved.',
     },
   },
   id: {
@@ -190,7 +190,7 @@ export const WEB_COPY = {
     mascots: {
       pill: 'Kenali Trio Sahabatmu',
       title: 'Tiga Maskot, Satu Kelegaan',
-      subtitle: 'Poop Pee Log mengubah aktivitas harian yang dianggap tabu menjadi lucu, menggemaskan, dan penuh kepuasan. Klik maskot di bawah untuk mendengarkan kata mereka!',
+      subtitle: 'GoFlushly mengubah pencatatan ritme pencernaan dan hidrasi harian menjadi menyenangkan, nyaman, dan bebas canggung. Klik maskot di bawah untuk mendengarkan kata mereka!',
       tapHint: 'Klik',
       plopRole: 'Pendamping BAB',
       plopDesc: 'Swirl coklat ramah dengan mata bulat berbinar dan senyum manis. Siap menemani setiap momen BAB tanpa rasa canggung.',
@@ -224,7 +224,7 @@ export const WEB_COPY = {
     mockup: {
       pill: 'Live Interactive Simulator',
       title: 'Coba Aplikasi Langsung di Layar',
-      subtitle: 'Pilih menu di bawah atau sentuh tombol di dalam layar HP simulasi untuk merasakan alur sat-set Poop Pee Log.',
+      subtitle: 'Pilih menu di bawah atau sentuh tombol di dalam layar HP simulasi untuk merasakan alur sat-set GoFlushly.',
       screens: {
         map: 'Peta Pribadi',
         'quick-log': 'Quick Log (+)',
@@ -241,7 +241,7 @@ export const WEB_COPY = {
     },
     privacy: {
       pill: 'Prinsip Privasi Absolut',
-      title: 'Manifesto Privasi Poop Pee Log',
+      title: 'Manifesto Privasi GoFlushly',
       subtitle: 'Data buang air adalah salah satu rutinitas biologis paling personal dari setiap manusia. Kami tidak pernah memperlakukannya sebagai komoditas iklan atau konten oversharing.',
       c1Title: '100% Zero Social',
       c1Desc: 'Tidak ada daftar teman, tidak ada tautan publik, tidak ada leaderboard, dan tidak ada peta komunitas milik orang lain. Peta Anda murni milik Anda.',
@@ -255,7 +255,7 @@ export const WEB_COPY = {
     download: {
       pill: 'Sedang Dalam Tahap Pengembangan Aktif',
       title: 'Siap Mencatat Kelegaan Pertamamu?',
-      subtitle: 'Poop Pee Log akan segera hadir di Android & iOS. Simpan halaman ini atau ikuti repositori kami untuk akses awal.',
+      subtitle: 'GoFlushly akan segera hadir di Android & iOS. Simpan halaman ini atau ikuti repositori kami untuk akses awal.',
       playLabel: 'Google Play (Segera Hadir)',
       iosLabel: 'App Store (Segera Hadir)',
       github: 'Open Source di GitHub',
@@ -263,13 +263,13 @@ export const WEB_COPY = {
     coffee: {
       pill: 'Dukung Pengembangan Indie',
       title: 'Traktir Trio Maskot Segelas Kopi!',
-      subtitle: 'Poop Pee Log 100% bebas iklan dan tidak pernah menjual data Anda. Dukung kami agar tetap gratis selamanya!',
+      subtitle: 'GoFlushly 100% bebas iklan dan tidak pernah menjual data Anda. Dukung kami agar tetap gratis selamanya!',
       cta: 'Dukung lewat Saweria',
       note: '100% dukungan digunakan untuk server, API peta, dan rilis aplikasi mobile.',
     },
     feedback: {
       pill: 'Kritik & Saran',
-      title: 'Bantu Kami Kembangkan Poop Pee Log',
+      title: 'Bantu Kami Kembangkan GoFlushly',
       subtitle: 'Punya ide fitur baru, menemukan bug, atau sekadar ingin menyapa? Masukan Anda sangat berharga bagi kami!',
       categories: {
         SUGGESTION: 'Saran Fitur',
@@ -292,13 +292,13 @@ export const WEB_COPY = {
     },
     faq: {
       pill: 'Pertanyaan yang Sering Diajukan',
-      title: 'FAQ Seputar Poop Pee Log',
+      title: 'FAQ Seputar GoFlushly',
     },
     footer: {
-      tagline: 'Track. Log. Lega. — Lifelogger biologis personal nomor satu.',
+      tagline: 'Track. Log. Plong. — Teman harian pencernaan & hidrasi yang ramah dan 100% privat.',
       disclaimerTitle: 'Disclaimer Medis:',
-      disclaimer: 'Poop Pee Log dirancang sebagai buku harian catatan pribadi mandiri. Aplikasi ini bukan perangkat medis dan tidak dimaksudkan untuk mendiagnosis, mengobati, atau mencegah penyakit apa pun. Konsultasikan dengan tenaga medis profesional jika Anda memiliki keluhan pencernaan atau saluran kemih.',
-      copyright: 'Dibuat dengan cinta oleh Tim Poop Pee Log © 2026. Seluruh hak cipta dilindungi undang-undang.',
+      disclaimer: 'GoFlushly dirancang sebagai buku harian catatan pribadi mandiri. Aplikasi ini bukan perangkat medis dan tidak dimaksudkan untuk mendiagnosis, mengobati, atau mencegah penyakit apa pun. Konsultasikan dengan tenaga medis profesional jika Anda memiliki keluhan pencernaan atau saluran kemih.',
+      copyright: 'Dibuat dengan cinta oleh Tim GoFlushly © 2026. Seluruh hak cipta dilindungi undang-undang.',
     },
   },
 } as const;

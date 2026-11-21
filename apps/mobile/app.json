@@ -1,21 +1,21 @@
 {
   "expo": {
-    "name": "Poop Pee Log",
-    "slug": "poop-pee-log",
+    "name": "GoFlushly",
+    "slug": "goflushly",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "pooppeelog",
+    "scheme": "goflushly",
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.pooppeelog.app",
+      "bundleIdentifier": "com.goflushly.app",
       "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Poop Pee Log memerlukan izin lokasi untuk merekam koordinat toilet dan nama kecamatan secara otomatis saat Anda mencatat buang air."
+        "NSLocationWhenInUseUsageDescription": "GoFlushly memerlukan izin lokasi untuk merekam koordinat toilet dan nama kecamatan secara otomatis saat Anda mencatat buang air."
       }
     },
     "android": {
-      "package": "com.pooppeelog.app",
+      "package": "com.goflushly.app",
       "adaptiveIcon": {
         "backgroundColor": "#F8FAFC",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

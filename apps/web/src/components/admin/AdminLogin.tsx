@@ -47,7 +47,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
         </div>
         <h1 className="text-2xl font-black text-center tracking-tight">Admin Console</h1>
         <p className="text-xs text-peach-tint/70 text-center mt-1 mb-6">
-          Poop Pee Log · Supabase Admin Auth
+          GoFlushly · Supabase Admin Auth
         </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">

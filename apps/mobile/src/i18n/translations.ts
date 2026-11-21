@@ -134,7 +134,7 @@ export const MOBILE_COPY = {
     },
     feedbackModal: {
       title: 'Feedback & Suggestions',
-      subtitle: 'Help us make Poop Pee Log better! Mascots will deliver your note directly.',
+      subtitle: 'Help us make GoFlushly better! Mascots will deliver your note directly.',
       categories: {
         SUGGESTION: 'Feature Idea',
         BUG: 'Bug Report',
@@ -338,7 +338,7 @@ export const MOBILE_COPY = {
     },
     feedbackModal: {
       title: 'Kritik & Saran',
-      subtitle: 'Bantu kembangkan Poop Pee Log! Trio maskot akan meneruskan pesanmu.',
+      subtitle: 'Bantu kembangkan GoFlushly! Trio maskot akan meneruskan pesanmu.',
       categories: {
         SUGGESTION: 'Saran Fitur',
         BUG: 'Lapor Bug',

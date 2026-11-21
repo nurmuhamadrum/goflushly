@@ -46,8 +46,8 @@ export const FAQSection: React.FC = () => {
           </Heading>
           <Text size="sm" className="mt-2 text-typography-600 max-w-md mx-auto leading-relaxed">
             {lang === 'en'
-              ? 'Everything you need to know about PoopPeeLog privacy, speed, and offline mechanics.'
-              : 'Semua hal penting seputar privasi data, kecepatan catat, dan cara kerja offline PoopPeeLog.'}
+              ? 'Everything you need to know about GoFlushly privacy, speed, and offline mechanics.'
+              : 'Semua hal penting seputar privasi data, kecepatan catat, dan cara kerja offline GoFlushly.'}
           </Text>
         </div>
 

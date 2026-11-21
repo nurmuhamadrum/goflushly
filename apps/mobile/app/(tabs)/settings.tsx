@@ -223,16 +223,16 @@ export default function ProfileSettingsScreen() {
       // Coba bagikan via expo-sharing jika tersedia, atau fallback ke Share.share bawaan
       const isSharingAvailable = await Sharing.isAvailableAsync().catch(() => false);
       if (isSharingAvailable && Paths?.cache) {
-        const tempFile = new File(Paths.cache, `pooppeelog-backup-${Date.now()}.json`);
+        const tempFile = new File(Paths.cache, `goflushly-backup-${Date.now()}.json`);
         await tempFile.write(dataStr);
         await Sharing.shareAsync(tempFile.uri, {
           mimeType: 'application/json',
-          dialogTitle: 'Simpan / Bagikan Cadangan PoopPeeLog',
+          dialogTitle: 'Simpan / Bagikan Cadangan GoFlushly',
           UTI: 'public.json',
         });
       } else {
         await Share.share({
-          title: 'Poop Pee Log - Cadangan Riwayat',
+          title: 'GoFlushly - Cadangan Riwayat',
           message: dataStr,
         });
       }
@@ -725,7 +725,7 @@ export default function ProfileSettingsScreen() {
 
         {/* Footer Info */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Poop Pee Log Mobile • v1.0.0</Text>
+          <Text style={styles.footerText}>GoFlushly Mobile • v1.0.0</Text>
           <Text style={styles.footerSubText}>Dibuat dengan ❤️ untuk kenyamanan biologis Anda</Text>
         </View>
       </ScrollView>
@@ -819,7 +819,7 @@ export default function ProfileSettingsScreen() {
 
             <Text style={styles.modalHeading}>Impor Cadangan Data</Text>
             <Text style={styles.modalDescription}>
-              Pilih berkas <Text style={{ fontWeight: '800', color: Colors.creamBg }}>JSON</Text> cadangan PoopPeeLog dari penyimpanan ponsel Anda. Catatan yang ada tidak akan terhapus, data baru akan digabungkan.
+              Pilih berkas <Text style={{ fontWeight: '800', color: Colors.creamBg }}>JSON</Text> cadangan GoFlushly dari penyimpanan ponsel Anda. Catatan yang ada tidak akan terhapus, data baru akan digabungkan.
             </Text>
 
             {/* Kotak Info Format */}

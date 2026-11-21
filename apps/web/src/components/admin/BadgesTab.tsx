@@ -144,9 +144,8 @@ export const BadgesTab: React.FC<BadgesTabProps> = ({ notify }) => {
             {badges.map((b) => (
               <div
                 key={b.id}
-                className={`flex gap-3 bg-dark-bg/60 border rounded-xl p-4 ${
-                  draft?.id === b.id ? 'border-both-teal' : 'border-dark-border'
-                }`}
+                className={`flex gap-3 bg-dark-bg/60 border rounded-xl p-4 ${draft?.id === b.id ? 'border-both-teal' : 'border-dark-border'
+                  }`}
               >
                 <div className={`w-11 h-11 rounded-full ${mascotBg(b.mascot)} p-1.5 flex-shrink-0 flex items-center justify-center`}>
                   {mascotSvg(b.mascot)}
@@ -298,9 +297,8 @@ export const BadgesTab: React.FC<BadgesTabProps> = ({ notify }) => {
                 <button
                   key={m.value}
                   onClick={() => setDraft({ ...draft, mascot: m.value })}
-                  className={`flex-1 py-2 rounded-xl text-[10px] font-black border transition-all ${
-                    draft.mascot === m.value ? 'border-both-teal bg-both-teal/15 text-both-teal' : 'border-dark-border text-peach-tint/70'
-                  }`}
+                  className={`flex-1 py-2 rounded-xl text-[10px] font-black border transition-all ${draft.mascot === m.value ? 'border-both-teal bg-both-teal/15 text-both-teal' : 'border-dark-border text-peach-tint/70'
+                    }`}
                 >
                   {m.label}
                 </button>

@@ -16,13 +16,13 @@ export const Footer: React.FC = () => {
             <a href="#" className="inline-flex items-center gap-2.5">
               <MrPlopSVG className="w-8 h-8" />
               <span className="font-extrabold text-lg text-typography-900 tracking-tight">
-                PoopPeeLog
+                GoFlushly
               </span>
             </a>
             <Text size="xs" className="text-typography-500 leading-relaxed">
               {isEn
-                ? 'Track. Log. Relieved. Your 100% private daily digestive lifelogger.'
-                : 'Track. Log. Lega. Buku harian biologis pribadimu yang 100% lokal.'}
+                ? 'Track. Log. Relieved. Your clean, soft & private daily digestive companion.'
+                : 'Catat. Pantau. Plong. Teman harian pencernaan & hidrasi yang ramah dan 100% privat.'}
             </Text>
           </VStack>
 
@@ -74,7 +74,7 @@ export const Footer: React.FC = () => {
         </div>
 
         <div className="pt-6 text-center text-xs text-typography-500">
-          Copyright &copy; 2026 PoopPeeLog. {isEn ? 'Not a medical diagnostic tool.' : 'Bukan alat diagnosis medis.'}
+          Copyright &copy; 2026 GoFlushly. {isEn ? 'Not a medical diagnostic tool.' : 'Bukan alat diagnosis medis.'}
         </div>
       </div>
     </footer>

@@ -1,7 +1,7 @@
 import * as SQLite from 'expo-sqlite';
 import { Log } from '@poop-pee-log/shared';
 
-const DB_NAME = 'pooppeelog.db';
+const DB_NAME = 'goflushly.db';
 
 let dbInstance: SQLite.SQLiteDatabase | null = null;
 

@@ -21,13 +21,13 @@ export const BuyMeACoffeeSection: React.FC = () => {
           </div>
 
           <Heading as="h3" size="2xl" className="font-extrabold text-typography-900 tracking-tight">
-            {isEn ? 'Support PoopPeeLog Development' : 'Dukung Pengembangan PoopPeeLog'}
+            {isEn ? 'Support GoFlushly Development' : 'Dukung Pengembangan GoFlushly'}
           </Heading>
 
           <Text size="md" className="mt-3 text-typography-600 leading-relaxed max-w-xl mx-auto">
             {isEn
-              ? 'PoopPeeLog is 100% free, privacy-first, and zero-ad. Your donation directly supports server maintenance, custom domain, and developing new features with our mascot trio.'
-              : 'PoopPeeLog 100% gratis, tanpa iklan, dan menjaga privasi penuh. Dukungan sukarela darimu sangat berarti untuk biaya server, domain, serta pembuatan fitur dan maskot baru.'}
+              ? 'GoFlushly is 100% free, privacy-first, and zero-ad. Your donation directly supports server maintenance, custom domain, and developing new features with our mascot trio.'
+              : 'GoFlushly 100% gratis, tanpa iklan, dan menjaga privasi penuh. Dukungan sukarela darimu sangat berarti untuk biaya server, domain, serta pembuatan fitur dan maskot baru.'}
           </Text>
 
           {/* Single Saweria CTA Button */}

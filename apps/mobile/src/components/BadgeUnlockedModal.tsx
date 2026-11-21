@@ -78,7 +78,7 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
       await Share.share({
         title: `Lencana Baru Terbuka: ${badge.title}`,
-        message: `🎉 Saya baru saja membuka lencana "${badge.title}" di Poop Pee Log! (${badge.description}) #PoopPeeLog #TrackLogLega`,
+        message: `🎉 Saya baru saja membuka lencana "${badge.title}" di GoFlushly! (${badge.description}) #GoFlushly #TrackLogPlong`,
       });
     } catch (e) {
       console.log('Share error:', e);

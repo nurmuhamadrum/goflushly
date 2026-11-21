@@ -21,7 +21,7 @@ export const Navbar: React.FC = () => {
             <MrPlopSVG className="w-9 h-9" />
           </div>
           <span className="font-extrabold text-base sm:text-lg text-typography-900 tracking-tight truncate">
-            PoopPeeLog
+            GoFlushly
           </span>
         </a>
 
@@ -49,19 +49,20 @@ export const Navbar: React.FC = () => {
             title={lang === 'id' ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}
             className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-background-100 hover:bg-outline-200 border border-outline-200 text-xs font-bold text-typography-900 transition-colors"
           >
-            <span className="w-4 h-4 rounded-full overflow-hidden flex flex-col border border-black/10 flex-shrink-0">
-              {lang === 'id' ? (
-                <>
-                  <span className="h-1/2 w-full bg-[#EF4444]" />
-                  <span className="h-1/2 w-full bg-white" />
-                </>
-              ) : (
-                <>
-                  <span className="h-1/2 w-full bg-primary-500" />
-                  <span className="h-1/2 w-full bg-[#EF4444]" />
-                </>
-              )}
-            </span>
+            {lang === 'id' ? (
+              <svg className="w-4 h-4 rounded-full flex-shrink-0 border border-black/10 overflow-hidden shadow-xs" viewBox="0 0 24 24">
+                <rect width="24" height="12" fill="#EF4444" />
+                <rect y="12" width="24" height="12" fill="#FFFFFF" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4 rounded-full flex-shrink-0 border border-black/10 overflow-hidden shadow-xs" viewBox="0 0 24 24">
+                <rect width="24" height="24" fill="#012169" />
+                <path d="M0 0L24 24M24 0L0 24" stroke="#FFFFFF" strokeWidth="4" />
+                <path d="M0 0L24 24M24 0L0 24" stroke="#C8102E" strokeWidth="2.2" />
+                <path d="M12 0V24M0 12H24" stroke="#FFFFFF" strokeWidth="6" />
+                <path d="M12 0V24M0 12H24" stroke="#C8102E" strokeWidth="3.6" />
+              </svg>
+            )}
             <span>{lang.toUpperCase()}</span>
           </button>
 
