@@ -14,13 +14,25 @@ export async function submitMobileFeedback(
   payload: MobileSubmitFeedbackPayload
 ): Promise<{ ok: boolean; error?: string }> {
   try {
+    // Only pass user_id if there is a verified Supabase auth session.
+    // In local-first offline mode, local random UUIDs will violate the foreign key constraint on auth.users(id).
+    let validAuthUserId: string | null = null;
+    try {
+      const { data } = await supabase.auth.getUser();
+      if (data?.user?.id) {
+        validAuthUserId = data.user.id;
+      }
+    } catch {
+      validAuthUserId = null;
+    }
+
     const { error } = await supabase.from('user_feedbacks').insert({
       category: payload.category,
       message: payload.message.trim(),
       rating: payload.rating || null,
       email: payload.email?.trim() || null,
       platform: 'MOBILE',
-      user_id: payload.userId || null,
+      user_id: validAuthUserId,
     });
 
     if (error) {

@@ -1344,7 +1344,7 @@ export default function ProfileSettingsScreen() {
         visible={feedbackModalVisible}
         onClose={() => setFeedbackModalVisible(false)}
         userEmail={null}
-        userId={userId}
+        userId={null}
         onSuccess={() => {
           showToast({
             message: lang === 'en' ? 'Thank you for your feedback!' : 'Terima kasih atas masukan Anda!',
