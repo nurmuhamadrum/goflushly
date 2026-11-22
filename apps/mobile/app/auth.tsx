@@ -29,6 +29,10 @@ type AuthMode = 'SIGN_IN' | 'SIGN_UP' | 'FORGOT_PASSWORD';
 
 export default function AuthScreen() {
   const router = useRouter();
+
+  React.useEffect(() => {
+    router.replace('/(tabs)');
+  }, [router]);
   const { setUser, syncWithCloud } = useAppStore();
   const { lang, setLanguage, t } = useMobileI18n();
   const isEn = lang === 'en';

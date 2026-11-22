@@ -3,6 +3,8 @@ import {
   StyleSheet,
   View,
   Text,
+  TextInput,
+  KeyboardAvoidingView,
   Switch,
   TouchableOpacity,
   Platform,
@@ -36,18 +38,14 @@ import {
   AlertTriangle,
   X,
   ExternalLink,
-  RefreshCw,
-  Cloud,
-  LogOut,
-  LogIn,
   ChevronRight,
   Compass,
   Palette,
   Globe,
   MessageSquarePlus,
+  Edit3,
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
-import { signOut } from '@/src/services/authService';
 import { useToast } from '@/src/context/ToastContext';
 import { useMobileI18n } from '@/src/i18n/translations';
 import * as Haptics from 'expo-haptics';
@@ -68,15 +66,11 @@ export default function ProfileSettingsScreen() {
     appLockEnabled,
     toggleAppLock,
     userId,
-    userEmail,
-    isAnonymous,
+    userName,
+    setUserName,
     logs,
     initialize,
     importLogs,
-    isSyncing,
-    lastSyncedAt,
-    syncWithCloud,
-    setUser,
     mapTheme,
     setMapTheme,
     gpsRadiusMeter,
@@ -85,81 +79,16 @@ export default function ProfileSettingsScreen() {
 
   const [exportModalVisible, setExportModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [logoutModalVisible, setLogoutModalVisible] = useState(false);
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [editNameModalVisible, setEditNameModalVisible] = useState(false);
+  const [tempName, setTempName] = useState(userName || '');
   const [isExporting, setIsExporting] = useState(false);
   const [exportSuccess, setExportSuccess] = useState(false);
-
-  // State untuk Cloud Sync Info
-  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
 
   // State untuk Import JSON
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ count: number; error?: string } | null>(null);
-
-  // Animasi modal logout
-  const logoutScale = useRef(new Animated.Value(0.85)).current;
-  const logoutFade = useRef(new Animated.Value(0)).current;
-
-  useEffect(() => {
-    if (logoutModalVisible) {
-      Animated.parallel([
-        Animated.spring(logoutScale, {
-          toValue: 1,
-          friction: 6,
-          tension: 75,
-          useNativeDriver: true,
-        }),
-        Animated.timing(logoutFade, {
-          toValue: 1,
-          duration: 180,
-          useNativeDriver: true,
-        }),
-      ]).start();
-    } else {
-      logoutScale.setValue(0.85);
-      logoutFade.setValue(0);
-    }
-  }, [logoutModalVisible]);
-
-  const handleCloseLogoutModal = () => {
-    Animated.parallel([
-      Animated.timing(logoutScale, {
-        toValue: 0.85,
-        duration: 140,
-        easing: Easing.in(Easing.ease),
-        useNativeDriver: true,
-      }),
-      Animated.timing(logoutFade, {
-        toValue: 0,
-        duration: 140,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
-      setLogoutModalVisible(false);
-    });
-  };
-
-  const handleExecuteLogout = async () => {
-    try {
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
-      handleCloseLogoutModal();
-      await signOut();
-      setUser('guest-local', null, true);
-      showToast({
-        message: 'Berhasil keluar dari akun.',
-        type: 'info',
-      });
-      router.replace('/auth');
-    } catch (err) {
-      console.log('Error logging out:', err);
-      showToast({
-        message: 'Gagal keluar dari sesi.',
-        type: 'error',
-      });
-    }
-  };
 
   // Perhitungan statistik profil
   const totalLogs = logs.length;
@@ -187,22 +116,6 @@ export default function ProfileSettingsScreen() {
       year: 'numeric',
     });
   }, [logs]);
-
-  const handleManualSync = async () => {
-    setSyncFeedback('Sedang menyinkronkan...');
-    const result = await syncWithCloud();
-    if (result.success) {
-      setSyncFeedback(
-        `Sukses! Diunggah: ${result.uploadedCount}, Diunduh: ${result.downloadedCount}`
-      );
-    } else {
-      setSyncFeedback(result.error || 'Gagal tersambung ke cloud');
-    }
-
-    setTimeout(() => {
-      setSyncFeedback(null);
-    }, 4000);
-  };
 
   const handleToggleAppLock = async () => {
     if (!appLockEnabled) {
@@ -332,30 +245,31 @@ export default function ProfileSettingsScreen() {
 
             <View style={{ flex: 1 }}>
               <View style={styles.nameRow}>
-                <Text style={styles.profileName}>
-                  {userEmail ? userEmail.split('@')[0] : 'Penjelajah Toilet'}
+                <Text style={styles.profileName} numberOfLines={1}>
+                  {userName || t.settings.defaultName}
                 </Text>
-                <View
-                  style={[
-                    styles.guestBadge,
-                    !isAnonymous && { borderColor: 'rgba(36, 71, 249, 0.3)', backgroundColor: '#EEF2FF' },
-                  ]}
+                <TouchableOpacity
+                  onPress={() => {
+                    setTempName(userName || '');
+                    setEditNameModalVisible(true);
+                  }}
+                  style={styles.editNameBtn}
+                  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 >
-                  <Text
-                    style={[
-                      styles.guestBadgeText,
-                      !isAnonymous && { color: Colors.primary },
-                    ]}
-                  >
-                    {isAnonymous ? t.settings.localOffline : t.settings.cloudAccount}
-                  </Text>
-                </View>
+                  <Edit3 size={15} color={Colors.primary} />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.guestBadge}>
+                <ShieldCheck size={11} color={Colors.bothTeal} style={{ marginRight: 4 }} />
+                <Text style={styles.guestBadgeText}>
+                  {t.settings.localOffline}
+                </Text>
               </View>
               <Text style={styles.profileMemberSince}>
-                {userEmail ? userEmail : `${lang === 'en' ? 'Active since' : 'Aktif sejak'} ${memberSince}`}
+                {`${lang === 'en' ? 'Active since' : 'Aktif sejak'} ${memberSince}`}
               </Text>
               <Text style={styles.profileId} numberOfLines={1}>
-                ID: {userId || 'guest-local'}
+                ID: {userId || 'local-user'}
               </Text>
             </View>
           </View>
@@ -553,91 +467,6 @@ export default function ProfileSettingsScreen() {
             <Download size={16} color={Colors.bothTeal} />
             <Text style={styles.sectionHeading}>{t.settings.dataHeading}</Text>
           </View>
-
-          {/* AKUN & AUTENTIKASI */}
-          <TouchableOpacity
-            style={styles.actionRow}
-            onPress={() => {
-              if (isAnonymous) {
-                router.push('/auth');
-              } else {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
-                setLogoutModalVisible(true);
-              }
-            }}
-          >
-            <View style={styles.actionLeft}>
-              <View
-                style={[
-                  styles.settingIconBox,
-                  {
-                    backgroundColor: isAnonymous
-                      ? 'rgba(245, 183, 0, 0.15)'
-                      : 'rgba(255, 90, 95, 0.15)',
-                  },
-                ]}
-              >
-                {isAnonymous ? (
-                  <LogIn size={16} color={Colors.peeAmber} />
-                ) : (
-                  <LogOut size={16} color={Colors.emergencyRed} />
-                )}
-              </View>
-              <View style={{ flex: 1, paddingRight: 4 }}>
-                <Text
-                  style={[
-                    styles.actionLabel,
-                    !isAnonymous && { color: Colors.emergencyRed },
-                  ]}
-                  numberOfLines={1}
-                >
-                  {isAnonymous ? t.settings.signInCloud : t.settings.signOut}
-                </Text>
-                <Text style={styles.actionDesc} numberOfLines={2}>
-                  {isAnonymous
-                    ? t.settings.signInDesc
-                    : `${t.settings.loggedInAs} ${userEmail || 'User'}`}
-                </Text>
-              </View>
-            </View>
-            <ChevronRight size={16} color={Colors.peachTint} />
-          </TouchableOpacity>
-
-          {/* SINKRONISASI SUPABASE CLOUD */}
-          <TouchableOpacity
-            style={styles.actionRow}
-            onPress={handleManualSync}
-            disabled={isSyncing}
-          >
-            <View style={styles.actionLeft}>
-              <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
-                <Cloud size={16} color={Colors.bothTeal} />
-              </View>
-              <View style={{ flex: 1 }}>
-                <Text style={styles.actionLabel}>{t.settings.cloudSync}</Text>
-                <Text style={styles.actionDesc}>
-                  {lastSyncedAt
-                    ? `${t.settings.lastSynced} ${new Date(lastSyncedAt).toLocaleTimeString(lang === 'en' ? 'en-US' : 'id-ID', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}`
-                    : t.settings.syncPrompt}
-                </Text>
-              </View>
-            </View>
-            <RefreshCw
-              size={16}
-              color={Colors.peachTint}
-              style={isSyncing ? { opacity: 0.5 } : {}}
-            />
-          </TouchableOpacity>
-
-          {/* Feedback hasil sync */}
-          {syncFeedback && (
-            <View style={styles.syncFeedbackBox}>
-              <Text style={styles.syncFeedbackText}>{syncFeedback}</Text>
-            </View>
-          )}
 
           {/* Ekspor JSON */}
           <TouchableOpacity
@@ -938,76 +767,79 @@ export default function ProfileSettingsScreen() {
         </View>
       </Modal>
 
-      {/* 4. MODAL KONFIRMASI LOGOUT DENGAN SPRING ANIMATION */}
-      {logoutModalVisible && (
-        <Modal
-          visible={true}
-          transparent={true}
-          animationType="none"
-          onRequestClose={handleCloseLogoutModal}
+      {/* 4. MODAL UBAH NAMA PROFIL */}
+      <Modal
+        visible={editNameModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setEditNameModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.modalOverlay}
         >
-          <Animated.View style={[styles.modalOverlay, { opacity: logoutFade }]}>
-            <Animated.View
-              style={[
-                styles.modalContainer,
-                {
-                  transform: [{ scale: logoutScale }],
-                },
-              ]}
-            >
-              <View style={styles.modalHeaderRow}>
-                <View style={[styles.modalIconRing, { backgroundColor: 'rgba(255, 90, 95, 0.2)' }]}>
-                  <LogOut size={22} color={Colors.emergencyRed} />
-                </View>
-                <TouchableOpacity onPress={handleCloseLogoutModal} style={styles.modalCloseIcon}>
-                  <X size={18} color={Colors.peachTint} />
-                </TouchableOpacity>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeaderRow}>
+              <View style={[styles.modalIconRing, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
+                <User size={22} color={Colors.bothTeal} />
               </View>
+              <TouchableOpacity
+                onPress={() => setEditNameModalVisible(false)}
+                style={styles.modalCloseIcon}
+              >
+                <X size={18} color={Colors.peachTint} />
+              </TouchableOpacity>
+            </View>
 
-              <Text style={styles.modalHeading}>Keluar dari Akun?</Text>
-              <Text style={styles.modalDescription}>
-                Anda sedang terhubung sebagai{' '}
-                <Text style={{ fontWeight: '900', color: Colors.creamBg }}>
-                  {userEmail || 'Pengguna Cloud'}
-                </Text>
-                . Seluruh catatan di perangkat ini tetap aman dan tidak akan terhapus.
-              </Text>
+            <Text style={styles.modalHeading}>{t.settings.editNameTitle}</Text>
+            <Text style={styles.modalDescription}>{t.settings.editNamePrompt}</Text>
 
-              <View style={styles.logoutInfoBox}>
-                <ShieldCheck size={14} color={Colors.bothTeal} />
-                <Text style={styles.logoutInfoText}>
-                  Anda dapat masuk kembali kapan saja untuk melanjutkan sinkronisasi otomatis.
-                </Text>
-              </View>
+            <TextInput
+              style={styles.nameTextInput}
+              value={tempName}
+              onChangeText={setTempName}
+              placeholder={t.welcome.namePlaceholder}
+              placeholderTextColor="#94A3B8"
+              autoCapitalize="words"
+              maxLength={30}
+              returnKeyType="done"
+            />
 
-              <View style={styles.modalButtonRow}>
-                <TouchableOpacity
-                  style={styles.cancelModalBtn}
-                  onPress={handleCloseLogoutModal}
-                  activeOpacity={0.8}
-                >
-                  <Text style={styles.cancelModalBtnText}>Batal</Text>
-                </TouchableOpacity>
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity
+                style={styles.cancelModalBtn}
+                onPress={() => setEditNameModalVisible(false)}
+                activeOpacity={0.8}
+              >
+                <Text style={styles.cancelModalBtnText}>{t.settings.cancel}</Text>
+              </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={[styles.confirmDeleteBtn, { backgroundColor: Colors.emergencyRed }]}
-                  onPress={handleExecuteLogout}
-                  activeOpacity={0.8}
-                >
-                  <LogOut size={16} color="#FFF" />
-                  <Text style={styles.confirmDeleteBtnText}>Ya, Keluar</Text>
-                </TouchableOpacity>
-              </View>
-            </Animated.View>
-          </Animated.View>
-        </Modal>
-      )}
+              <TouchableOpacity
+                style={[styles.confirmDeleteBtn, { backgroundColor: Colors.primary }]}
+                onPress={async () => {
+                  const trimmed = tempName.trim() || t.settings.defaultName;
+                  await setUserName(trimmed);
+                  setEditNameModalVisible(false);
+                  showToast({
+                    message: t.settings.nameSavedToast,
+                    type: 'success',
+                  });
+                }}
+                activeOpacity={0.8}
+              >
+                <CheckCircle size={16} color="#FFF" />
+                <Text style={styles.confirmDeleteBtnText}>{t.settings.save}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
 
-      {/* 4. MODAL KRITIK & SARAN (FEEDBACK) */}
+      {/* 5. MODAL KRITIK & SARAN (FEEDBACK) */}
       <FeedbackModal
         visible={feedbackModalVisible}
         onClose={() => setFeedbackModalVisible(false)}
-        userEmail={userEmail}
+        userEmail={null}
         userId={userId}
         onSuccess={() => {
           showToast({
@@ -1082,6 +914,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
     flexWrap: 'wrap',
+  },
+  editNameBtn: {
+    padding: 4,
+    backgroundColor: 'rgba(36, 71, 249, 0.15)',
+    borderRadius: 8,
   },
   profileName: {
     fontSize: 17,
@@ -1344,6 +1181,19 @@ const styles = StyleSheet.create({
     opacity: 0.8,
     lineHeight: 18,
     marginBottom: 14,
+  },
+  nameTextInput: {
+    width: '100%',
+    height: 48,
+    backgroundColor: Colors.darkSurface,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.darkBorder,
+    paddingHorizontal: 16,
+    color: Colors.creamBg,
+    fontSize: 15,
+    fontWeight: '700',
+    marginBottom: 20,
   },
   exportSummaryCard: {
     backgroundColor: Colors.darkSurface,

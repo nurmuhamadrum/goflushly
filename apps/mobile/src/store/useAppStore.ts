@@ -10,20 +10,22 @@ import {
   getDatabase,
   getUnlockedBadgeIds,
   saveUnlockedBadge,
+  getUserPreference,
+  setUserPreference,
 } from '../db/sqlite';
-import { getOrCreateGuestUser, supabase } from '../services/supabase';
-import { syncLogsWithCloud, SyncResult } from '../services/sync';
 import { BadgeDefinition, findNewlyUnlockedBadges } from '../services/badgeEvaluator';
 import * as Crypto from 'expo-crypto';
 
 interface AppState {
   logs: Log[];
   userId: string | null;
+  userName: string | null;
   userEmail: string | null;
   isAnonymous: boolean;
   isLoading: boolean;
   isSyncing: boolean;
   lastSyncedAt: string | null;
+  showWelcomeModal: boolean;
 
   // Lencana Baru yang Perlu Ditampilkan di Modal
   unlockedBadgeQueue: BadgeDefinition[];
@@ -37,7 +39,9 @@ interface AppState {
 
   initialize: () => Promise<void>;
   setUser: (userId: string, email?: string | null, isAnonymous?: boolean) => void;
-  syncWithCloud: () => Promise<SyncResult>;
+  setUserName: (name: string) => Promise<void>;
+  setShowWelcomeModal: (show: boolean) => void;
+  syncWithCloud: () => Promise<{ success: boolean; uploadedCount: number; downloadedCount: number }>;
   addLog: (logData: Omit<Log, 'id' | 'userId' | 'clientCreatedAt' | 'syncStatus'>) => Promise<Log>;
   importLogs: (importedLogs: Log[]) => Promise<number>;
   updateLogMoodAndNote: (id: string, mood: string, note: string) => Promise<void>;
@@ -52,11 +56,13 @@ interface AppState {
 export const useAppStore = create<AppState>((set, get) => ({
   logs: [],
   userId: null,
+  userName: null,
   userEmail: null,
   isAnonymous: true,
   isLoading: true,
   isSyncing: false,
   lastSyncedAt: null,
+  showWelcomeModal: false,
   unlockedBadgeQueue: [],
   mapFilter: 'ALL',
   mapTheme: 'RETRO',
@@ -74,40 +80,45 @@ export const useAppStore = create<AppState>((set, get) => ({
     set({ userId, userEmail: email ?? null, isAnonymous });
   },
 
+  setUserName: async (name: string) => {
+    const trimmed = name.trim();
+    await setUserPreference('profile_name', trimmed);
+    set({ userName: trimmed, showWelcomeModal: false });
+  },
+
+  setShowWelcomeModal: (show: boolean) => {
+    set({ showWelcomeModal: show });
+  },
+
   initialize: async () => {
     try {
       set({ isLoading: true });
       await getDatabase();
 
-      // Cek apakah ada sesi auth Supabase aktif
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      let activeUserId = session?.user?.id;
-      let activeEmail = session?.user?.email ?? null;
-      let isAnon = Boolean(session?.user?.is_anonymous);
-
-      if (!activeUserId) {
-        activeUserId = await getOrCreateGuestUser();
-        isAnon = true;
+      // Ambil nama profil dan user ID lokal dari SQLite
+      const storedName = await getUserPreference('profile_name');
+      let localUserId = await getUserPreference('local_user_id');
+      if (!localUserId) {
+        localUserId = Crypto.randomUUID();
+        await setUserPreference('local_user_id', localUserId);
       }
 
       const loadedLogs = await getLocalLogs();
       const savedLang = await SecureStore.getItemAsync('goflushly_language').catch(() => null);
       const activeLang: AppLanguage = savedLang === 'id' || savedLang === 'en' ? savedLang : 'id';
 
+      const isFirstTime = !storedName || storedName.trim().length === 0;
+
       set({
-        userId: activeUserId,
-        userEmail: activeEmail,
-        isAnonymous: isAnon,
+        userId: localUserId,
+        userName: storedName,
+        userEmail: null,
+        isAnonymous: true,
+        showWelcomeModal: isFirstTime,
         logs: loadedLogs,
         language: activeLang,
         isLoading: false,
       });
-
-      // Jalankan sinkronisasi background secara halus saat start
-      get().syncWithCloud().catch(() => { });
     } catch (error) {
       console.error('Failed to initialize local store:', error);
       set({ isLoading: false });
@@ -115,36 +126,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   syncWithCloud: async () => {
-    const currentUserId = get().userId || undefined;
-    set({ isSyncing: true });
-    try {
-      const result = await syncLogsWithCloud(currentUserId);
-      if (result.success) {
-        const reloaded = await getLocalLogs();
-        set({
-          logs: reloaded,
-          isSyncing: false,
-          lastSyncedAt: new Date().toISOString(),
-        });
-      } else {
-        set({ isSyncing: false });
-      }
-      return result;
-    } catch (err: any) {
-      set({ isSyncing: false });
-      return {
-        success: false,
-        uploadedCount: 0,
-        downloadedCount: 0,
-        error: err?.message || 'Sync failed',
-      };
-    }
+    // 100% Offline Local mode - no cloud sync required
+    return {
+      success: true,
+      uploadedCount: 0,
+      downloadedCount: 0,
+    };
   },
 
   addLog: async (logData) => {
     let currentUserId = get().userId;
-    if (!currentUserId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(currentUserId)) {
-      currentUserId = await getOrCreateGuestUser();
+    if (!currentUserId) {
+      currentUserId = Crypto.randomUUID();
+      await setUserPreference('local_user_id', currentUserId);
       set({ userId: currentUserId });
     }
 
@@ -156,7 +150,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       id: newId,
       userId: currentUserId,
       clientCreatedAt: now,
-      syncStatus: 'pending',
+      syncStatus: 'synced',
     };
 
     // Simpan ke SQLite

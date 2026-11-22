@@ -6,12 +6,13 @@ import { MapPin, Calendar, BarChart3, User } from 'lucide-react-native';
 import { SirFlushIcon } from '@/src/components/MascotIcons';
 import { QuickLogModal } from '@/src/components/QuickLogModal';
 import { BadgeUnlockedModal } from '@/src/components/BadgeUnlockedModal';
+import { WelcomeNameModal } from '@/src/components/WelcomeNameModal';
 import { useAppStore } from '@/src/store/useAppStore';
 import { useMobileI18n } from '@/src/i18n/translations';
 
 export default function TabLayout() {
   const [quickLogVisible, setQuickLogVisible] = useState(false);
-  const { unlockedBadgeQueue, dismissActiveBadgeModal } = useAppStore();
+  const { unlockedBadgeQueue, dismissActiveBadgeModal, showWelcomeModal } = useAppStore();
   const { t } = useMobileI18n();
 
   const activeBadge = unlockedBadgeQueue.length > 0 ? unlockedBadgeQueue[0] : null;
@@ -126,6 +127,9 @@ export default function TabLayout() {
         badge={activeBadge}
         onClose={dismissActiveBadgeModal}
       />
+
+      {/* Modal Sambutan & Input Nama Pertama Kali */}
+      <WelcomeNameModal visible={showWelcomeModal} />
     </View>
   );
 }

@@ -221,6 +221,29 @@ export async function saveUnlockedBadge(badgeId: string): Promise<void> {
   );
 }
 
+export async function getUserPreference(key: string): Promise<string | null> {
+  const db = await getDatabase();
+  const row = await db.getFirstAsync<{ value: string }>(
+    `SELECT value FROM user_preferences WHERE key = ?`,
+    [key]
+  );
+  return row ? row.value : null;
+}
+
+export async function setUserPreference(key: string, value: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(
+    `INSERT INTO user_preferences (key, value) VALUES (?, ?)
+     ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
+    [key, value]
+  );
+}
+
+export async function deleteUserPreference(key: string): Promise<void> {
+  const db = await getDatabase();
+  await db.runAsync(`DELETE FROM user_preferences WHERE key = ?`, [key]);
+}
+
 export async function clearAllLocalData(): Promise<void> {
   const db = await getDatabase();
   await db.execAsync(`
