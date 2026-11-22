@@ -30,6 +30,7 @@ async function initDatabase(db: SQLite.SQLiteDatabase) {
       country TEXT NOT NULL DEFAULT 'Indonesia',
       mood TEXT,
       note TEXT,
+      stool_density INTEGER,
       logged_at TEXT NOT NULL,
       is_blurred INTEGER NOT NULL DEFAULT 0,
       blurred_latitude REAL,
@@ -52,6 +53,13 @@ async function initDatabase(db: SQLite.SQLiteDatabase) {
       unlocked_at TEXT NOT NULL
     );
   `);
+
+  // Safe non-destructive column migration for existing app installs
+  try {
+    await db.execAsync(`ALTER TABLE local_logs ADD COLUMN stool_density INTEGER;`);
+  } catch {
+    // Column already exists, safe to ignore
+  }
 }
 
 export async function insertLocalLog(log: Log): Promise<void> {
@@ -60,9 +68,9 @@ export async function insertLocalLog(log: Log): Promise<void> {
     `INSERT INTO local_logs (
       id, user_id, type, latitude, longitude, altitude,
       city, district, subdistrict, country, mood, note,
-      logged_at, is_blurred, blurred_latitude, blurred_longitude,
+      stool_density, logged_at, is_blurred, blurred_latitude, blurred_longitude,
       client_created_at, sync_status
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       log.id,
       log.userId,
@@ -76,6 +84,7 @@ export async function insertLocalLog(log: Log): Promise<void> {
       log.country || 'Indonesia',
       log.mood ?? null,
       log.note ?? null,
+      log.stoolDensity ?? null,
       log.loggedAt,
       log.isBlurred ? 1 : 0,
       log.blurredLatitude ?? null,
@@ -118,6 +127,7 @@ export async function getLocalLogs(limit = 100): Promise<Log[]> {
     country: r.country,
     mood: r.mood ?? undefined,
     note: r.note ?? undefined,
+    stoolDensity: r.stool_density ?? undefined,
     loggedAt: r.logged_at,
     isBlurred: Boolean(r.is_blurred),
     blurredLatitude: r.blurred_latitude ?? undefined,
@@ -146,6 +156,7 @@ export async function getPendingLogs(): Promise<Log[]> {
     country: r.country,
     mood: r.mood ?? undefined,
     note: r.note ?? undefined,
+    stoolDensity: r.stool_density ?? undefined,
     loggedAt: r.logged_at,
     isBlurred: Boolean(r.is_blurred),
     blurredLatitude: r.blurred_latitude ?? undefined,
@@ -177,9 +188,9 @@ export async function insertMultipleLocalLogs(logs: Log[]): Promise<void> {
       `INSERT OR REPLACE INTO local_logs (
         id, user_id, type, latitude, longitude, altitude,
         city, district, subdistrict, country, mood, note,
-        logged_at, is_blurred, blurred_latitude, blurred_longitude,
+        stool_density, logged_at, is_blurred, blurred_latitude, blurred_longitude,
         client_created_at, sync_status
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         log.id,
         log.userId,
@@ -193,6 +204,7 @@ export async function insertMultipleLocalLogs(logs: Log[]): Promise<void> {
         log.country || 'Indonesia',
         log.mood ?? null,
         log.note ?? null,
+        log.stoolDensity ?? null,
         log.loggedAt,
         log.isBlurred ? 1 : 0,
         log.blurredLatitude ?? null,

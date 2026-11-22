@@ -11,11 +11,13 @@ import {
   Platform,
   Animated,
   Easing,
+  Dimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Colors } from '@/constants/Colors';
 import { Button, ButtonText, Heading } from '@/components/ui';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from './MascotIcons';
+import { BristolStoolIcon } from './BristolStoolIcons';
 import { useAppStore } from '../store/useAppStore';
 import { getCurrentLocationWithAddress } from '../services/location';
 import { useToast } from '../context/ToastContext';
@@ -38,10 +40,12 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
 
   const [selectedType, setSelectedType] = useState<LogType>('POOP');
   const [selectedMood, setSelectedMood] = useState<string>('Lega Banget');
+  const [stoolDensity, setStoolDensity] = useState<number>(4);
   const [note, setNote] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const slideAnim = useRef(new Animated.Value(320)).current;
+  const SCREEN_HEIGHT = Dimensions.get('window').height;
+  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
@@ -89,6 +93,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
         country: loc.country,
         mood: selectedMood,
         note: note.trim(),
+        stoolDensity: (selectedType === 'POOP' || selectedType === 'COMBO') ? stoolDensity : undefined,
         loggedAt: now,
         isBlurred: false,
       });
@@ -126,7 +131,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
   const handleFinish = (afterClose?: () => void) => {
     Animated.parallel([
       Animated.timing(slideAnim, {
-        toValue: 350,
+        toValue: SCREEN_HEIGHT,
         duration: 180,
         easing: Easing.in(Easing.ease),
         useNativeDriver: true,
@@ -152,6 +157,11 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={() => handleFinish()}>
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+        <TouchableOpacity
+          style={StyleSheet.absoluteFill}
+          activeOpacity={1}
+          onPress={() => handleFinish()}
+        />
         <Animated.View
           style={[
             styles.sheetContainer,
@@ -170,7 +180,12 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
             </TouchableOpacity>
           </View>
 
-          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+          <ScrollView
+            style={styles.scrollBody}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            keyboardShouldPersistTaps="handled"
+          >
             {/* 3 Side-by-Side 3D Mascot Cards (Exact Mobile Mockup Layout) */}
             <View style={styles.mascotGrid}>
               {mascotOptions.map((item) => {
@@ -208,6 +223,90 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
                 );
               })}
             </View>
+
+            {/* Stool Density Section (Bristol Scale 1-7) - Only for POOP & COMBO */}
+            {(selectedType === 'POOP' || selectedType === 'COMBO') && (
+              <View style={styles.densityContainer}>
+                <View style={styles.densityHeaderRow}>
+                  <Text style={styles.sectionLabel}>{t.quickLog.stoolDensityTitle}</Text>
+                  <Text style={styles.densitySub}>{t.quickLog.stoolDensitySubtitle}</Text>
+                </View>
+
+                {/* 7 Bristol Scale Custom Vector Row (Exact Attachment Style) */}
+                <View style={styles.bristolScaleRow}>
+                  {t.quickLog.stoolScale.map((item) => {
+                    const isSelected = stoolDensity === item.level;
+                    return (
+                      <TouchableOpacity
+                        key={item.level}
+                        style={[
+                          styles.bristolItem,
+                          isSelected && {
+                            backgroundColor: `${item.color}14`,
+                            borderColor: item.color,
+                          },
+                        ]}
+                        onPress={() => {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                          setStoolDensity(item.level);
+                        }}
+                        activeOpacity={0.75}
+                      >
+                        <View style={styles.bristolIconWrap}>
+                          <BristolStoolIcon type={item.level} width={38} height={22} />
+                        </View>
+                        <Text
+                          style={[
+                            styles.bristolNumber,
+                            { color: item.color },
+                            isSelected && styles.bristolNumberSelected,
+                          ]}
+                        >
+                          {item.level}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+
+                {/* Selected Density Explanation Card */}
+                {(() => {
+                  const currentInfo =
+                    t.quickLog.stoolScale.find((s) => s.level === stoolDensity) ||
+                    t.quickLog.stoolScale[3];
+                  return (
+                    <View
+                      style={[
+                        styles.densityExplainCard,
+                        { borderLeftColor: currentInfo.color },
+                      ]}
+                    >
+                      <View style={styles.densityExplainHeader}>
+                        <Text style={styles.densityExplainTitle}>
+                          Tipe {currentInfo.level}: {currentInfo.name}
+                        </Text>
+                        <View
+                          style={[
+                            styles.densityStatusBadge,
+                            { backgroundColor: `${currentInfo.color}18` },
+                          ]}
+                        >
+                          <Text
+                            style={[
+                              styles.densityStatusText,
+                              { color: currentInfo.color },
+                            ]}
+                          >
+                            {currentInfo.status}
+                          </Text>
+                        </View>
+                      </View>
+                      <Text style={styles.densityExplainDesc}>{currentInfo.desc}</Text>
+                    </View>
+                  );
+                })()}
+              </View>
+            )}
 
             {/* Mood Section */}
             <Text style={styles.sectionLabel}>{isEn ? 'Mood' : 'Mood'}</Text>
@@ -248,8 +347,10 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
               value={note}
               onChangeText={setNote}
             />
+          </ScrollView>
 
-            {/* Full-Width Gluestack Primary Pill Save CTA */}
+          {/* Sticky CTA Save Button at Bottom */}
+          <View style={styles.stickyFooter}>
             <Button
               action="primary"
               size="lg"
@@ -258,10 +359,12 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
               disabled={isSubmitting}
             >
               <ButtonText style={styles.saveButtonText}>
-                {isEn ? 'Save Record' : 'Simpan Catatan'}
+                {isSubmitting
+                  ? (isEn ? 'Saving...' : 'Menyimpan...')
+                  : (isEn ? 'Save Record' : 'Simpan Catatan')}
               </ButtonText>
             </Button>
-          </ScrollView>
+          </View>
 
           {/* Clean Light Loading Overlay */}
           {isSubmitting && (
@@ -286,10 +389,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
-    paddingHorizontal: 20,
     paddingTop: 12,
-    paddingBottom: Platform.OS === 'ios' ? 38 : 24,
-    maxHeight: '88%',
+    paddingBottom: 0,
+    height: '86%',
     shadowColor: '#0C102A',
     shadowOffset: { width: 0, height: -8 },
     shadowOpacity: 0.12,
@@ -308,7 +410,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 18,
+    paddingHorizontal: 20,
+    marginBottom: 16,
+  },
+  scrollBody: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 16,
+  },
+  stickyFooter: {
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 36 : 20,
+    backgroundColor: '#FFFFFF',
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
   },
   title: {
     fontSize: 20,
@@ -481,5 +599,93 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
     color: Colors.navy,
+  },
+  densityContainer: {
+    marginBottom: 18,
+  },
+  densityHeaderRow: {
+    marginBottom: 8,
+  },
+  densitySub: {
+    fontSize: 11,
+    color: Colors.slate,
+    marginTop: 2,
+  },
+  bristolScaleRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.04,
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  bristolItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 6,
+    paddingHorizontal: 1,
+    borderRadius: 10,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    marginHorizontal: 1,
+  },
+  bristolIconWrap: {
+    height: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 4,
+  },
+  bristolNumber: {
+    fontSize: 16,
+    fontWeight: '800',
+  },
+  bristolNumberSelected: {
+    fontWeight: '900',
+    transform: [{ scale: 1.1 }],
+  },
+  densityExplainCard: {
+    marginTop: 10,
+    backgroundColor: '#F8FAFC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderLeftWidth: 4,
+    padding: 12,
+  },
+  densityExplainHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  densityExplainTitle: {
+    fontSize: 12,
+    fontWeight: '900',
+    color: Colors.navy,
+    flex: 1,
+    marginRight: 8,
+  },
+  densityStatusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+  },
+  densityStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  densityExplainDesc: {
+    fontSize: 11,
+    color: Colors.slate,
+    lineHeight: 16,
   },
 });

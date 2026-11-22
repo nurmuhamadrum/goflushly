@@ -398,9 +398,23 @@ export default function TimelineScreen() {
               </Text>
             </View>
 
-            {/* Mood pill */}
-            <View style={styles.moodPill}>
-              <Text style={styles.moodPillText}>Mood: {item.mood || 'Lega'}</Text>
+            {/* Mood pill & Stool Density pill */}
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+              <View style={styles.moodPill}>
+                <Text style={styles.moodPillText}>Mood: {item.mood || 'Lega'}</Text>
+              </View>
+
+              {Boolean(item.stoolDensity) && (() => {
+                const densityInfo = t.quickLog.stoolScale.find((s) => s.level === item.stoolDensity);
+                if (!densityInfo) return null;
+                return (
+                  <View style={[styles.densityPill, { backgroundColor: `${densityInfo.color}15`, borderColor: `${densityInfo.color}35` }]}>
+                    <Text style={[styles.densityPillText, { color: densityInfo.color }]}>
+                      {densityInfo.emoji} Tipe {densityInfo.level}: {densityInfo.label}
+                    </Text>
+                  </View>
+                );
+              })()}
             </View>
           </View>
 
@@ -674,6 +688,40 @@ export default function TimelineScreen() {
                     <Text style={styles.detailValue}>{selectedDetailLog.mood || 'Lega Banget 😊'}</Text>
                   </View>
                 </View>
+
+                {/* Kepadatan Kotoran (Bristol Scale) jika ada */}
+                {Boolean(selectedDetailLog.stoolDensity) && (() => {
+                  const densityInfo = t.quickLog.stoolScale.find(
+                    (s) => s.level === selectedDetailLog.stoolDensity
+                  );
+                  if (!densityInfo) return null;
+                  return (
+                    <View style={styles.detailRow}>
+                      <View style={[styles.densityIconCircle, { backgroundColor: `${densityInfo.color}18` }]}>
+                        <Text style={{ fontSize: 16 }}>{densityInfo.emoji}</Text>
+                      </View>
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.detailLabel}>{t.timeline.detailDensity}</Text>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
+                          <Text style={[styles.detailValue, { fontWeight: '900', color: densityInfo.color }]}>
+                            Tipe {densityInfo.level}: {densityInfo.name}
+                          </Text>
+                          <View
+                            style={[
+                              styles.densityStatusBadge,
+                              { backgroundColor: `${densityInfo.color}18` },
+                            ]}
+                          >
+                            <Text style={[styles.densityStatusText, { color: densityInfo.color }]}>
+                              {densityInfo.status}
+                            </Text>
+                          </View>
+                        </View>
+                        <Text style={styles.densityDescText}>{densityInfo.desc}</Text>
+                      </View>
+                    </View>
+                  );
+                })()}
 
                 {/* Catatan Bebas / Message */}
                 <View style={styles.detailRow}>
@@ -1187,12 +1235,45 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     borderRadius: 8,
     alignSelf: 'flex-start',
-    marginTop: 6,
   },
   moodPillText: {
     fontSize: 10,
     fontWeight: '800',
     color: Colors.primary,
+  },
+  densityPill: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
+  densityPillText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  densityIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  densityStatusBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  densityStatusText: {
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  densityDescText: {
+    fontSize: 11,
+    color: Colors.peachTint,
+    opacity: 0.7,
+    marginTop: 2,
+    lineHeight: 15,
   },
   noteBox: {
     backgroundColor: '#F8FAFC',

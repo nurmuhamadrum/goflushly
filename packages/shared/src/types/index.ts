@@ -7,6 +7,8 @@ export type MoodPoop = 'LEGA_BANGET' | 'BIASA_AJA' | 'MASIH_GANJEL' | 'TRAGEDI';
 
 export type MascotType = 'MR_PLOP' | 'LIL_DRIP' | 'SIR_FLUSH';
 
+export type StoolDensity = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
 export interface Log {
   id: string;
   userId: string;
@@ -20,6 +22,7 @@ export interface Log {
   country: string;
   mood?: string;
   note?: string;
+  stoolDensity?: number;
   loggedAt: string;
   isBlurred: boolean;
   blurredLatitude?: number;

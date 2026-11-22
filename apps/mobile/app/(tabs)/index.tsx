@@ -792,12 +792,33 @@ export default function MapScreen() {
                         </View>
                         <Text style={styles.logItemDate}>{formattedDate}</Text>
 
-                        {Boolean(item.mood) && (
-                          <View style={styles.logItemMoodPill}>
-                            <Smile size={11} color={Colors.peeAmber} />
-                            <Text style={styles.logItemMoodText}>{item.mood}</Text>
-                          </View>
-                        )}
+                        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 6 }}>
+                          {Boolean(item.mood) && (
+                            <View style={styles.logItemMoodPill}>
+                              <Smile size={11} color={Colors.peeAmber} />
+                              <Text style={styles.logItemMoodText}>{item.mood}</Text>
+                            </View>
+                          )}
+
+                          {Boolean(item.stoolDensity) && (() => {
+                            const dInfo = (t as any).quickLog?.stoolScale?.find(
+                              (s: any) => s.level === item.stoolDensity
+                            );
+                            if (!dInfo) return null;
+                            return (
+                              <View
+                                style={[
+                                  styles.logItemDensityPill,
+                                  { backgroundColor: `${dInfo.color}15`, borderColor: `${dInfo.color}35` },
+                                ]}
+                              >
+                                <Text style={[styles.logItemDensityText, { color: dInfo.color }]}>
+                                  {dInfo.emoji} Tipe {dInfo.level}: {dInfo.label}
+                                </Text>
+                              </View>
+                            );
+                          })()}
+                        </View>
 
                         {Boolean(item.note) && (
                           <View style={styles.logItemNoteBox}>
@@ -1310,6 +1331,20 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: '800',
     color: Colors.primary,
+  },
+  logItemDensityPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 8,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
+  logItemDensityText: {
+    fontSize: 10,
+    fontWeight: '800',
   },
   logItemNoteBox: {
     flexDirection: 'row',
