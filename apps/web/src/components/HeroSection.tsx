@@ -42,7 +42,7 @@ const HERO_PINS: HeroPin[] = [
     mascot: 'plop',
     top: '8%',
     left: '17%',
-    bg: 'bg-[#FDE6C9]',
+    bg: 'bg-[#FAF4EE]',
     dot: 'bg-[#FBBF24]',
     place: 'Grand Indonesia',
     moodId: 'Mr. Plop • Plong Sekali ✨',
@@ -54,8 +54,8 @@ const HERO_PINS: HeroPin[] = [
     mascot: 'flush',
     top: '22%',
     right: '13%',
-    bg: 'bg-[#C6F6E2]',
-    dot: 'bg-secondary-500',
+    bg: 'bg-[#2447F9]',
+    dot: 'bg-primary-500',
     place: 'SCBD Sudirman',
     moodId: 'Sir Flush • Kombo Sukses 🚽',
     moodEn: 'Sir Flush • Combo Done 🚽',
@@ -67,7 +67,7 @@ const HERO_PINS: HeroPin[] = [
     mascot: 'drip',
     top: '41%',
     left: '40%',
-    bg: 'bg-[#D4F0FF]',
+    bg: 'bg-[#F0F7FF]',
     dot: 'bg-primary-500',
     place: 'Menteng, Jakpus',
     moodId: "Lil' Drip • Lega Banget 😌",
@@ -79,7 +79,7 @@ const HERO_PINS: HeroPin[] = [
     mascot: 'drip',
     top: '59%',
     left: '13%',
-    bg: 'bg-[#D4F0FF]',
+    bg: 'bg-[#F0F7FF]',
     dot: 'bg-primary-500',
     place: 'GBK Senayan',
     moodId: "Lil' Drip • Hidrasi Juara 💧",
@@ -125,10 +125,10 @@ export const HeroSection: React.FC = () => {
 
   const activeMascotBg =
     selectedMascot === 'plop'
-      ? 'bg-[#FDE6C9]'
+      ? 'bg-[#FAF4EE]'
       : selectedMascot === 'drip'
-      ? 'bg-[#D4F0FF]'
-      : 'bg-[#C6F6E2]';
+      ? 'bg-[#F0F7FF]'
+      : 'bg-[#2447F9]';
 
   const microHighlights = [
     {

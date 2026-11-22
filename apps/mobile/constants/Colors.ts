@@ -1,13 +1,18 @@
 export const Colors = {
   // Brand & Mascots
   poopBrown: '#8B5E3C',
-  poopLight: '#F7EFE9',
+  poopLight: '#FAF4EE',
+  poopBorder: '#EEDFD3',
   peeAmber: '#F5B700',
   peeLight: '#FEF7E0',
   dripBlue: '#2447F9',
-  dripLight: '#EBF5FC',
-  bothTeal: '#00BA9D',
-  bothLight: '#E7F7F6',
+  dripLight: '#F0F7FF',
+  dripBorder: '#BAE6FD',
+  bothTeal: '#2447F9', // Updated to iconic Royal Blue (previously #00BA9D)
+  bothLight: '#EEF2FF', // Updated to iconic Soft Blue tint (previously #E7F7F6)
+  bothBorder: '#C7D7FE',
+  bothBlue: '#2447F9',
+  bothBlueLight: '#EEF2FF',
   emergencyRed: '#EF4444',
   emergencyLight: '#FEE2E2',
   saweriaOrange: '#FAAE2B',

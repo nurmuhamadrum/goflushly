@@ -276,7 +276,7 @@ export default function StatsScreen() {
           {/* Card 1: Mr. Plop (BAB / Poop) */}
           <View style={styles.kpiCard}>
             <View style={styles.kpiTopRow}>
-              <View style={[styles.kpiMascotBox, { backgroundColor: '#FDE6C9' }]}>
+              <View style={[styles.kpiMascotBox, { backgroundColor: '#FAF4EE', borderColor: '#EEDFD3', borderWidth: 1 }]}>
                 <MrPlopIcon size={34} />
               </View>
               <View>
@@ -300,7 +300,7 @@ export default function StatsScreen() {
           {/* Card 2: Lil' Drip (BAK / Pee) */}
           <View style={styles.kpiCard}>
             <View style={styles.kpiTopRow}>
-              <View style={[styles.kpiMascotBox, { backgroundColor: '#D4F0FF' }]}>
+              <View style={[styles.kpiMascotBox, { backgroundColor: '#F0F7FF', borderColor: '#BAE6FD', borderWidth: 1 }]}>
                 <LilDripIcon size={34} />
               </View>
               <View>
@@ -379,7 +379,9 @@ export default function StatsScreen() {
         <View style={styles.badgesList}>
           {badges.map((b) => {
             const pastelBg =
-              b.mascot === 'drip' ? '#D4F0FF' : b.mascot === 'plop' ? '#FDE6C9' : '#C6F6E2';
+              b.mascot === 'drip' ? '#F0F7FF' : b.mascot === 'plop' ? '#FAF4EE' : '#2447F9';
+            const pastelBorder =
+              b.mascot === 'drip' ? '#BAE6FD' : b.mascot === 'plop' ? '#EEDFD3' : '#1D4ED8';
             return (
               <View
                 key={b.id}
@@ -395,6 +397,8 @@ export default function StatsScreen() {
                     styles.badgeIconWrapper,
                     {
                       backgroundColor: b.unlocked ? pastelBg : '#F1F5F9',
+                      borderColor: b.unlocked ? pastelBorder : '#E2E8F0',
+                      borderWidth: 1,
                     },
                   ]}
                 >
@@ -645,7 +649,9 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: '#C6F6E2',
+    backgroundColor: '#2447F9',
+    borderWidth: 1,
+    borderColor: '#1D4ED8',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -657,7 +663,7 @@ const styles = StyleSheet.create({
   flushTag: {
     fontSize: 9,
     fontWeight: '900',
-    color: Colors.accent,
+    color: Colors.primary,
     letterSpacing: 0.6,
   },
   flushTitle: {

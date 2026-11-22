@@ -559,20 +559,20 @@ const styles = StyleSheet.create({
   mascotPlop: {
     width: 82,
     height: 82,
-    backgroundColor: '#FDE6C9',
+    backgroundColor: '#FAF4EE',
     marginRight: -18,
     zIndex: 1,
   },
   mascotDrip: {
     width: 96,
     height: 96,
-    backgroundColor: '#D4F0FF',
+    backgroundColor: '#F0F7FF',
     zIndex: 3,
   },
   mascotFlush: {
     width: 82,
     height: 82,
-    backgroundColor: '#C6F6E2',
+    backgroundColor: '#2447F9',
     marginLeft: -18,
     zIndex: 2,
   },

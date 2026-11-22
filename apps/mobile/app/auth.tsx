@@ -210,13 +210,13 @@ export default function AuthScreen() {
         {/* Branding Hero & Mascots */}
         <View style={styles.header}>
           <View style={styles.mascotRow}>
-            <View style={[styles.mascotBubble, { backgroundColor: '#D4F0FF', borderColor: '#FFFFFF' }]}>
+            <View style={[styles.mascotBubble, { backgroundColor: '#F0F7FF', borderColor: '#BAE6FD', borderWidth: 1 }]}>
               <LilDripIcon size={34} />
             </View>
-            <View style={[styles.mascotBubble, { backgroundColor: '#FDE6C9', borderColor: '#FFFFFF', marginHorizontal: -8, zIndex: 2 }]}>
+            <View style={[styles.mascotBubble, { backgroundColor: '#FAF4EE', borderColor: '#EEDFD3', borderWidth: 1, marginHorizontal: -8, zIndex: 2 }]}>
               <MrPlopIcon size={34} />
             </View>
-            <View style={[styles.mascotBubble, { backgroundColor: '#C6F6E2', borderColor: '#FFFFFF' }]}>
+            <View style={[styles.mascotBubble, { backgroundColor: '#2447F9', borderColor: '#1D4ED8', borderWidth: 1 }]}>
               <SirFlushIcon size={34} />
             </View>
           </View>

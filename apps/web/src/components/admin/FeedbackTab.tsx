@@ -174,7 +174,7 @@ export const FeedbackTab: React.FC = () => {
               onClick={() => setCategoryFilter(cat)}
               className={`px-2.5 py-1 rounded-lg font-bold text-[11px] transition-all ${
                 categoryFilter === cat
-                  ? 'bg-both-teal text-ink shadow-sm'
+                  ? 'bg-both-teal text-white shadow-sm'
                   : 'text-cream-bg/60 hover:text-cream-bg'
               }`}
             >

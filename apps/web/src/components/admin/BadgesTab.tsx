@@ -208,7 +208,7 @@ export const BadgesTab: React.FC<BadgesTabProps> = ({ notify }) => {
                 <button
                   type="button"
                   onClick={() => setEditorLang('en')}
-                  className={`px-2.5 py-1 rounded-md transition-all ${editorLang === 'en' ? 'bg-both-teal text-ink' : 'text-peach-tint/60'}`}
+                  className={`px-2.5 py-1 rounded-md transition-all ${editorLang === 'en' ? 'bg-both-teal text-white' : 'text-peach-tint/60'}`}
                 >
                   🇬🇧 EN
                 </button>
@@ -312,7 +312,7 @@ export const BadgesTab: React.FC<BadgesTabProps> = ({ notify }) => {
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="flex-1 py-2.5 rounded-xl text-xs font-black bg-both-teal text-ink flex items-center justify-center gap-1 hover:brightness-110 disabled:opacity-60"
+                className="flex-1 py-2.5 rounded-xl text-xs font-black bg-both-teal text-white flex items-center justify-center gap-1 hover:brightness-110 disabled:opacity-60"
               >
                 {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Simpan
               </button>

@@ -190,7 +190,7 @@ export const FaqTab: React.FC<FaqTabProps> = ({ notify }) => {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="px-4 py-2 rounded-lg text-xs font-black bg-both-teal text-ink flex items-center gap-1 hover:brightness-110 disabled:opacity-60"
+          className="px-4 py-2 rounded-lg text-xs font-black bg-both-teal text-white flex items-center gap-1 hover:brightness-110 disabled:opacity-60"
         >
           {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />} Simpan Bilingual
         </button>

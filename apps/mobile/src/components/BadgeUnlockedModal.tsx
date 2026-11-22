@@ -120,10 +120,10 @@ export const BadgeUnlockedModal: React.FC<BadgeUnlockedModalProps> = ({
                 borderColor: badge.accentColor,
                 backgroundColor:
                   badge.mascot === 'drip'
-                    ? '#D4F0FF'
+                    ? '#F0F7FF'
                     : badge.mascot === 'plop'
-                    ? '#FDE6C9'
-                    : '#C6F6E2',
+                    ? '#FAF4EE'
+                    : '#2447F9',
               },
             ]}
           >

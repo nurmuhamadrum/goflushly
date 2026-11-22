@@ -356,7 +356,8 @@ export default function TimelineScreen() {
       minute: '2-digit',
     });
 
-    const badgeBg = isPee ? '#D4F0FF' : isPoop ? '#FDE6C9' : '#C6F6E2';
+    const badgeBg = isPee ? '#F0F7FF' : isPoop ? '#FAF4EE' : '#2447F9';
+    const badgeBorder = isPee ? '#BAE6FD' : isPoop ? '#EEDFD3' : '#1D4ED8';
     const badgeTitle = isPee
       ? "Lil' Drip (BAK)"
       : isPoop
@@ -371,7 +372,7 @@ export default function TimelineScreen() {
       >
         <View style={styles.cardHeader}>
           {/* Avatar Icon */}
-          <View style={[styles.avatarBox, { backgroundColor: badgeBg }]}>
+          <View style={[styles.avatarBox, { backgroundColor: badgeBg, borderColor: badgeBorder, borderWidth: 1 }]}>
             {isPee && <LilDripIcon size={28} />}
             {isPoop && <MrPlopIcon size={28} />}
             {isCombo && <SirFlushIcon size={28} />}
@@ -611,10 +612,17 @@ export default function TimelineScreen() {
                       {
                         backgroundColor:
                           selectedDetailLog.type === 'PEE'
-                            ? Colors.peeAmber
+                            ? '#F0F7FF'
                             : selectedDetailLog.type === 'POOP'
-                            ? Colors.poopBrown
-                            : Colors.bothTeal,
+                            ? '#FAF4EE'
+                            : '#2447F9',
+                        borderColor:
+                          selectedDetailLog.type === 'PEE'
+                            ? '#BAE6FD'
+                            : selectedDetailLog.type === 'POOP'
+                            ? '#EEDFD3'
+                            : '#1D4ED8',
+                        borderWidth: 1.5,
                       },
                     ]}
                   >

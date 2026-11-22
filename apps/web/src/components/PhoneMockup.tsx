@@ -121,7 +121,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
     : 'w-[320px] sm:w-[360px] md:w-[380px] h-[720px] rounded-[48px]';
 
   const getPastelBg = (type: 'pee' | 'poop' | 'combo') =>
-    type === 'poop' ? 'bg-[#FDE6C9]' : type === 'pee' ? 'bg-[#D4F0FF]' : 'bg-[#C6F6E2]';
+    type === 'poop' ? 'bg-[#FAF4EE]' : type === 'pee' ? 'bg-[#F0F7FF]' : 'bg-[#2447F9]';
 
   return (
     <div
@@ -364,9 +364,9 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
               {/* 3 Side-by-Side 3D Mascot Cards */}
               <div className="grid grid-cols-3 gap-2.5 mb-4">
                 {[
-                  { id: 'poop' as const, name: 'Mr. Plop', sub: 'BAB', bg: 'bg-[#FDE6C9]' },
-                  { id: 'pee' as const, name: "Lil' Drip", sub: 'BAK', bg: 'bg-[#D4F0FF]' },
-                  { id: 'combo' as const, name: 'Sir Flush', sub: 'Keduanya', bg: 'bg-[#C6F6E2]' },
+                  { id: 'poop' as const, name: 'Mr. Plop', sub: 'BAB', bg: 'bg-[#FAF4EE]' },
+                  { id: 'pee' as const, name: "Lil' Drip", sub: 'BAK', bg: 'bg-[#F0F7FF]' },
+                  { id: 'combo' as const, name: 'Sir Flush', sub: 'Keduanya', bg: 'bg-[#2447F9]' },
                 ].map((item) => {
                   const active = selectedQuickType === item.id;
                   return (
@@ -449,7 +449,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
 
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-[#C6F6E2] p-1.5 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-xl bg-[#2447F9] p-1.5 flex items-center justify-center">
                     <SirFlushSVG className="w-8 h-8" />
                   </div>
                   <div>
@@ -538,7 +538,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
               </div>
 
               <div className="bg-white border border-outline-200 rounded-2xl p-3 flex items-center gap-3 shadow-xs">
-                <div className="w-11 h-11 rounded-xl bg-[#C6F6E2] p-1.5 flex items-center justify-center flex-shrink-0">
+                <div className="w-11 h-11 rounded-xl bg-[#2447F9] p-1.5 flex items-center justify-center flex-shrink-0">
                   <SirFlushSVG className="w-8 h-8" />
                 </div>
                 <div className="min-w-0">
@@ -649,7 +649,7 @@ export const PhoneMockup: React.FC<PhoneMockupProps> = ({
 
             <div className="bg-white border border-outline-200 rounded-2xl p-4 mb-3 shadow-xs">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-[#C6F6E2] p-1.5 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-[#2447F9] p-1.5 flex items-center justify-center">
                   <SirFlushSVG className="w-9 h-9" />
                 </div>
                 <div>

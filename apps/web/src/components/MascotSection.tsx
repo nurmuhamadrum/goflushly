@@ -50,8 +50,8 @@ export const MascotSection: React.FC = () => {
       badge: isEn ? 'Poop Log' : 'Log BAB',
       icon: Clock,
       microStat: isEn ? '< 3 Sec Log' : 'Catat < 3 Detik',
-      thumbBg: 'from-[#FFF7ED] to-[#FFEDD5]',
-      glowColor: 'bg-amber-400/20',
+      thumbBg: 'from-[#FAF4EE] to-[#F5ECE2]',
+      glowColor: 'bg-amber-400/10',
       imageSrc: '/mascots/mr-plop.png',
     },
     {
@@ -64,8 +64,8 @@ export const MascotSection: React.FC = () => {
       badge: isEn ? 'Pee Log' : 'Log BAK',
       icon: Droplets,
       microStat: isEn ? '2L Water Goal' : 'Target 2L Air',
-      thumbBg: 'from-[#F0F9FF] to-[#E0F2FE]',
-      glowColor: 'bg-sky-400/20',
+      thumbBg: 'from-[#F0F7FF] to-[#E0F2FE]',
+      glowColor: 'bg-sky-400/10',
       imageSrc: '/mascots/lil-drip.png',
     },
     {
@@ -78,8 +78,8 @@ export const MascotSection: React.FC = () => {
       badge: isEn ? 'Stats & Combo' : 'Kombo & Stats',
       icon: ShieldCheck,
       microStat: isEn ? '100% Local DB' : '100% Database Lokal',
-      thumbBg: 'from-[#F0FDF4] to-[#DCFCE7]',
-      glowColor: 'bg-emerald-400/20',
+      thumbBg: 'from-[#2447F9] to-[#1A38D4]',
+      glowColor: 'bg-primary-500/25',
       imageSrc: '/mascots/sir-flush.png',
     },
   ];

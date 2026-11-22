@@ -171,13 +171,13 @@ export function WelcomeNameModal({ visible }: WelcomeNameModalProps) {
         >
           {/* Header Maskot */}
           <View style={styles.mascotBanner}>
-            <View style={[styles.mascotCircle, { backgroundColor: '#E0F2FE' }]}>
+            <View style={[styles.mascotCircle, { backgroundColor: '#F0F7FF', borderColor: '#BAE6FD', borderWidth: 1 }]}>
               <LilDripIcon size={34} />
             </View>
             <View style={[styles.mascotCirclePrimary, { backgroundColor: Colors.bothTeal }]}>
               <SirFlushIcon size={44} />
             </View>
-            <View style={[styles.mascotCircle, { backgroundColor: '#FEF3C7' }]}>
+            <View style={[styles.mascotCircle, { backgroundColor: '#FAF4EE', borderColor: '#EEDFD3', borderWidth: 1 }]}>
               <MrPlopIcon size={34} />
             </View>
           </View>

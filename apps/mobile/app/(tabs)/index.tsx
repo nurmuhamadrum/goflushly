@@ -459,7 +459,7 @@ export default function MapScreen() {
           const isSelected = selectedGroup?.key === group.key;
           const count = group.logs.length;
 
-          const markerBorder = isPee ? '#93C5FD' : isPoop ? '#F5CBA7' : '#6EE7B7';
+          const markerBorder = isPee ? '#BAE6FD' : isPoop ? '#EEDFD3' : '#C7D7FE';
           const markerAccent = isPee ? Colors.primary : isPoop ? Colors.poopBrown : Colors.bothTeal;
 
           return (
@@ -606,7 +606,8 @@ export default function MapScreen() {
                 (l) => String(l.type || '').toUpperCase() === mapFilter
               ) || selectedGroup.latestLog;
         const pType = String(popupLog.type || '').toUpperCase();
-        const pBg = pType === 'PEE' ? '#D4F0FF' : pType === 'POOP' ? '#FDE6C9' : '#C6F6E2';
+        const pBg = pType === 'PEE' ? '#F0F7FF' : pType === 'POOP' ? '#FAF4EE' : '#2447F9';
+        const pBorder = pType === 'PEE' ? '#BAE6FD' : pType === 'POOP' ? '#EEDFD3' : '#1D4ED8';
 
         return (
           <Animated.View
@@ -619,7 +620,7 @@ export default function MapScreen() {
             ]}
           >
             <View style={styles.popupRow}>
-              <View style={[styles.popupAvatar, { backgroundColor: pBg }]}>
+              <View style={[styles.popupAvatar, { backgroundColor: pBg, borderColor: pBorder, borderWidth: 1 }]}>
                 {pType === 'PEE' && <LilDripIcon size={26} />}
                 {pType === 'POOP' && <MrPlopIcon size={26} />}
                 {pType === 'COMBO' && <SirFlushIcon size={26} />}
@@ -774,7 +775,16 @@ export default function MapScreen() {
 
                   return (
                     <View key={item.id || idx} style={styles.logItemCard}>
-                      <View style={[styles.logItemAvatar, { backgroundColor: logColor }]}>
+                      <View
+                        style={[
+                          styles.logItemAvatar,
+                          {
+                            backgroundColor: isPee ? '#F0F7FF' : isPoop ? '#FAF4EE' : '#2447F9',
+                            borderColor: isPee ? '#BAE6FD' : isPoop ? '#EEDFD3' : '#1D4ED8',
+                            borderWidth: 1,
+                          },
+                        ]}
+                      >
                         {isPee && <LilDripIcon size={22} />}
                         {isPoop && <MrPlopIcon size={22} />}
                         {isCombo && <SirFlushIcon size={22} />}

@@ -76,7 +76,8 @@ export default {
         'poop-brown': '#8B5E3C',
         'pee-amber': '#F5B700',
         'drip-blue': '#2447F9',
-        'both-teal': '#00BA9D',
+        'both-teal': '#2447F9', // Updated to iconic Royal Blue (previously #00BA9D)
+        'both-blue': '#2447F9',
         'emergency': '#EF4444',
         'saweria-orange': '#FAAE2B',
 

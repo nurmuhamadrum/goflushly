@@ -92,7 +92,7 @@ export const UsersTab: React.FC = () => {
                   key={f}
                   onClick={() => setAccountFilter(f)}
                   className={`px-3 py-1.5 rounded-lg transition-all ${
-                    accountFilter === f ? 'bg-both-teal text-ink' : 'text-peach-tint/70 hover:text-cream-bg'
+                    accountFilter === f ? 'bg-both-teal text-white' : 'text-peach-tint/70 hover:text-cream-bg'
                   }`}
                 >
                   {f === 'ALL' ? 'Semua' : f === 'CLOUD' ? 'Akun Cloud' : 'Tamu'}

@@ -85,7 +85,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ onSuccess }) => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl bg-both-teal text-ink font-black text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-60"
+            className="w-full py-3 rounded-xl bg-both-teal text-white font-black text-sm flex items-center justify-center gap-2 hover:brightness-110 active:scale-[0.98] transition-all disabled:opacity-60"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
             {loading ? 'Memverifikasi...' : 'Masuk Dashboard'}

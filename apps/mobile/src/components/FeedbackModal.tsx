@@ -136,13 +136,13 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
             {isSubmitted ? (
               <View style={styles.successContainer}>
                 <View style={styles.mascotRow}>
-                  <View style={[styles.mascotBubble, { backgroundColor: '#FDE6C9' }]}>
+                  <View style={[styles.mascotBubble, { backgroundColor: '#FAF4EE', borderColor: '#EEDFD3', borderWidth: 1 }]}>
                     <MrPlopIcon size={38} />
                   </View>
-                  <View style={[styles.mascotBubble, { backgroundColor: '#C6F6E2', marginTop: -8 }]}>
+                  <View style={[styles.mascotBubble, { backgroundColor: '#2447F9', borderColor: '#1D4ED8', borderWidth: 1.5, marginTop: -8 }]}>
                     <SirFlushIcon size={42} />
                   </View>
-                  <View style={[styles.mascotBubble, { backgroundColor: '#D4F0FF' }]}>
+                  <View style={[styles.mascotBubble, { backgroundColor: '#F0F7FF', borderColor: '#BAE6FD', borderWidth: 1 }]}>
                     <LilDripIcon size={38} />
                   </View>
                 </View>
