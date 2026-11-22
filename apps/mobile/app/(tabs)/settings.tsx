@@ -44,6 +44,11 @@ import {
   Globe,
   MessageSquarePlus,
   Edit3,
+  Key,
+  Fingerprint,
+  HelpCircle,
+  FileCheck,
+  AlertCircle,
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useToast } from '@/src/context/ToastContext';
@@ -53,6 +58,13 @@ import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIc
 import { FeedbackModal } from '@/src/components/FeedbackModal';
 import { clearAllLocalData } from '@/src/db/sqlite';
 import { authenticateWithBiometrics } from '@/src/services/auth';
+import {
+  verifyAppPin,
+  saveAppPin,
+  getSecurityQuestionIndex,
+  saveSecurityQuestion,
+  SECURITY_QUESTIONS,
+} from '@/src/services/securityService';
 import * as Linking from 'expo-linking';
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
@@ -64,7 +76,9 @@ export default function ProfileSettingsScreen() {
   const { lang, setLanguage, t } = useMobileI18n();
   const {
     appLockEnabled,
-    toggleAppLock,
+    setAppLockEnabled,
+    biometricEnabled,
+    setBiometricEnabled,
     userId,
     userName,
     setUserName,
@@ -89,6 +103,23 @@ export default function ProfileSettingsScreen() {
   const [importModalVisible, setImportModalVisible] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ count: number; error?: string } | null>(null);
+
+  // State Keamanan PIN & Recovery
+  const [changePinModalVisible, setChangePinModalVisible] = useState(false);
+  const [oldPin, setOldPin] = useState('');
+  const [changeNewPin, setChangeNewPin] = useState('');
+  const [changeConfirmPin, setChangeConfirmPin] = useState('');
+  const [changePinError, setChangePinError] = useState<string | null>(null);
+
+  const [secQuestionModalVisible, setSecQuestionModalVisible] = useState(false);
+  const [editSecQuestionIdx, setEditSecQuestionIdx] = useState(0);
+  const [editSecAnswer, setEditSecAnswer] = useState('');
+  const [secPinVerify, setSecPinVerify] = useState('');
+  const [secModalError, setSecModalError] = useState<string | null>(null);
+
+  const [disablePinModalVisible, setDisablePinModalVisible] = useState(false);
+  const [disablePinInput, setDisablePinInput] = useState('');
+  const [disablePinError, setDisablePinError] = useState<string | null>(null);
 
   // Perhitungan statistik profil
   const totalLogs = logs.length;
@@ -118,14 +149,88 @@ export default function ProfileSettingsScreen() {
   }, [logs]);
 
   const handleToggleAppLock = async () => {
-    if (!appLockEnabled) {
-      const success = await authenticateWithBiometrics('Konfirmasi Biometrik untuk App Lock');
-      if (success) {
-        toggleAppLock();
-      }
+    if (appLockEnabled) {
+      setDisablePinInput('');
+      setDisablePinError(null);
+      setDisablePinModalVisible(true);
     } else {
-      toggleAppLock();
+      await setAppLockEnabled(true);
+      showToast({
+        message: 'Kunci keamanan aplikasi diaktifkan.',
+        type: 'success',
+      });
     }
+  };
+
+  const handleExecuteChangePin = async () => {
+    setChangePinError(null);
+    if (oldPin.length !== 4) {
+      setChangePinError('PIN lama harus 4 digit.');
+      return;
+    }
+    const isOldValid = await verifyAppPin(oldPin);
+    if (!isOldValid) {
+      setChangePinError('PIN lama tidak sesuai.');
+      return;
+    }
+    if (changeNewPin.length !== 4) {
+      setChangePinError('PIN baru harus 4 digit angka.');
+      return;
+    }
+    if (changeNewPin !== changeConfirmPin) {
+      setChangePinError('Konfirmasi PIN baru tidak cocok.');
+      return;
+    }
+
+    await saveAppPin(changeNewPin);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    setChangePinModalVisible(false);
+    showToast({
+      message: 'PIN keamanan berhasil diubah!',
+      type: 'success',
+    });
+  };
+
+  const handleExecuteSaveSecQuestion = async () => {
+    setSecModalError(null);
+    if (secPinVerify.length !== 4) {
+      setSecModalError('Masukkan 4 digit PIN saat ini.');
+      return;
+    }
+    const isPinValid = await verifyAppPin(secPinVerify);
+    if (!isPinValid) {
+      setSecModalError('PIN saat ini tidak cocok.');
+      return;
+    }
+    if (!editSecAnswer.trim()) {
+      setSecModalError('Jawaban pemulihan tidak boleh kosong.');
+      return;
+    }
+
+    await saveSecurityQuestion(editSecQuestionIdx, editSecAnswer.trim());
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    setSecQuestionModalVisible(false);
+    showToast({
+      message: 'Pertanyaan pemulihan berhasil diperbarui!',
+      type: 'success',
+    });
+  };
+
+  const handleExecuteDisablePin = async () => {
+    setDisablePinError(null);
+    const isValid = await verifyAppPin(disablePinInput);
+    if (!isValid) {
+      setDisablePinError('PIN tidak sesuai.');
+      return;
+    }
+
+    await setAppLockEnabled(false);
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+    setDisablePinModalVisible(false);
+    showToast({
+      message: 'Kunci keamanan aplikasi telah dinonaktifkan.',
+      type: 'info',
+    });
   };
 
   const executeShareJSON = async () => {
@@ -260,16 +365,16 @@ export default function ProfileSettingsScreen() {
                 </TouchableOpacity>
               </View>
               <View style={styles.guestBadge}>
-                <ShieldCheck size={11} color={Colors.bothTeal} style={{ marginRight: 4 }} />
+                <ShieldCheck size={11} color={Colors.bothTeal} />
                 <Text style={styles.guestBadgeText}>
                   {t.settings.localOffline}
                 </Text>
               </View>
-              <Text style={styles.profileMemberSince}>
+              <Text style={styles.profileMemberSince} numberOfLines={1}>
                 {`${lang === 'en' ? 'Active since' : 'Aktif sejak'} ${memberSince}`}
               </Text>
-              <Text style={styles.profileId} numberOfLines={1}>
-                ID: {userId || 'local-user'}
+              <Text style={styles.profileId} numberOfLines={1} ellipsizeMode="middle">
+                ID: {userId ? `${userId.slice(0, 8)}...${userId.slice(-4)}` : 'local-user'}
               </Text>
             </View>
           </View>
@@ -354,12 +459,13 @@ export default function ProfileSettingsScreen() {
             <Text style={styles.sectionHeading}>{t.settings.securityHeading}</Text>
           </View>
 
+          {/* Toggle Kunci PIN */}
           <View style={styles.settingRow}>
             <View style={styles.settingLeft}>
-              <View style={[styles.settingIconBox, { backgroundColor: 'rgba(245, 183, 0, 0.15)' }]}>
-                <Lock size={16} color={Colors.peeAmber} />
+              <View style={[styles.settingIconBox, { backgroundColor: 'rgba(36, 71, 249, 0.15)' }]}>
+                <Lock size={16} color={Colors.primary} />
               </View>
-              <View>
+              <View style={{ flex: 1 }}>
                 <Text style={styles.settingLabel}>{t.settings.appLock}</Text>
                 <Text style={styles.settingDesc}>{t.settings.appLockDesc}</Text>
               </View>
@@ -371,6 +477,78 @@ export default function ProfileSettingsScreen() {
               thumbColor={Colors.creamBg}
             />
           </View>
+
+          {/* Ubah PIN Keamanan */}
+          {appLockEnabled && (
+            <TouchableOpacity
+              style={styles.actionRow}
+              onPress={() => {
+                setOldPin('');
+                setChangeNewPin('');
+                setChangeConfirmPin('');
+                setChangePinError(null);
+                setChangePinModalVisible(true);
+              }}
+            >
+              <View style={styles.actionLeft}>
+                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(245, 183, 0, 0.15)' }]}>
+                  <Key size={16} color={Colors.peeAmber} />
+                </View>
+                <View style={{ flex: 1, paddingRight: 8 }}>
+                  <Text style={styles.actionLabel} numberOfLines={1}>{t.settings.changePin}</Text>
+                  <Text style={styles.actionDesc} numberOfLines={2}>{t.settings.changePinDesc}</Text>
+                </View>
+              </View>
+              <ChevronRight size={16} color={Colors.peachTint} />
+            </TouchableOpacity>
+          )}
+
+          {/* Buka Cepat Biometrik */}
+          {appLockEnabled && (
+            <View style={styles.settingRow}>
+              <View style={styles.settingLeft}>
+                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
+                  <Fingerprint size={16} color={Colors.bothTeal} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.settingLabel}>{t.settings.biometricUnlock}</Text>
+                  <Text style={styles.settingDesc}>{t.settings.biometricUnlockDesc}</Text>
+                </View>
+              </View>
+              <Switch
+                value={biometricEnabled}
+                onValueChange={(val) => setBiometricEnabled(val)}
+                trackColor={{ false: Colors.darkBorder, true: Colors.bothTeal }}
+                thumbColor={Colors.creamBg}
+              />
+            </View>
+          )}
+
+          {/* Pertanyaan Pemulihan Lupa PIN */}
+          {appLockEnabled && (
+            <TouchableOpacity
+              style={styles.actionRow}
+              onPress={async () => {
+                const idx = await getSecurityQuestionIndex();
+                setEditSecQuestionIdx(idx);
+                setEditSecAnswer('');
+                setSecPinVerify('');
+                setSecModalError(null);
+                setSecQuestionModalVisible(true);
+              }}
+            >
+              <View style={styles.actionLeft}>
+                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
+                  <HelpCircle size={16} color={Colors.bothTeal} />
+                </View>
+                <View style={{ flex: 1, paddingRight: 8 }}>
+                  <Text style={styles.actionLabel} numberOfLines={1}>{t.settings.secQuestion}</Text>
+                  <Text style={styles.actionDesc} numberOfLines={2}>{t.settings.secQuestionDesc}</Text>
+                </View>
+              </View>
+              <ChevronRight size={16} color={Colors.peachTint} />
+            </TouchableOpacity>
+          )}
 
           <View style={styles.privacyNoteBox}>
             <Text style={styles.privacyNoteText}>
@@ -414,10 +592,13 @@ export default function ProfileSettingsScreen() {
                         styles.themeOptionTitle,
                         isActive && { color: Colors.creamBg, fontWeight: '900' },
                       ]}
+                      numberOfLines={1}
                     >
                       {item.label}
                     </Text>
-                    <Text style={styles.themeOptionDesc}>{item.desc}</Text>
+                    <Text style={styles.themeOptionDesc} numberOfLines={2}>
+                      {item.desc}
+                    </Text>
                   </TouchableOpacity>
                 );
               })}
@@ -426,8 +607,10 @@ export default function ProfileSettingsScreen() {
 
           {/* Pengaturan Radius GPS */}
           <View style={styles.customSubSection}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text style={styles.customSubLabel}>{t.settings.radiusLabel}</Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
+              <Text style={[styles.customSubLabel, { flex: 1, marginBottom: 0 }]} numberOfLines={1}>
+                {t.settings.radiusLabel}
+              </Text>
               <Text style={styles.radiusMeterBadge}>{gpsRadiusMeter} {t.settings.meters}</Text>
             </View>
             <View style={styles.radiusButtonRow}>
@@ -461,11 +644,13 @@ export default function ProfileSettingsScreen() {
           </View>
         </View>
 
-        {/* PORTABILITAS & CADANGAN DATA */}
+        {/* CADANGAN & DATA LOKAL */}
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>
             <Download size={16} color={Colors.bothTeal} />
-            <Text style={styles.sectionHeading}>{t.settings.dataHeading}</Text>
+            <Text style={styles.sectionHeading} numberOfLines={1}>
+              {t.settings.dataHeading}
+            </Text>
           </View>
 
           {/* Ekspor JSON */}
@@ -480,9 +665,13 @@ export default function ProfileSettingsScreen() {
               <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
                 <FileText size={16} color={Colors.bothTeal} />
               </View>
-              <View>
-                <Text style={styles.actionLabel}>Cadangkan & Ekspor Data</Text>
-                <Text style={styles.actionDesc}>Simpan salinan berkas riwayat format JSON</Text>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.actionLabel} numberOfLines={1}>
+                  {t.settings.exportTitle}
+                </Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>
+                  {t.settings.exportDesc}
+                </Text>
               </View>
             </View>
             <Share2 size={16} color={Colors.peachTint} />
@@ -500,9 +689,13 @@ export default function ProfileSettingsScreen() {
               <View style={[styles.settingIconBox, { backgroundColor: 'rgba(245, 183, 0, 0.15)' }]}>
                 <Upload size={16} color={Colors.peeAmber} />
               </View>
-              <View>
-                <Text style={styles.actionLabel}>Pulihkan & Impor Data</Text>
-                <Text style={styles.actionDesc}>Muat riwayat catatan dari berkas JSON cadangan</Text>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.actionLabel} numberOfLines={1}>
+                  {t.settings.importTitle}
+                </Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>
+                  {t.settings.importDesc}
+                </Text>
               </View>
             </View>
             <Download size={16} color={Colors.peachTint} />
@@ -520,9 +713,29 @@ export default function ProfileSettingsScreen() {
               <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
                 <MessageSquarePlus size={16} color={Colors.bothTeal} />
               </View>
-              <View>
-                <Text style={styles.actionLabel}>{t.settings.feedbackTitle}</Text>
-                <Text style={styles.actionDesc}>{t.settings.feedbackDesc}</Text>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.actionLabel} numberOfLines={1}>{t.settings.feedbackTitle}</Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>{t.settings.feedbackDesc}</Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={Colors.peachTint} />
+          </TouchableOpacity>
+
+          {/* Syarat & Ketentuan (Terms & Conditions) */}
+          <TouchableOpacity
+            style={styles.actionRow}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
+              router.push('/terms');
+            }}
+          >
+            <View style={styles.actionLeft}>
+              <View style={[styles.settingIconBox, { backgroundColor: 'rgba(36, 71, 249, 0.15)' }]}>
+                <FileCheck size={16} color={Colors.primary} />
+              </View>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.actionLabel} numberOfLines={1}>{t.settings.termsLink}</Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>{t.settings.termsLinkDesc}</Text>
               </View>
             </View>
             <ChevronRight size={16} color={Colors.peachTint} />
@@ -533,7 +746,9 @@ export default function ProfileSettingsScreen() {
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>
             <Trash2 size={16} color={Colors.emergencyRed} />
-            <Text style={[styles.sectionHeading, { color: Colors.emergencyRed }]}>ZONA DATA PRIBADI</Text>
+            <Text style={[styles.sectionHeading, { color: Colors.emergencyRed }]} numberOfLines={1}>
+              {t.settings.dangerHeading}
+            </Text>
           </View>
 
           <TouchableOpacity
@@ -544,9 +759,13 @@ export default function ProfileSettingsScreen() {
               <View style={[styles.settingIconBox, { backgroundColor: 'rgba(255, 90, 95, 0.15)' }]}>
                 <Trash2 size={16} color={Colors.emergencyRed} />
               </View>
-              <View>
-                <Text style={[styles.actionLabel, { color: Colors.emergencyRed }]}>Hapus Riwayat Data Lokal</Text>
-                <Text style={styles.actionDesc}>Bersihkan seluruh catatan dari memori ponsel</Text>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={[styles.actionLabel, { color: Colors.emergencyRed }]} numberOfLines={1}>
+                  {t.settings.deleteAllTitle}
+                </Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>
+                  {t.settings.deleteAllDesc}
+                </Text>
               </View>
             </View>
           </TouchableOpacity>
@@ -835,7 +1054,292 @@ export default function ProfileSettingsScreen() {
         </KeyboardAvoidingView>
       </Modal>
 
-      {/* 5. MODAL KRITIK & SARAN (FEEDBACK) */}
+      {/* 5. MODAL UBAH PIN */}
+      <Modal
+        visible={changePinModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setChangePinModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeaderRow}>
+              <View style={[styles.modalIconRing, { backgroundColor: 'rgba(245, 183, 0, 0.15)' }]}>
+                <Key size={22} color={Colors.peeAmber} />
+              </View>
+              <TouchableOpacity
+                onPress={() => setChangePinModalVisible(false)}
+                style={styles.modalCloseIcon}
+              >
+                <X size={18} color={Colors.peachTint} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalHeading}>{t.settings.changePin}</Text>
+            <Text style={styles.modalDescription}>Masukkan PIN saat ini dan buat 4-digit PIN baru.</Text>
+
+            {changePinError && (
+              <View style={styles.securityErrorBox}>
+                <AlertCircle size={14} color={Colors.emergencyRed} />
+                <Text style={styles.securityErrorText}>{changePinError}</Text>
+              </View>
+            )}
+
+            <Text style={styles.inputSubLabel}>PIN LAMA</Text>
+            <TextInput
+              style={[styles.nameTextInput, styles.pinCenteredInput]}
+              value={oldPin}
+              onChangeText={(val) => {
+                setOldPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                setChangePinError(null);
+              }}
+              placeholder="••••"
+              placeholderTextColor="#94A3B8"
+              keyboardType="numeric"
+              secureTextEntry
+              maxLength={4}
+            />
+
+            <View style={{ flexDirection: 'row', gap: 10, width: '100%' }}>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.inputSubLabel}>PIN BARU</Text>
+                <TextInput
+                  style={[styles.nameTextInput, styles.pinCenteredInput]}
+                  value={changeNewPin}
+                  onChangeText={(val) => {
+                    setChangeNewPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                    setChangePinError(null);
+                  }}
+                  placeholder="••••"
+                  placeholderTextColor="#94A3B8"
+                  keyboardType="numeric"
+                  secureTextEntry
+                  maxLength={4}
+                />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={styles.inputSubLabel}>KONFIRMASI</Text>
+                <TextInput
+                  style={[styles.nameTextInput, styles.pinCenteredInput]}
+                  value={changeConfirmPin}
+                  onChangeText={(val) => {
+                    setChangeConfirmPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                    setChangePinError(null);
+                  }}
+                  placeholder="••••"
+                  placeholderTextColor="#94A3B8"
+                  keyboardType="numeric"
+                  secureTextEntry
+                  maxLength={4}
+                />
+              </View>
+            </View>
+
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity
+                style={styles.cancelModalBtn}
+                onPress={() => setChangePinModalVisible(false)}
+              >
+                <Text style={styles.cancelModalBtnText}>{t.settings.cancel}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.confirmDeleteBtn, { backgroundColor: Colors.primary }]}
+                onPress={handleExecuteChangePin}
+              >
+                <CheckCircle size={16} color="#FFF" />
+                <Text style={styles.confirmDeleteBtnText}>{t.settings.save}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* 6. MODAL UBAH PERTANYAAN PEMULIHAN */}
+      <Modal
+        visible={secQuestionModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setSecQuestionModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeaderRow}>
+              <View style={[styles.modalIconRing, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
+                <HelpCircle size={22} color={Colors.bothTeal} />
+              </View>
+              <TouchableOpacity
+                onPress={() => setSecQuestionModalVisible(false)}
+                style={styles.modalCloseIcon}
+              >
+                <X size={18} color={Colors.peachTint} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={styles.modalHeading}>{t.settings.secQuestion}</Text>
+            <Text style={styles.modalDescription}>Verifikasi PIN saat ini untuk memperbarui pertanyaan pemulihan.</Text>
+
+            {secModalError && (
+              <View style={styles.securityErrorBox}>
+                <AlertCircle size={14} color={Colors.emergencyRed} />
+                <Text style={styles.securityErrorText}>{secModalError}</Text>
+              </View>
+            )}
+
+            <Text style={styles.inputSubLabel}>PIN SAAT INI</Text>
+            <TextInput
+              style={[styles.nameTextInput, styles.pinCenteredInput]}
+              value={secPinVerify}
+              onChangeText={(val) => {
+                setSecPinVerify(val.replace(/[^0-9]/g, '').slice(0, 4));
+                setSecModalError(null);
+              }}
+              placeholder="••••"
+              placeholderTextColor="#94A3B8"
+              keyboardType="numeric"
+              secureTextEntry
+              maxLength={4}
+            />
+
+            <Text style={styles.inputSubLabel}>PILIH PERTANYAAN BARU</Text>
+            <View style={{ gap: 6, marginBottom: 12, width: '100%' }}>
+              {(lang === 'en' ? SECURITY_QUESTIONS.en : SECURITY_QUESTIONS.id).map((q, idx) => {
+                const isSelected = editSecQuestionIdx === idx;
+                return (
+                  <TouchableOpacity
+                    key={idx}
+                    style={[
+                      styles.secQuestionOption,
+                      isSelected && styles.secQuestionOptionActive,
+                    ]}
+                    onPress={() => {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      setEditSecQuestionIdx(idx);
+                    }}
+                  >
+                    <Text
+                      style={[
+                        styles.secQuestionOptionText,
+                        isSelected && styles.secQuestionOptionTextActive,
+                      ]}
+                      numberOfLines={1}
+                    >
+                      {q}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+
+            <Text style={styles.inputSubLabel}>JAWABAN PEMULIHAN</Text>
+            <TextInput
+              style={styles.nameTextInput}
+              value={editSecAnswer}
+              onChangeText={(val) => {
+                setEditSecAnswer(val);
+                setSecModalError(null);
+              }}
+              placeholder="Tuliskan jawaban baru..."
+              placeholderTextColor="#94A3B8"
+              autoCapitalize="none"
+            />
+
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity
+                style={styles.cancelModalBtn}
+                onPress={() => setSecQuestionModalVisible(false)}
+              >
+                <Text style={styles.cancelModalBtnText}>{t.settings.cancel}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.confirmDeleteBtn, { backgroundColor: Colors.bothTeal }]}
+                onPress={handleExecuteSaveSecQuestion}
+              >
+                <CheckCircle size={16} color="#FFF" />
+                <Text style={styles.confirmDeleteBtnText}>{t.settings.save}</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* 7. MODAL KONFIRMASI MATIKAN KUNCI PIN */}
+      <Modal
+        visible={disablePinModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDisablePinModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeaderRow}>
+              <View style={[styles.modalIconRing, { backgroundColor: 'rgba(255, 90, 95, 0.15)' }]}>
+                <Lock size={22} color={Colors.emergencyRed} />
+              </View>
+              <TouchableOpacity
+                onPress={() => setDisablePinModalVisible(false)}
+                style={styles.modalCloseIcon}
+              >
+                <X size={18} color={Colors.peachTint} />
+              </TouchableOpacity>
+            </View>
+
+            <Text style={[styles.modalHeading, { color: Colors.emergencyRed }]}>Matikan Kunci Aplikasi?</Text>
+            <Text style={styles.modalDescription}>
+              Masukkan 4 digit PIN Anda saat ini untuk mengonfirmasi penonaktifan proteksi layar.
+            </Text>
+
+            {disablePinError && (
+              <View style={styles.securityErrorBox}>
+                <AlertCircle size={14} color={Colors.emergencyRed} />
+                <Text style={styles.securityErrorText}>{disablePinError}</Text>
+              </View>
+            )}
+
+            <TextInput
+              style={[styles.nameTextInput, styles.pinCenteredInput]}
+              value={disablePinInput}
+              onChangeText={(val) => {
+                setDisablePinInput(val.replace(/[^0-9]/g, '').slice(0, 4));
+                setDisablePinError(null);
+              }}
+              placeholder="••••"
+              placeholderTextColor="#94A3B8"
+              keyboardType="numeric"
+              secureTextEntry
+              maxLength={4}
+            />
+
+            <View style={styles.modalButtonRow}>
+              <TouchableOpacity
+                style={styles.cancelModalBtn}
+                onPress={() => setDisablePinModalVisible(false)}
+              >
+                <Text style={styles.cancelModalBtnText}>{t.settings.cancel}</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.confirmDeleteBtn, { backgroundColor: Colors.emergencyRed }]}
+                onPress={handleExecuteDisablePin}
+              >
+                <Text style={styles.confirmDeleteBtnText}>Matikan Proteksi</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
+      {/* 8. MODAL KRITIK & SARAN (FEEDBACK) */}
       <FeedbackModal
         visible={feedbackModalVisible}
         onClose={() => setFeedbackModalVisible(false)}
@@ -913,41 +1417,48 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    flexWrap: 'wrap',
   },
   editNameBtn: {
-    padding: 4,
-    backgroundColor: 'rgba(36, 71, 249, 0.15)',
+    padding: 6,
+    backgroundColor: 'rgba(36, 71, 249, 0.1)',
     borderRadius: 8,
   },
   profileName: {
+    flexShrink: 1,
     fontSize: 17,
     fontWeight: '900',
     color: Colors.creamBg,
   },
   guestBadge: {
-    backgroundColor: 'rgba(47, 184, 172, 0.2)',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+    backgroundColor: 'rgba(47, 184, 172, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
     borderRadius: 6,
     borderWidth: 1,
-    borderColor: 'rgba(47, 184, 172, 0.4)',
+    borderColor: 'rgba(47, 184, 172, 0.35)',
+    marginTop: 4,
+    marginBottom: 2,
   },
   guestBadgeText: {
-    fontSize: 8,
+    fontSize: 9,
     fontWeight: '900',
     color: Colors.bothTeal,
+    letterSpacing: 0.3,
   },
   profileMemberSince: {
     fontSize: 11,
     color: Colors.peachTint,
-    opacity: 0.6,
+    opacity: 0.7,
     marginTop: 2,
   },
   profileId: {
     fontSize: 10,
     color: Colors.peachTint,
-    opacity: 0.45,
+    opacity: 0.5,
     fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
     marginTop: 2,
   },
@@ -957,14 +1468,16 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginTop: 16,
     paddingVertical: 10,
-    paddingHorizontal: 8,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'space-around',
     borderWidth: 1,
     borderColor: Colors.darkBorder,
   },
   metricItem: {
+    flex: 1,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   metricValue: {
     fontSize: 15,
@@ -1027,6 +1540,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   sectionHeading: {
+    flex: 1,
     fontSize: 11,
     fontWeight: '900',
     color: Colors.peachTint,
@@ -1195,6 +1709,58 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 20,
   },
+  securityErrorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: '#FEE2E2',
+    padding: 8,
+    borderRadius: 8,
+    width: '100%',
+    marginBottom: 12,
+  },
+  securityErrorText: {
+    color: Colors.emergencyRed,
+    fontSize: 11,
+    fontWeight: '700',
+    flex: 1,
+  },
+  inputSubLabel: {
+    fontSize: 10,
+    fontWeight: '800',
+    color: Colors.peachTint,
+    letterSpacing: 0.5,
+    marginBottom: 6,
+    alignSelf: 'flex-start',
+  },
+  pinCenteredInput: {
+    textAlign: 'center',
+    fontSize: 18,
+    letterSpacing: 6,
+    fontWeight: '800',
+    marginBottom: 12,
+  },
+  secQuestionOption: {
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 8,
+    backgroundColor: Colors.darkBg,
+    borderWidth: 1,
+    borderColor: Colors.darkBorder,
+  },
+  secQuestionOptionActive: {
+    borderColor: Colors.bothTeal,
+    backgroundColor: 'rgba(47, 184, 172, 0.1)',
+  },
+  secQuestionOptionText: {
+    fontSize: 11,
+    color: Colors.peachTint,
+    fontWeight: '600',
+  },
+  secQuestionOptionTextActive: {
+    color: Colors.bothTeal,
+    fontWeight: '800',
+  },
   exportSummaryCard: {
     backgroundColor: Colors.darkSurface,
     borderRadius: 14,
@@ -1315,7 +1881,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     borderWidth: 1.5,
     borderColor: Colors.darkBorder,
-    padding: 10,
+    paddingVertical: 9,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },

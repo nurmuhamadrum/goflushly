@@ -1,14 +1,15 @@
 import { useFonts } from 'expo-font';
 import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 import 'react-native-reanimated';
 import '../global.css';
 
 import { GluestackUIProvider } from '@/components/ui';
 import { AnimatedSplashScreen } from '@/src/components/AnimatedSplashScreen';
+import { AppLockModal } from '@/src/components/AppLockModal';
 import { ToastProvider } from '@/src/context/ToastContext';
-import NetInfo from '@react-native-community/netinfo';
 import { useAppStore } from '@/src/store/useAppStore';
 
 export {
@@ -41,6 +42,20 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
+  // Listener AppState: Kunci aplikasi secara otomatis saat kembali dari background
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+      const { appLockEnabled, setAppLocked } = useAppStore.getState();
+      if (nextAppState === 'active' && appLockEnabled) {
+        setAppLocked(true);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
+
   if (!loaded) {
     return null;
   }
@@ -49,6 +64,7 @@ export default function RootLayout() {
     <>
       <RootLayoutNav />
       {showSplash && <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />}
+      <AppLockModal />
     </>
   );
 }
@@ -61,6 +77,7 @@ function RootLayoutNav() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="auth" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="terms" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>
         </ToastProvider>

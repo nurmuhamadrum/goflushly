@@ -571,7 +571,13 @@ export default function TimelineScreen() {
           visible={true}
           transparent
           animationType="none"
-          onRequestClose={handleCloseDetailModal}
+          onRequestClose={() => {
+            if (logToDelete) {
+              handleCloseConfirmModal();
+            } else {
+              handleCloseDetailModal();
+            }
+          }}
         >
           <Animated.View style={[styles.modalOverlay, { opacity: modalFade }]}>
             <Animated.View
@@ -711,11 +717,75 @@ export default function TimelineScreen() {
               </View>
             </Animated.View>
           </Animated.View>
+
+          {/* POPUP CONFIRMATION HAPUS CATATAN (Dirender di dalam Modal yang sama agar tidak konflik UIViewController di iOS) */}
+          {logToDelete && (
+            <Animated.View
+              style={[
+                StyleSheet.absoluteFill,
+                styles.confirmOverlay,
+                { opacity: confirmFade },
+              ]}
+            >
+              <Animated.View
+                style={[
+                  styles.confirmCard,
+                  {
+                    transform: [{ scale: confirmScale }],
+                  },
+                ]}
+              >
+                {/* Icon Alert Bulat */}
+                <View style={styles.confirmIconRing}>
+                  <Trash2 size={28} color={Colors.emergencyRed} />
+                </View>
+
+                <Text style={styles.confirmTitle}>{t.timeline.confirmDeleteTitle}</Text>
+                <Text style={styles.confirmDescription}>
+                  {lang === 'en' ? 'Your ' : 'Catatan '}
+                  <Text style={{ fontWeight: '900', color: Colors.creamBg }}>
+                    {logToDelete.type === 'PEE'
+                      ? "Lil' Drip (Pee)"
+                      : logToDelete.type === 'POOP'
+                      ? 'Mr. Plop (Poop)'
+                      : 'Sir Flush (Combo)'}
+                  </Text>
+                  {lang === 'en' ? ' log at ' : ' di '}
+                  <Text style={{ fontWeight: '700', color: Colors.peeAmber }}>
+                    {logToDelete.district || logToDelete.city || (lang === 'en' ? 'this spot' : 'lokasi ini')}
+                  </Text>
+                  {lang === 'en'
+                    ? ' will be permanently deleted from your device.'
+                    : ' akan dihapus permanen dari riwayat perangkat Anda.'}
+                </Text>
+
+                {/* Action Buttons */}
+                <View style={styles.confirmButtonRow}>
+                  <TouchableOpacity
+                    style={styles.confirmCancelBtn}
+                    onPress={handleCloseConfirmModal}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={styles.confirmCancelText}>{t.timeline.confirmDeleteCancel}</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={styles.confirmDeleteBtn}
+                    onPress={handleConfirmDelete}
+                    activeOpacity={0.8}
+                  >
+                    <Trash2 size={15} color="#FFFFFF" />
+                    <Text style={styles.confirmDeleteText}>{t.timeline.confirmDeleteOk}</Text>
+                  </TouchableOpacity>
+                </View>
+              </Animated.View>
+            </Animated.View>
+          )}
         </Modal>
       )}
 
-      {/* POPUP CONFIRMATION HAPUS CATATAN BERGAYA CUSTOM POPUP */}
-      {logToDelete && (
+      {/* FALLBACK: POPUP CONFIRMATION JIKA LOG TO DELETE DIPICU TANPA MODAL DETAIL */}
+      {logToDelete && !selectedDetailLog && (
         <Modal
           visible={true}
           transparent

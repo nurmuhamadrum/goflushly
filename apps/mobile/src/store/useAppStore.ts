@@ -14,6 +14,13 @@ import {
   setUserPreference,
 } from '../db/sqlite';
 import { BadgeDefinition, findNewlyUnlockedBadges } from '../services/badgeEvaluator';
+import {
+  getAppLockEnabled,
+  saveAppLockEnabled,
+  getBiometricEnabled,
+  saveBiometricEnabled,
+  isPinSet,
+} from '../services/securityService';
 import * as Crypto from 'expo-crypto';
 
 interface AppState {
@@ -26,6 +33,7 @@ interface AppState {
   isSyncing: boolean;
   lastSyncedAt: string | null;
   showWelcomeModal: boolean;
+  isAppLocked: boolean;
 
   // Lencana Baru yang Perlu Ditampilkan di Modal
   unlockedBadgeQueue: BadgeDefinition[];
@@ -35,12 +43,16 @@ interface AppState {
   mapTheme: 'DARK' | 'RETRO' | 'STANDARD';
   gpsRadiusMeter: number;
   appLockEnabled: boolean;
+  biometricEnabled: boolean;
   language: AppLanguage;
 
   initialize: () => Promise<void>;
   setUser: (userId: string, email?: string | null, isAnonymous?: boolean) => void;
   setUserName: (name: string) => Promise<void>;
   setShowWelcomeModal: (show: boolean) => void;
+  setAppLocked: (locked: boolean) => void;
+  setAppLockEnabled: (enabled: boolean) => Promise<void>;
+  setBiometricEnabled: (enabled: boolean) => Promise<void>;
   syncWithCloud: () => Promise<{ success: boolean; uploadedCount: number; downloadedCount: number }>;
   addLog: (logData: Omit<Log, 'id' | 'userId' | 'clientCreatedAt' | 'syncStatus'>) => Promise<Log>;
   importLogs: (importedLogs: Log[]) => Promise<number>;
@@ -63,11 +75,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   isSyncing: false,
   lastSyncedAt: null,
   showWelcomeModal: false,
+  isAppLocked: false,
   unlockedBadgeQueue: [],
   mapFilter: 'ALL',
   mapTheme: 'RETRO',
   gpsRadiusMeter: 30,
-  appLockEnabled: false,
+  appLockEnabled: true,
+  biometricEnabled: true,
   language: 'id',
 
   dismissActiveBadgeModal: () => {
@@ -83,11 +97,25 @@ export const useAppStore = create<AppState>((set, get) => ({
   setUserName: async (name: string) => {
     const trimmed = name.trim();
     await setUserPreference('profile_name', trimmed);
-    set({ userName: trimmed, showWelcomeModal: false });
+    set({ userName: trimmed });
   },
 
   setShowWelcomeModal: (show: boolean) => {
     set({ showWelcomeModal: show });
+  },
+
+  setAppLocked: (locked: boolean) => {
+    set({ isAppLocked: locked });
+  },
+
+  setAppLockEnabled: async (enabled: boolean) => {
+    await saveAppLockEnabled(enabled);
+    set({ appLockEnabled: enabled });
+  },
+
+  setBiometricEnabled: async (enabled: boolean) => {
+    await saveBiometricEnabled(enabled);
+    set({ biometricEnabled: enabled });
   },
 
   initialize: async () => {
@@ -109,12 +137,21 @@ export const useAppStore = create<AppState>((set, get) => ({
 
       const isFirstTime = !storedName || storedName.trim().length === 0;
 
+      const storedLockEnabled = await getAppLockEnabled();
+      const storedBiometric = await getBiometricEnabled();
+      const pinConfigured = await isPinSet();
+
+      const shouldLock = Boolean(storedLockEnabled && pinConfigured && !isFirstTime);
+
       set({
         userId: localUserId,
         userName: storedName,
         userEmail: null,
         isAnonymous: true,
         showWelcomeModal: isFirstTime,
+        appLockEnabled: storedLockEnabled,
+        biometricEnabled: storedBiometric,
+        isAppLocked: shouldLock,
         logs: loadedLogs,
         language: activeLang,
         isLoading: false,

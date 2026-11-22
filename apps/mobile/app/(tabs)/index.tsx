@@ -113,6 +113,92 @@ export default function MapScreen() {
   // Animasi pulsing radar untuk current location
   const pulseAnim = useRef(new Animated.Value(0)).current;
 
+  // Animasi Bottom Sheet Detail Lokasi (Disamakan persis dengan QuickLogModal / Add Log)
+  const detailSlideAnim = useRef(new Animated.Value(320)).current;
+  const detailFadeAnim = useRef(new Animated.Value(0)).current;
+
+  // Animasi Popup Card Preview Pin Map
+  const popupCardSlideAnim = useRef(new Animated.Value(60)).current;
+  const popupCardFadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (detailModalVisible) {
+      Animated.parallel([
+        Animated.spring(detailSlideAnim, {
+          toValue: 0,
+          friction: 8,
+          tension: 65,
+          useNativeDriver: true,
+        }),
+        Animated.timing(detailFadeAnim, {
+          toValue: 1,
+          duration: 220,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      detailSlideAnim.setValue(320);
+      detailFadeAnim.setValue(0);
+    }
+  }, [detailModalVisible]);
+
+  useEffect(() => {
+    if (selectedGroup) {
+      Animated.parallel([
+        Animated.spring(popupCardSlideAnim, {
+          toValue: 0,
+          friction: 8,
+          tension: 70,
+          useNativeDriver: true,
+        }),
+        Animated.timing(popupCardFadeAnim, {
+          toValue: 1,
+          duration: 200,
+          useNativeDriver: true,
+        }),
+      ]).start();
+    } else {
+      popupCardSlideAnim.setValue(60);
+      popupCardFadeAnim.setValue(0);
+    }
+  }, [selectedGroup]);
+
+  const handleCloseDetailModal = (afterClose?: () => void) => {
+    Animated.parallel([
+      Animated.timing(detailSlideAnim, {
+        toValue: 350,
+        duration: 180,
+        easing: Easing.in(Easing.ease),
+        useNativeDriver: true,
+      }),
+      Animated.timing(detailFadeAnim, {
+        toValue: 0,
+        duration: 180,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setDetailModalVisible(false);
+      if (afterClose) afterClose();
+    });
+  };
+
+  const handleClosePopupCard = () => {
+    Animated.parallel([
+      Animated.timing(popupCardSlideAnim, {
+        toValue: 60,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(popupCardFadeAnim, {
+        toValue: 0,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      setSelectedGroup(null);
+    });
+  };
+
   useEffect(() => {
     Animated.loop(
       Animated.sequence([
@@ -523,7 +609,15 @@ export default function MapScreen() {
         const pBg = pType === 'PEE' ? '#D4F0FF' : pType === 'POOP' ? '#FDE6C9' : '#C6F6E2';
 
         return (
-          <View style={styles.popupCard}>
+          <Animated.View
+            style={[
+              styles.popupCard,
+              {
+                opacity: popupCardFadeAnim,
+                transform: [{ translateY: popupCardSlideAnim }],
+              },
+            ]}
+          >
             <View style={styles.popupRow}>
               <View style={[styles.popupAvatar, { backgroundColor: pBg }]}>
                 {pType === 'PEE' && <LilDripIcon size={26} />}
@@ -560,7 +654,7 @@ export default function MapScreen() {
                 )}
               </View>
 
-              <TouchableOpacity onPress={() => setSelectedGroup(null)} style={styles.popupCloseBtn}>
+              <TouchableOpacity onPress={handleClosePopupCard} style={styles.popupCloseBtn}>
                 <X size={16} color={Colors.peachTint} />
               </TouchableOpacity>
             </View>
@@ -579,7 +673,7 @@ export default function MapScreen() {
                 <ChevronRight size={14} color={Colors.peeAmber} />
               </TouchableOpacity>
             </View>
-          </View>
+          </Animated.View>
         );
       })()}
 
@@ -587,25 +681,41 @@ export default function MapScreen() {
       {selectedGroup && (
         <Modal
           visible={detailModalVisible}
-          animationType="slide"
-          transparent={true}
-          onRequestClose={() => setDetailModalVisible(false)}
+          transparent
+          animationType="fade"
+          onRequestClose={() => handleCloseDetailModal()}
         >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
+          <Animated.View style={[styles.modalOverlay, { opacity: detailFadeAnim }]}>
+            {/* Tapping backdrop outside automatically dismisses */}
+            <TouchableOpacity
+              style={StyleSheet.absoluteFill}
+              activeOpacity={1}
+              onPress={() => handleCloseDetailModal()}
+            />
+
+            <Animated.View
+              style={[
+                styles.modalContent,
+                { transform: [{ translateY: detailSlideAnim }] },
+              ]}
+            >
+              {/* Grabber Bar matching QuickLogModal */}
+              <View style={styles.modalGrabber} />
+
               {/* Header Modal */}
               <View style={styles.modalHeader}>
-                <View>
+                <View style={{ flex: 1, marginRight: 12 }}>
                   <Text style={styles.modalTitle}>{t.map.detailTitle}</Text>
-                  <Text style={styles.modalSubtitle}>
+                  <Text style={styles.modalSubtitle} numberOfLines={1}>
                     {selectedGroup.district}, {selectedGroup.city}
                   </Text>
                 </View>
                 <TouchableOpacity
-                  onPress={() => setDetailModalVisible(false)}
+                  onPress={() => handleCloseDetailModal()}
                   style={styles.modalCloseBtn}
+                  activeOpacity={0.7}
                 >
-                  <X size={20} color={Colors.peachTint} />
+                  <X size={16} color={Colors.slate} />
                 </TouchableOpacity>
               </View>
 
@@ -700,8 +810,8 @@ export default function MapScreen() {
                   );
                 })}
               </ScrollView>
-            </View>
-          </View>
+            </Animated.View>
+          </Animated.View>
         </Modal>
       )}
     </View>
@@ -1056,24 +1166,35 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(12, 16, 42, 0.45)',
+    backgroundColor: 'rgba(12, 16, 42, 0.5)',
     justifyContent: 'flex-end',
   },
   modalContent: {
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 28,
-    borderTopRightRadius: 28,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
     paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: Platform.OS === 'ios' ? 40 : 24,
-    maxHeight: '82%',
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    paddingTop: 12,
+    paddingBottom: Platform.OS === 'ios' ? 38 : 24,
+    maxHeight: '88%',
+    shadowColor: '#0C102A',
+    shadowOffset: { width: 0, height: -8 },
+    shadowOpacity: 0.12,
+    shadowRadius: 20,
+    elevation: 16,
+  },
+  modalGrabber: {
+    width: 44,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: '#CBD5E1',
+    alignSelf: 'center',
+    marginBottom: 14,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: 16,
   },
   modalTitle: {
@@ -1088,9 +1209,12 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   modalCloseBtn: {
-    backgroundColor: Colors.darkSurface,
-    padding: 6,
+    width: 32,
+    height: 32,
     borderRadius: 16,
+    backgroundColor: '#F1F5F9',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   statSummaryBox: {
     flexDirection: 'row',
