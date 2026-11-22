@@ -20,6 +20,7 @@ import { darkMapStyle, retroMapStyle } from '@/constants/MapStyle';
 import { useAppStore } from '@/src/store/useAppStore';
 import { useMobileI18n } from '@/src/i18n/translations';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
+import { BristolStoolIcon } from '@/src/components/BristolStoolIcons';
 import { Log } from '@go-flushly/shared';
 import {
   Navigation,
@@ -822,8 +823,9 @@ export default function MapScreen() {
                                   { backgroundColor: `${dInfo.color}15`, borderColor: `${dInfo.color}35` },
                                 ]}
                               >
+                                <BristolStoolIcon type={dInfo.level} width={18} height={11} />
                                 <Text style={[styles.logItemDensityText, { color: dInfo.color }]}>
-                                  {dInfo.emoji} Tipe {dInfo.level}: {dInfo.label}
+                                  Tipe {dInfo.level} • {dInfo.label}
                                 </Text>
                               </View>
                             );
@@ -1327,14 +1329,16 @@ const styles = StyleSheet.create({
     marginTop: 1,
   },
   logItemMoodPill: {
+    height: 24,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     backgroundColor: '#EEF2FF',
+    borderWidth: 1,
+    borderColor: 'rgba(36, 71, 249, 0.18)',
     alignSelf: 'flex-start',
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 7,
     marginTop: 6,
   },
   logItemMoodText: {
@@ -1343,14 +1347,15 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   logItemDensityPill: {
+    height: 24,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    paddingHorizontal: 7,
+    borderRadius: 7,
     borderWidth: 1,
     alignSelf: 'flex-start',
+    marginTop: 6,
   },
   logItemDensityText: {
     fontSize: 10,

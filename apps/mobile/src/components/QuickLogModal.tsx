@@ -23,7 +23,7 @@ import { getCurrentLocationWithAddress } from '../services/location';
 import { useToast } from '../context/ToastContext';
 import { useMobileI18n } from '../i18n/translations';
 import { LogType } from '@go-flushly/shared';
-import { Check, X } from 'lucide-react-native';
+import { Check, X, Navigation, ShieldCheck } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 
 interface QuickLogModalProps {
@@ -43,10 +43,66 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
   const [stoolDensity, setStoolDensity] = useState<number>(4);
   const [note, setNote] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadingPhase, setLoadingPhase] = useState(0);
 
   const SCREEN_HEIGHT = Dimensions.get('window').height;
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const radarAnim = useRef(new Animated.Value(0)).current;
+  const bounceAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    let radarLoop: Animated.CompositeAnimation | null = null;
+    let bounceLoop: Animated.CompositeAnimation | null = null;
+    let phaseTimer: ReturnType<typeof setTimeout> | null = null;
+
+    if (isSubmitting) {
+      setLoadingPhase(0);
+      phaseTimer = setTimeout(() => {
+        setLoadingPhase(1);
+      }, 850);
+
+      radarAnim.setValue(0);
+      bounceAnim.setValue(0);
+
+      radarLoop = Animated.loop(
+        Animated.timing(radarAnim, {
+          toValue: 1,
+          duration: 1400,
+          easing: Easing.out(Easing.ease),
+          useNativeDriver: true,
+        })
+      );
+      bounceLoop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(bounceAnim, {
+            toValue: -10,
+            duration: 450,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+          Animated.timing(bounceAnim, {
+            toValue: 0,
+            duration: 450,
+            easing: Easing.inOut(Easing.quad),
+            useNativeDriver: true,
+          }),
+        ])
+      );
+      radarLoop.start();
+      bounceLoop.start();
+    } else {
+      if (phaseTimer) clearTimeout(phaseTimer);
+      radarAnim.setValue(0);
+      bounceAnim.setValue(0);
+    }
+
+    return () => {
+      if (radarLoop) radarLoop.stop();
+      if (bounceLoop) bounceLoop.stop();
+      if (phaseTimer) clearTimeout(phaseTimer);
+    };
+  }, [isSubmitting]);
 
   useEffect(() => {
     if (visible) {
@@ -70,12 +126,12 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
   }, [visible]);
 
   const handleSelectType = (type: LogType) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
     setSelectedType(type);
   };
 
   const handleSaveLog = async () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => { });
     setIsSubmitting(true);
 
     try {
@@ -98,15 +154,15 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
         isBlurred: false,
       });
 
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => { });
       setIsSubmitting(false);
 
       const typeLabel =
         selectedType === 'PEE'
           ? "Lil' Drip (BAK)"
           : selectedType === 'POOP'
-          ? 'Mr. Plop (BAB)'
-          : 'Sir Flush (Kombo)';
+            ? 'Mr. Plop (BAB)'
+            : 'Sir Flush (Kombo)';
       showToast({
         message: t.quickLog.toastLogged(typeLabel),
         type: 'success',
@@ -119,7 +175,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
       });
     } catch (error) {
       console.error('Error logging:', error);
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => {});
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error).catch(() => { });
       setIsSubmitting(false);
       showToast({
         message: t.quickLog.toastFailed,
@@ -247,7 +303,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
                           },
                         ]}
                         onPress={() => {
-                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
                           setStoolDensity(item.level);
                         }}
                         activeOpacity={0.75}
@@ -318,7 +374,7 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
                     key={m.key}
                     style={[styles.moodChip, isSelected && styles.moodChipActive]}
                     onPress={() => {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => { });
                       setSelectedMood(m.key);
                     }}
                     activeOpacity={0.8}
@@ -366,13 +422,103 @@ export const QuickLogModal: React.FC<QuickLogModalProps> = ({ visible, onClose }
             </Button>
           </View>
 
-          {/* Clean Light Loading Overlay */}
-          {isSubmitting && (
-            <View style={styles.loadingOverlay}>
-              <ActivityIndicator size="large" color={Colors.primary} />
-              <Text style={styles.loadingText}>{t.quickLog.recording}</Text>
-            </View>
-          )}
+          {/* Engaging Animated Mascot Radar Loading Overlay */}
+          {isSubmitting && (() => {
+            const isFlush = selectedType === 'COMBO';
+            const isDrip = selectedType === 'PEE';
+            const themeColor = isFlush ? '#2447F9' : isDrip ? '#0284C7' : '#B85D19';
+            const podBg = isFlush ? '#2447F9' : isDrip ? '#F0F7FF' : '#FAF4EE';
+            const podBorder = isFlush ? '#1D4ED8' : isDrip ? '#BAE6FD' : '#EEDFD3';
+
+            const ringScale1 = radarAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.85, 1.45],
+            });
+            const ringOpacity1 = radarAnim.interpolate({
+              inputRange: [0, 0.4, 1],
+              outputRange: [0.6, 0.3, 0],
+            });
+
+            const ringScale2 = radarAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [0.7, 1.25],
+            });
+            const ringOpacity2 = radarAnim.interpolate({
+              inputRange: [0, 0.5, 1],
+              outputRange: [0.5, 0.2, 0],
+            });
+
+            return (
+              <View style={styles.loadingOverlay}>
+                {/* Radar Ring 1 */}
+                <Animated.View
+                  style={[
+                    styles.radarRing,
+                    {
+                      borderColor: themeColor,
+                      transform: [{ scale: ringScale1 }],
+                      opacity: ringOpacity1,
+                    },
+                  ]}
+                />
+
+                {/* Radar Ring 2 */}
+                <Animated.View
+                  style={[
+                    styles.radarRing,
+                    {
+                      borderColor: themeColor,
+                      transform: [{ scale: ringScale2 }],
+                      opacity: ringOpacity2,
+                    },
+                  ]}
+                />
+
+                {/* Floating Mascot Pod */}
+                <Animated.View
+                  style={[
+                    styles.mascotPod,
+                    {
+                      backgroundColor: podBg,
+                      borderColor: podBorder,
+                      transform: [{ translateY: bounceAnim }],
+                      shadowColor: themeColor,
+                    },
+                  ]}
+                >
+                  {isFlush && <SirFlushIcon size={60} />}
+                  {isDrip && <LilDripIcon size={60} />}
+                  {!isFlush && !isDrip && <MrPlopIcon size={60} />}
+                </Animated.View>
+
+                {/* Dynamic Status Pill */}
+                <View style={[styles.loadingStatusPill, { borderColor: `${themeColor}40`, backgroundColor: `${themeColor}12` }]}>
+                  {loadingPhase === 0 ? (
+                    <Navigation size={13} color={themeColor} />
+                  ) : (
+                    <ShieldCheck size={13} color={themeColor} />
+                  )}
+                  <Text style={[styles.loadingStatusText, { color: themeColor }]}>
+                    {loadingPhase === 0
+                      ? (isEn ? 'Locking GPS Coordinates...' : 'Mengunci Koordinat GPS...')
+                      : (isEn ? 'Encrypting to Local Diary...' : 'Mengamankan ke Buku Harian...')}
+                  </Text>
+                </View>
+
+                {/* Subtitle Message */}
+                <Text style={styles.loadingSubText}>
+                  {isEn ? '100% private in your offline database' : '100% privat di penyimpanan lokal'}
+                </Text>
+
+                {/* Animated Dots Indicator */}
+                <View style={styles.pulseDotsRow}>
+                  <View style={[styles.pulseDot, { backgroundColor: themeColor }]} />
+                  <View style={[styles.pulseDot, { backgroundColor: themeColor, opacity: 0.65 }]} />
+                  <View style={[styles.pulseDot, { backgroundColor: themeColor, opacity: 0.35 }]} />
+                </View>
+              </View>
+            );
+          })()}
         </Animated.View>
       </Animated.View>
     </Modal>
@@ -588,17 +734,66 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderTopLeftRadius: 32,
     borderTopRightRadius: 32,
     alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 24,
+    zIndex: 100,
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 13,
-    fontWeight: '700',
-    color: Colors.navy,
+  radarRing: {
+    position: 'absolute',
+    width: 140,
+    height: 140,
+    borderRadius: 70,
+    borderWidth: 2,
+    top: '36%',
+    marginTop: -70,
+  },
+  mascotPod: {
+    width: 96,
+    height: 96,
+    borderRadius: 32,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 20,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  loadingStatusPill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+    paddingHorizontal: 14,
+    paddingVertical: 7,
+    borderRadius: 999,
+    borderWidth: 1.5,
+    marginBottom: 8,
+  },
+  loadingStatusText: {
+    fontSize: 12,
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  loadingSubText: {
+    fontSize: 11,
+    color: Colors.slate,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  pulseDotsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  pulseDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   densityContainer: {
     marginBottom: 18,

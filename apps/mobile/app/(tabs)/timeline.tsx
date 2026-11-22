@@ -19,6 +19,7 @@ import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/dat
 import { Colors } from '@/constants/Colors';
 import { useAppStore } from '@/src/store/useAppStore';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
+import { BristolStoolIcon } from '@/src/components/BristolStoolIcons';
 import { useToast } from '@/src/context/ToastContext';
 import { useMobileI18n } from '@/src/i18n/translations';
 import { Log } from '@go-flushly/shared';
@@ -400,7 +401,7 @@ export default function TimelineScreen() {
             </View>
 
             {/* Mood pill & Stool Density pill */}
-            <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, marginTop: 4 }}>
+            <View style={{ flexDirection: 'row', flexWrap: 'wrap', alignItems: 'center', gap: 6, marginTop: 5 }}>
               <View style={styles.moodPill}>
                 <Text style={styles.moodPillText}>Mood: {item.mood || 'Lega'}</Text>
               </View>
@@ -409,9 +410,20 @@ export default function TimelineScreen() {
                 const densityInfo = t.quickLog.stoolScale.find((s) => s.level === item.stoolDensity);
                 if (!densityInfo) return null;
                 return (
-                  <View style={[styles.densityPill, { backgroundColor: `${densityInfo.color}15`, borderColor: `${densityInfo.color}35` }]}>
+                  <View
+                    style={[
+                      styles.densityPill,
+                      {
+                        backgroundColor: `${densityInfo.color}15`,
+                        borderColor: `${densityInfo.color}35`,
+                      },
+                    ]}
+                  >
+                    <View style={styles.densityPillIconWrap}>
+                      <BristolStoolIcon type={densityInfo.level} width={18} height={11} />
+                    </View>
                     <Text style={[styles.densityPillText, { color: densityInfo.color }]}>
-                      {densityInfo.emoji} Tipe {densityInfo.level}: {densityInfo.label}
+                      Tipe {densityInfo.level} • {densityInfo.label}
                     </Text>
                   </View>
                 );
@@ -704,28 +716,112 @@ export default function TimelineScreen() {
                   );
                   if (!densityInfo) return null;
                   return (
-                    <View style={styles.detailRow}>
-                      <View style={[styles.densityIconCircle, { backgroundColor: `${densityInfo.color}18` }]}>
-                        <Text style={{ fontSize: 16 }}>{densityInfo.emoji}</Text>
-                      </View>
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.detailLabel}>{t.timeline.detailDensity}</Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 2, flexWrap: 'wrap' }}>
-                          <Text style={[styles.detailValue, { fontWeight: '900', color: densityInfo.color }]}>
-                            Tipe {densityInfo.level}: {densityInfo.name}
+                    <View
+                      style={[
+                        styles.densityDetailCard,
+                        {
+                          borderColor: `${densityInfo.color}35`,
+                          backgroundColor: `${densityInfo.color}0D`,
+                        },
+                      ]}
+                    >
+                      {/* Top Header Row with Dot Indicator */}
+                      <View style={styles.densityCardHeader}>
+                        <View style={styles.densityHeaderLeft}>
+                          <View style={[styles.densityDot, { backgroundColor: densityInfo.color }]} />
+                          <Text style={[styles.densityCardLabel, { color: densityInfo.color }]}>
+                            {t.timeline.detailDensity.toUpperCase()}
                           </Text>
-                          <View
-                            style={[
-                              styles.densityStatusBadge,
-                              { backgroundColor: `${densityInfo.color}18` },
-                            ]}
-                          >
-                            <Text style={[styles.densityStatusText, { color: densityInfo.color }]}>
-                              {densityInfo.status}
-                            </Text>
-                          </View>
                         </View>
-                        <Text style={styles.densityDescText}>{densityInfo.desc}</Text>
+                      </View>
+
+                      {/* Main Visual Row: Bristol Custom Vector + Type Badge + Status Pill + Description */}
+                      <View style={styles.densityCardMainRow}>
+                        <View
+                          style={[
+                            styles.densityVectorBox,
+                            {
+                              backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                              borderColor: `${densityInfo.color}35`,
+                            },
+                          ]}
+                        >
+                          <BristolStoolIcon type={densityInfo.level} width={50} height={26} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 4, flexWrap: 'wrap' }}>
+                            <View style={[styles.typeNumBadge, { backgroundColor: densityInfo.color }]}>
+                              <Text style={styles.typeNumBadgeText}>Tipe {densityInfo.level}</Text>
+                            </View>
+                            <Text style={styles.densityTypeName}>
+                              {densityInfo.name}
+                            </Text>
+                            <View
+                              style={[
+                                styles.densityStatusBadge,
+                                {
+                                  backgroundColor: `${densityInfo.color}18`,
+                                  borderColor: `${densityInfo.color}45`,
+                                },
+                              ]}
+                            >
+                              <Text style={[styles.densityStatusText, { color: densityInfo.color }]}>
+                                {densityInfo.status}
+                              </Text>
+                            </View>
+                          </View>
+                          <Text style={styles.densityDescText}>{densityInfo.desc}</Text>
+                        </View>
+                      </View>
+
+                      {/* Bristol Spectrum Tracker (1 - 7) */}
+                      <View style={styles.densitySpectrumContainer}>
+                        <View style={styles.densitySpectrumStepsRow}>
+                          {[1, 2, 3, 4, 5, 6, 7].map((lvl) => {
+                            const isCurrent = lvl === densityInfo.level;
+                            const stepScaleInfo = t.quickLog.stoolScale.find((s) => s.level === lvl);
+                            const stepColor = stepScaleInfo?.color || '#CBD5E1';
+                            return (
+                              <View
+                                key={lvl}
+                                style={[
+                                  styles.spectrumStepBox,
+                                  isCurrent
+                                    ? [
+                                        styles.spectrumStepActive,
+                                        {
+                                          borderColor: stepColor,
+                                          backgroundColor: stepColor,
+                                        },
+                                      ]
+                                    : styles.spectrumStepInactive,
+                                ]}
+                              >
+                                <Text
+                                  style={[
+                                    styles.spectrumStepText,
+                                    isCurrent
+                                      ? { color: '#FFFFFF', fontWeight: '900' }
+                                      : { color: '#64748B', fontWeight: '700' },
+                                  ]}
+                                >
+                                  {lvl}
+                                </Text>
+                              </View>
+                            );
+                          })}
+                        </View>
+                        <View style={styles.spectrumLabelsRow}>
+                          <Text style={styles.spectrumLabel}>
+                            1: {lang === 'en' ? 'Hard Lumps' : 'Keras'}
+                          </Text>
+                          <Text style={[styles.spectrumLabel, { color: '#16A34A', fontWeight: '800' }]}>
+                            4: {lang === 'en' ? 'Ideal ⭐' : 'Ideal ⭐'}
+                          </Text>
+                          <Text style={styles.spectrumLabel}>
+                            7: {lang === 'en' ? 'Liquid' : 'Cair'}
+                          </Text>
+                        </View>
                       </View>
                     </View>
                   );
@@ -1238,10 +1334,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   moodPill: {
+    height: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#EEF2FF',
+    borderWidth: 1,
+    borderColor: 'rgba(36, 71, 249, 0.18)',
     paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    borderRadius: 7,
     alignSelf: 'flex-start',
   },
   moodPillText: {
@@ -1250,38 +1350,141 @@ const styles = StyleSheet.create({
     color: Colors.primary,
   },
   densityPill: {
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
+    height: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 7,
+    borderRadius: 7,
     borderWidth: 1,
     alignSelf: 'flex-start',
+  },
+  densityPillIconWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   densityPillText: {
     fontSize: 10,
     fontWeight: '800',
   },
-  densityIconCircle: {
-    width: 32,
-    height: 32,
+  densityDetailCard: {
     borderRadius: 16,
+    borderWidth: 1.5,
+    padding: 14,
+    marginVertical: 10,
+  },
+  densityCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  densityHeaderLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  densityDot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+  },
+  densityCardLabel: {
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 0.6,
+  },
+  densityStatusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 3.5,
+    borderRadius: 999,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  densityStatusBadge: {
-    paddingHorizontal: 6,
+  densityStatusText: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 0.2,
+  },
+  densityCardMainRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 12,
+  },
+  densityVectorBox: {
+    width: 66,
+    height: 44,
+    borderRadius: 12,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typeNumBadge: {
+    paddingHorizontal: 7,
     paddingVertical: 2,
     borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  densityStatusText: {
-    fontSize: 9,
+  typeNumBadgeText: {
+    fontSize: 10,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: 0.2,
+  },
+  densityTypeName: {
+    fontSize: 13,
     fontWeight: '800',
+    color: Colors.creamBg,
   },
   densityDescText: {
     fontSize: 11,
     color: Colors.peachTint,
-    opacity: 0.7,
-    marginTop: 2,
+    opacity: 0.8,
     lineHeight: 15,
+  },
+  densitySpectrumContainer: {
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  densitySpectrumStepsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 4,
+  },
+  spectrumStepBox: {
+    flex: 1,
+    height: 24,
+    borderRadius: 6,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  spectrumStepActive: {
+    borderWidth: 1.5,
+  },
+  spectrumStepInactive: {
+    borderColor: 'rgba(100, 116, 139, 0.25)',
+    backgroundColor: 'rgba(100, 116, 139, 0.08)',
+  },
+  spectrumStepText: {
+    fontSize: 10,
+    fontWeight: '700',
+  },
+  spectrumLabelsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 4,
+  },
+  spectrumLabel: {
+    fontSize: 9,
+    color: Colors.peachTint,
+    opacity: 0.5,
+    fontWeight: '600',
   },
   noteBox: {
     backgroundColor: '#F8FAFC',
