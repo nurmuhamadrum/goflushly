@@ -54,6 +54,7 @@ export function WelcomeNameModal({ visible }: WelcomeNameModalProps) {
   const [inputName, setInputName] = useState(userName || '');
   const [pin, setPin] = useState('');
   const [confirmPin, setConfirmPin] = useState('');
+  const confirmPinInputRef = useRef<React.ComponentRef<typeof TextInput>>(null);
   const [enableBiometric, setEnableBiometric] = useState(true);
   const [hasBiometricHardware, setHasBiometricHardware] = useState(false);
   const [questionIdx, setQuestionIdx] = useState(0);
@@ -349,7 +350,14 @@ export function WelcomeNameModal({ visible }: WelcomeNameModalProps) {
                       <TextInput
                         style={[styles.textInput, styles.pinInput]}
                         value={pin}
-                        onChangeText={(val) => setPin(val.replace(/[^0-9]/g, '').slice(0, 4))}
+                        onChangeText={(val) => {
+                          const cleaned = val.replace(/[^0-9]/g, '').slice(0, 4);
+                          setPin(cleaned);
+                          if (cleaned.length === 4) {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                            confirmPinInputRef.current?.focus();
+                          }
+                        }}
                         placeholder="••••"
                         placeholderTextColor="#94A3B8"
                         keyboardType="numeric"
@@ -363,6 +371,7 @@ export function WelcomeNameModal({ visible }: WelcomeNameModalProps) {
                         {t.welcome.confirmPinLabel}
                       </Text>
                       <TextInput
+                        ref={confirmPinInputRef}
                         style={[styles.textInput, styles.pinInput]}
                         value={confirmPin}
                         onChangeText={(val) => setConfirmPin(val.replace(/[^0-9]/g, '').slice(0, 4))}

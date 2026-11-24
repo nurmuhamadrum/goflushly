@@ -54,6 +54,7 @@ export function AppLockModal() {
   // New PIN States
   const [newPin, setNewPin] = useState('');
   const [confirmNewPin, setConfirmNewPin] = useState('');
+  const confirmNewPinRef = useRef<React.ComponentRef<typeof TextInput>>(null);
   const [newPinError, setNewPinError] = useState<string | null>(null);
 
   // Shake Animation for wrong PIN
@@ -613,8 +614,13 @@ export function AppLockModal() {
                     style={[styles.modalInput, { textAlign: 'center', fontSize: 18, letterSpacing: 6 }]}
                     value={newPin}
                     onChangeText={(val) => {
-                      setNewPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                      const cleaned = val.replace(/[^0-9]/g, '').slice(0, 4);
+                      setNewPin(cleaned);
                       setNewPinError(null);
+                      if (cleaned.length === 4) {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                        confirmNewPinRef.current?.focus();
+                      }
                     }}
                     placeholder="••••"
                     placeholderTextColor="#94A3B8"
@@ -625,6 +631,7 @@ export function AppLockModal() {
 
                   <Text style={[styles.modalDescription, { marginTop: 10 }]}>{t.lockScreen.confirmNewPinSub}</Text>
                   <TextInput
+                    ref={confirmNewPinRef}
                     style={[styles.modalInput, { textAlign: 'center', fontSize: 18, letterSpacing: 6 }]}
                     value={confirmNewPin}
                     onChangeText={(val) => {

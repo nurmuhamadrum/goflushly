@@ -112,6 +112,8 @@ export default function ProfileSettingsScreen() {
   const [oldPin, setOldPin] = useState('');
   const [changeNewPin, setChangeNewPin] = useState('');
   const [changeConfirmPin, setChangeConfirmPin] = useState('');
+  const changeNewPinRef = useRef<React.ComponentRef<typeof TextInput>>(null);
+  const changeConfirmPinRef = useRef<React.ComponentRef<typeof TextInput>>(null);
   const [changePinError, setChangePinError] = useState<string | null>(null);
 
   const [secQuestionModalVisible, setSecQuestionModalVisible] = useState(false);
@@ -1122,8 +1124,13 @@ export default function ProfileSettingsScreen() {
               style={[styles.nameTextInput, styles.pinCenteredInput]}
               value={oldPin}
               onChangeText={(val) => {
-                setOldPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                const cleaned = val.replace(/[^0-9]/g, '').slice(0, 4);
+                setOldPin(cleaned);
                 setChangePinError(null);
+                if (cleaned.length === 4) {
+                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                  changeNewPinRef.current?.focus();
+                }
               }}
               placeholder="••••"
               placeholderTextColor="#94A3B8"
@@ -1136,11 +1143,17 @@ export default function ProfileSettingsScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.inputSubLabel}>PIN BARU</Text>
                 <TextInput
+                  ref={changeNewPinRef}
                   style={[styles.nameTextInput, styles.pinCenteredInput]}
                   value={changeNewPin}
                   onChangeText={(val) => {
-                    setChangeNewPin(val.replace(/[^0-9]/g, '').slice(0, 4));
+                    const cleaned = val.replace(/[^0-9]/g, '').slice(0, 4);
+                    setChangeNewPin(cleaned);
                     setChangePinError(null);
+                    if (cleaned.length === 4) {
+                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+                      changeConfirmPinRef.current?.focus();
+                    }
                   }}
                   placeholder="••••"
                   placeholderTextColor="#94A3B8"
@@ -1152,6 +1165,7 @@ export default function ProfileSettingsScreen() {
               <View style={{ flex: 1 }}>
                 <Text style={styles.inputSubLabel}>KONFIRMASI</Text>
                 <TextInput
+                  ref={changeConfirmPinRef}
                   style={[styles.nameTextInput, styles.pinCenteredInput]}
                   value={changeConfirmPin}
                   onChangeText={(val) => {
