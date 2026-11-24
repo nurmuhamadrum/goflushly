@@ -551,9 +551,11 @@ export function AppLockModal() {
               {recoveryMode === 'QUESTION' && (
                 <View style={{ width: '100%' }}>
                   <Text style={styles.modalHeading}>{t.lockScreen.optionSecQuestion}</Text>
-                  <Text style={styles.modalDescription}>
-                    {questions[storedQuestionIdx] || questions[0]}
-                  </Text>
+                  <View style={styles.questionHighlightBox}>
+                    <Text style={styles.questionHighlightText}>
+                      {questions[storedQuestionIdx] || questions[0]}
+                    </Text>
+                  </View>
 
                   {answerError && (
                     <View style={styles.miniErrorBox}>
@@ -562,6 +564,7 @@ export function AppLockModal() {
                     </View>
                   )}
 
+                  <Text style={styles.answerInputLabel}>{t.welcome.secAnswerLabel}</Text>
                   <TextInput
                     style={styles.modalInput}
                     value={answerInput}
@@ -666,12 +669,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#0F172A',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: Platform.OS === 'ios' ? 60 : 40,
+    paddingTop: Platform.OS === 'ios' ? 96 : 64,
+    paddingBottom: Platform.OS === 'ios' ? 42 : 30,
     paddingHorizontal: 24,
   },
   header: {
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 26,
   },
   mascotWrapper: {
     position: 'relative',
@@ -884,6 +888,30 @@ const styles = StyleSheet.create({
     color: '#64748B',
     lineHeight: 18,
     marginBottom: 16,
+  },
+  questionHighlightBox: {
+    width: '100%',
+    backgroundColor: '#EEF2FF',
+    borderWidth: 1,
+    borderColor: '#C7D7FE',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    marginBottom: 16,
+  },
+  questionHighlightText: {
+    fontSize: 12.5,
+    fontWeight: '700',
+    color: '#1E293B',
+    lineHeight: 18,
+  },
+  answerInputLabel: {
+    fontSize: 10.5,
+    fontWeight: '800',
+    color: '#475569',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginBottom: 6,
   },
   recoveryOptionCard: {
     flexDirection: 'row',

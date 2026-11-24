@@ -20,6 +20,7 @@ import { Colors } from '@/constants/Colors';
 import { useAppStore } from '@/src/store/useAppStore';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
 import { BristolStoolIcon } from '@/src/components/BristolStoolIcons';
+import { ExportPdfModal } from '@/src/components/ExportPdfModal';
 import { useToast } from '@/src/context/ToastContext';
 import { useMobileI18n } from '@/src/i18n/translations';
 import { Log } from '@go-flushly/shared';
@@ -36,6 +37,7 @@ import {
   Filter,
   Search,
   AlertTriangle,
+  FileDown,
 } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 
@@ -50,6 +52,7 @@ export default function TimelineScreen() {
   const [logToDelete, setLogToDelete] = useState<Log | null>(null);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>('ALL');
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const [pdfModalVisible, setPdfModalVisible] = useState<boolean>(false);
 
   // State Rentang Tanggal Kalender (Custom Date Range)
   const [dateRangeModalVisible, setDateRangeModalVisible] = useState(false);
@@ -459,22 +462,37 @@ export default function TimelineScreen() {
 
       {/* Header Area */}
       <View style={styles.headerArea}>
-        <Text style={styles.pageTitle}>{t.timeline.title}</Text>
-        <Text style={styles.pageSubtitle}>
-          {filteredLogs.length > 0
-            ? t.timeline.subtitleCount(filteredLogs.length, logs.length)
-            : t.timeline.subtitleEmpty}
-        </Text>
+        <View style={styles.headerTopRow}>
+          <View style={{ flex: 1, paddingRight: 12 }}>
+            <Text style={styles.pageTitle}>{t.timeline.title}</Text>
+            <Text style={styles.pageSubtitle}>
+              {filteredLogs.length > 0
+                ? t.timeline.subtitleCount(filteredLogs.length, logs.length)
+                : t.timeline.subtitleEmpty}
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={styles.pdfExportBtn}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              setPdfModalVisible(true);
+            }}
+            activeOpacity={0.8}
+          >
+            <FileDown size={15} color={Colors.primary} />
+            <Text style={styles.pdfExportBtnText}>{t.pdfExport.btnShort}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Search Bar Input */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBar}>
-          <Search size={16} color={Colors.peachTint} opacity={0.6} />
+          <Search size={16} color={Colors.muted} />
           <TextInput
             style={styles.searchInput}
             placeholder={t.timeline.searchPlaceholder}
-            placeholderTextColor="rgba(245, 237, 227, 0.4)"
+            placeholderTextColor={Colors.muted}
             value={searchQuery}
             onChangeText={setSearchQuery}
             returnKeyType="search"
@@ -482,7 +500,7 @@ export default function TimelineScreen() {
           />
           {Boolean(searchQuery) && (
             <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearSearchBtn}>
-              <X size={14} color={Colors.peachTint} />
+              <X size={14} color={Colors.muted} />
             </TouchableOpacity>
           )}
         </View>
@@ -1129,6 +1147,15 @@ export default function TimelineScreen() {
           </Animated.View>
         </Modal>
       )}
+
+      {/* MODAL EKSPOR LAPORAN PDF */}
+      <ExportPdfModal
+        visible={pdfModalVisible}
+        onClose={() => setPdfModalVisible(false)}
+        initialPeriod={timeFilter}
+        initialStartDate={startDate}
+        initialEndDate={endDate}
+      />
     </SafeAreaView>
   );
 }
@@ -1142,6 +1169,28 @@ const styles = StyleSheet.create({
   headerArea: {
     paddingHorizontal: 20,
     paddingBottom: 6,
+  },
+  headerTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  pdfExportBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 12,
+    backgroundColor: '#EEF2FF',
+    borderWidth: 1.2,
+    borderColor: '#C7D7FE',
+  },
+  pdfExportBtnText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: Colors.primary,
+    letterSpacing: 0.2,
   },
   pageTitle: {
     fontSize: 22,

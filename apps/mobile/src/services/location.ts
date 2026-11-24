@@ -21,7 +21,8 @@ export async function getCurrentLocationWithAddress(): Promise<LocationResult> {
   };
 
   try {
-    const { status } = await Location.requestForegroundPermissionsAsync();
+    // Cek pasif saja agar tidak memunculkan dialog OS secara mendadak saat simpan catatan
+    const { status } = await Location.getForegroundPermissionsAsync();
     if (status !== 'granted') {
       return fallback;
     }

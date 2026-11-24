@@ -49,6 +49,7 @@ import {
   HelpCircle,
   FileCheck,
   AlertCircle,
+  FileDown,
 } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { useToast } from '@/src/context/ToastContext';
@@ -56,6 +57,7 @@ import { useMobileI18n } from '@/src/i18n/translations';
 import * as Haptics from 'expo-haptics';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
 import { FeedbackModal } from '@/src/components/FeedbackModal';
+import { ExportPdfModal } from '@/src/components/ExportPdfModal';
 import { clearAllLocalData } from '@/src/db/sqlite';
 import { authenticateWithBiometrics } from '@/src/services/auth';
 import {
@@ -92,6 +94,7 @@ export default function ProfileSettingsScreen() {
   } = useAppStore();
 
   const [exportModalVisible, setExportModalVisible] = useState(false);
+  const [pdfModalVisible, setPdfModalVisible] = useState(false);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
   const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
   const [editNameModalVisible, setEditNameModalVisible] = useState(false);
@@ -455,7 +458,7 @@ export default function ProfileSettingsScreen() {
         {/* KEAMANAN & PRIVASI */}
         <View style={styles.section}>
           <View style={styles.sectionHeaderRow}>
-            <ShieldCheck size={16} color={Colors.bothTeal} />
+            <ShieldCheck size={16} color={Colors.primary} />
             <Text style={styles.sectionHeading}>{t.settings.securityHeading}</Text>
           </View>
 
@@ -473,8 +476,9 @@ export default function ProfileSettingsScreen() {
             <Switch
               value={appLockEnabled}
               onValueChange={handleToggleAppLock}
-              trackColor={{ false: Colors.darkBorder, true: Colors.primary }}
-              thumbColor={Colors.creamBg}
+              trackColor={{ false: '#CBD5E1', true: Colors.primary }}
+              thumbColor="#FFFFFF"
+              ios_backgroundColor="#CBD5E1"
             />
           </View>
 
@@ -507,8 +511,8 @@ export default function ProfileSettingsScreen() {
           {appLockEnabled && (
             <View style={styles.settingRow}>
               <View style={styles.settingLeft}>
-                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
-                  <Fingerprint size={16} color={Colors.bothTeal} />
+                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(36, 71, 249, 0.12)' }]}>
+                  <Fingerprint size={16} color={Colors.primary} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Text style={styles.settingLabel}>{t.settings.biometricUnlock}</Text>
@@ -518,8 +522,9 @@ export default function ProfileSettingsScreen() {
               <Switch
                 value={biometricEnabled}
                 onValueChange={(val) => setBiometricEnabled(val)}
-                trackColor={{ false: Colors.darkBorder, true: Colors.bothTeal }}
-                thumbColor={Colors.creamBg}
+                trackColor={{ false: '#CBD5E1', true: Colors.primary }}
+                thumbColor="#FFFFFF"
+                ios_backgroundColor="#CBD5E1"
               />
             </View>
           )}
@@ -538,8 +543,8 @@ export default function ProfileSettingsScreen() {
               }}
             >
               <View style={styles.actionLeft}>
-                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(47, 184, 172, 0.15)' }]}>
-                  <HelpCircle size={16} color={Colors.bothTeal} />
+                <View style={[styles.settingIconBox, { backgroundColor: 'rgba(36, 71, 249, 0.12)' }]}>
+                  <HelpCircle size={16} color={Colors.primary} />
                 </View>
                 <View style={{ flex: 1, paddingRight: 8 }}>
                   <Text style={styles.actionLabel} numberOfLines={1}>{t.settings.secQuestion}</Text>
@@ -652,6 +657,30 @@ export default function ProfileSettingsScreen() {
               {t.settings.dataHeading}
             </Text>
           </View>
+
+          {/* Ekspor Laporan PDF */}
+          <TouchableOpacity
+            style={styles.actionRow}
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => {});
+              setPdfModalVisible(true);
+            }}
+          >
+            <View style={styles.actionLeft}>
+              <View style={[styles.settingIconBox, { backgroundColor: '#EEF2FF' }]}>
+                <FileDown size={16} color={Colors.primary} />
+              </View>
+              <View style={{ flex: 1, paddingRight: 8 }}>
+                <Text style={styles.actionLabel} numberOfLines={1}>
+                  {t.settings.exportPdfTitle}
+                </Text>
+                <Text style={styles.actionDesc} numberOfLines={2}>
+                  {t.settings.exportPdfDesc}
+                </Text>
+              </View>
+            </View>
+            <ChevronRight size={16} color={Colors.peachTint} />
+          </TouchableOpacity>
 
           {/* Ekspor JSON */}
           <TouchableOpacity
@@ -1351,6 +1380,12 @@ export default function ProfileSettingsScreen() {
             type: 'success',
           });
         }}
+      />
+
+      {/* 9. MODAL EKSPOR LAPORAN PDF */}
+      <ExportPdfModal
+        visible={pdfModalVisible}
+        onClose={() => setPdfModalVisible(false)}
       />
     </SafeAreaView>
   );

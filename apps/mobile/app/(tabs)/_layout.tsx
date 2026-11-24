@@ -12,7 +12,7 @@ import { useMobileI18n } from '@/src/i18n/translations';
 
 export default function TabLayout() {
   const [quickLogVisible, setQuickLogVisible] = useState(false);
-  const { unlockedBadgeQueue, dismissActiveBadgeModal, showWelcomeModal } = useAppStore();
+  const { unlockedBadgeQueue, dismissActiveBadgeModal, showWelcomeModal, splashFinished } = useAppStore();
   const { t } = useMobileI18n();
 
   const activeBadge = unlockedBadgeQueue.length > 0 ? unlockedBadgeQueue[0] : null;
@@ -128,8 +128,8 @@ export default function TabLayout() {
         onClose={dismissActiveBadgeModal}
       />
 
-      {/* Modal Sambutan & Input Nama Pertama Kali */}
-      <WelcomeNameModal visible={showWelcomeModal} />
+      {/* Modal Sambutan & Input Nama Pertama Kali (tampil hanya setelah Splash selesai) */}
+      <WelcomeNameModal visible={splashFinished && showWelcomeModal} />
     </View>
   );
 }

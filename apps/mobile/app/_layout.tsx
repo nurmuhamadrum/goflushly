@@ -29,18 +29,26 @@ export default function RootLayout() {
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
   const [showSplash, setShowSplash] = useState(true);
+  const nativeSplashHidden = useRef(false);
+
+  const hideNativeSplashOnce = () => {
+    if (!nativeSplashHidden.current) {
+      nativeSplashHidden.current = true;
+      SplashScreen.hideAsync().catch(() => {});
+    }
+  };
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
+  // Fallback aman jika showSplash sudah false saat font selesai dimuat
   useEffect(() => {
-    if (loaded) {
-      // Sembunyikan splash native bawaan OS agar animasi kustom kita langsung mengambil alih
-      SplashScreen.hideAsync();
+    if (loaded && !showSplash) {
+      hideNativeSplashOnce();
     }
-  }, [loaded]);
+  }, [loaded, showSplash]);
 
   // Listener AppState: Kunci aplikasi secara otomatis saat kembali dari background
   useEffect(() => {
@@ -63,8 +71,16 @@ export default function RootLayout() {
   return (
     <>
       <RootLayoutNav />
-      {showSplash && <AnimatedSplashScreen onFinish={() => setShowSplash(false)} />}
-      <AppLockModal />
+      {showSplash && (
+        <AnimatedSplashScreen
+          onReady={hideNativeSplashOnce}
+          onFinish={() => {
+            setShowSplash(false);
+            useAppStore.getState().setSplashFinished(true);
+          }}
+        />
+      )}
+      {!showSplash && <AppLockModal />}
     </>
   );
 }
@@ -75,8 +91,8 @@ function RootLayoutNav() {
       <ThemeProvider value={DefaultTheme}>
         <ToastProvider>
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="auth" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="auth" options={{ headerShown: false }} />
             <Stack.Screen name="terms" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
           </Stack>

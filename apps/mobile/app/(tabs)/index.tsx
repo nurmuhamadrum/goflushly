@@ -19,8 +19,11 @@ import { Colors } from '@/constants/Colors';
 import { darkMapStyle, retroMapStyle } from '@/constants/MapStyle';
 import { useAppStore } from '@/src/store/useAppStore';
 import { useMobileI18n } from '@/src/i18n/translations';
+import { useToast } from '@/src/context/ToastContext';
+import { getUserPreference, setUserPreference } from '@/src/db/sqlite';
 import { MrPlopIcon, LilDripIcon, SirFlushIcon } from '@/src/components/MascotIcons';
 import { BristolStoolIcon } from '@/src/components/BristolStoolIcons';
+import { LocationPermissionModal } from '@/src/components/LocationPermissionModal';
 import { Log } from '@go-flushly/shared';
 import {
   Navigation,
@@ -100,12 +103,27 @@ interface LocationGroup {
 }
 
 export default function MapScreen() {
-  const { logs, mapFilter, setMapFilter, initialize, mapTheme, gpsRadiusMeter } = useAppStore();
+  const {
+    logs,
+    mapFilter,
+    setMapFilter,
+    initialize,
+    mapTheme,
+    gpsRadiusMeter,
+    splashFinished,
+    isLoading,
+    showWelcomeModal,
+    isAppLocked,
+  } = useAppStore();
   const { t } = useMobileI18n();
+  const { showToast } = useToast();
 
   const mapRef = useRef<MapView>(null);
   const [selectedGroup, setSelectedGroup] = useState<LocationGroup | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
+  const [permissionModalVisible, setPermissionModalVisible] = useState(false);
+  const [canAskLocationAgain, setCanAskLocationAgain] = useState(true);
+  const permissionDismissedRef = useRef(false);
   const [currentCoord, setCurrentCoord] = useState<{ latitude: number; longitude: number } | null>(
     null
   );
@@ -220,51 +238,110 @@ export default function MapScreen() {
 
   useEffect(() => {
     initialize();
-    fetchUserLocation();
   }, []);
 
-  const fetchUserLocation = async () => {
-    try {
-      const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status === 'granted') {
-        const pos = await Location.getCurrentPositionAsync({
-          accuracy: Location.Accuracy.High,
-        });
+  // Orkestrasi Izin Lokasi: Hanya dijalankan SETELAH Splash, Welcome/Security, dan AppLock selesai!
+  useEffect(() => {
+    if (!splashFinished || isLoading || showWelcomeModal || isAppLocked) {
+      return;
+    }
 
-        const targetCoord = {
-          latitude: pos.coords.latitude,
-          longitude: pos.coords.longitude,
-        };
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let cancelled = false;
 
-        setCurrentCoord(targetCoord);
+    const checkLocationPermission = async () => {
+      try {
+        const perm = await Location.getForegroundPermissionsAsync();
+        if (cancelled) return;
 
-        // Reverse geocode untuk mendapatkan nama kota/kabupaten
-        try {
-          const rev = await Location.reverseGeocodeAsync(targetCoord);
-          if (rev && rev.length > 0) {
-            const loc = rev[0];
-            const name = loc.subregion || loc.city || loc.district || loc.region || 'Sekitar Sini';
-            setCurrentAddress(name);
-          } else {
-            setCurrentAddress('Lokasi Anda');
+        if (perm.status === 'granted') {
+          setPermissionModalVisible(false);
+          fetchGrantedLocation();
+        } else {
+          setCanAskLocationAgain(perm.canAskAgain !== false);
+          setCurrentAddress('Izin lokasi mati');
+          const savedDismissed = await getUserPreference('location_permission_dismissed').catch(() => null);
+          if (cancelled) return;
+
+          if (!permissionDismissedRef.current && savedDismissed !== 'true') {
+            timer = setTimeout(() => {
+              if (!cancelled) {
+                setPermissionModalVisible(true);
+              }
+            }, 350);
           }
-        } catch {
+        }
+      } catch (err) {
+        console.log('Permission check error:', err);
+      }
+    };
+
+    checkLocationPermission();
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [splashFinished, isLoading, showWelcomeModal, isAppLocked]);
+
+  const fetchGrantedLocation = async () => {
+    try {
+      setCurrentAddress('Mencari lokasi...');
+      const pos = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const targetCoord = {
+        latitude: pos.coords.latitude,
+        longitude: pos.coords.longitude,
+      };
+
+      setCurrentCoord(targetCoord);
+
+      // Reverse geocode untuk mendapatkan nama kota/kabupaten
+      try {
+        const rev = await Location.reverseGeocodeAsync(targetCoord);
+        if (rev && rev.length > 0) {
+          const loc = rev[0];
+          const name = loc.subregion || loc.city || loc.district || loc.region || 'Sekitar Sini';
+          setCurrentAddress(name);
+        } else {
           setCurrentAddress('Lokasi Anda');
         }
+      } catch {
+        setCurrentAddress('Lokasi Anda');
+      }
 
-        if (mapRef.current) {
-          mapRef.current.animateToRegion({
-            ...targetCoord,
-            latitudeDelta: 0.02,
-            longitudeDelta: 0.02 * ASPECT_RATIO,
-          });
-        }
-      } else {
-        setCurrentAddress('Izin lokasi mati');
+      if (mapRef.current) {
+        mapRef.current.animateToRegion({
+          ...targetCoord,
+          latitudeDelta: 0.02,
+          longitudeDelta: 0.02 * ASPECT_RATIO,
+        });
       }
     } catch (err) {
       console.log('Location fetch error:', err);
       setCurrentAddress('Gagal ambil GPS');
+    }
+  };
+
+  const handleRequestLocationFromModal = async () => {
+    setPermissionModalVisible(false);
+    try {
+      const { status, canAskAgain } = await Location.requestForegroundPermissionsAsync();
+      setCanAskLocationAgain(canAskAgain !== false);
+      if (status === 'granted') {
+        await setUserPreference('location_permission_dismissed', 'false').catch(() => {});
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => {});
+        showToast({ message: t.locationPermission.grantedToast, type: 'success' });
+        await fetchGrantedLocation();
+      } else {
+        setCurrentAddress('Izin lokasi mati');
+        permissionDismissedRef.current = true;
+        await setUserPreference('location_permission_dismissed', 'true').catch(() => {});
+      }
+    } catch (err) {
+      console.log('Location permission request error:', err);
     }
   };
 
@@ -344,7 +421,7 @@ export default function MapScreen() {
     }
   };
 
-  const centerOnUser = () => {
+  const centerOnUser = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium).catch(() => {});
     if (currentCoord && mapRef.current) {
       mapRef.current.animateToRegion({
@@ -352,8 +429,15 @@ export default function MapScreen() {
         latitudeDelta: 0.015,
         longitudeDelta: 0.015 * ASPECT_RATIO,
       });
+      return;
+    }
+
+    const perm = await Location.getForegroundPermissionsAsync().catch(() => null);
+    if (perm?.status === 'granted') {
+      fetchGrantedLocation();
     } else {
-      fetchUserLocation();
+      setCanAskLocationAgain(perm?.canAskAgain !== false);
+      setPermissionModalVisible(true);
     }
   };
 
@@ -568,16 +652,33 @@ export default function MapScreen() {
         </View>
 
         {/* Top Floating Area & Stats Pill (Sesuai Mockup) */}
-        <View style={styles.mapInfoPillRow} pointerEvents="none">
-          <View style={styles.locationAreaPill}>
-            <View style={styles.liveIndicatorDot} />
+        <View style={styles.mapInfoPillRow} pointerEvents="box-none">
+          <TouchableOpacity
+            style={styles.locationAreaPill}
+            activeOpacity={0.8}
+            onPress={() => {
+              if (!currentCoord) {
+                centerOnUser();
+              }
+            }}
+          >
+            <View
+              style={[
+                styles.liveIndicatorDot,
+                !currentCoord && currentAddress === 'Izin lokasi mati' && { backgroundColor: '#F59E0B' },
+              ]}
+            />
             <Text style={styles.locationAreaText} numberOfLines={1}>
-              {currentAddress === 'Mencari lokasi...' ? t.map.searchingGps : currentAddress}
+              {currentAddress === 'Mencari lokasi...'
+                ? t.map.searchingGps
+                : currentAddress === 'Izin lokasi mati'
+                ? t.map.locationOff
+                : currentAddress}
             </Text>
             <View style={styles.liveBadge}>
               <Text style={styles.liveBadgeText}>{t.map.liveGps}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.mapInfoPill}>
             <MapPin size={11} color={Colors.peeAmber} />
@@ -847,6 +948,19 @@ export default function MapScreen() {
           </Animated.View>
         </Modal>
       )}
+
+      {/* 6. MODAL IZIN LOKASI GPS KUSTOM (Tampil rapi setelah Splash & Welcome selesai) */}
+      <LocationPermissionModal
+        visible={permissionModalVisible}
+        canAskAgain={canAskLocationAgain}
+        onRequestPermission={handleRequestLocationFromModal}
+        onDismiss={() => {
+          permissionDismissedRef.current = true;
+          setPermissionModalVisible(false);
+          setUserPreference('location_permission_dismissed', 'true').catch(() => {});
+          showToast({ message: t.locationPermission.manualModeToast, type: 'info' });
+        }}
+      />
     </View>
   );
 }

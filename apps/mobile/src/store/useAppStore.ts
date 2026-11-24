@@ -34,6 +34,7 @@ interface AppState {
   lastSyncedAt: string | null;
   showWelcomeModal: boolean;
   isAppLocked: boolean;
+  splashFinished: boolean;
 
   // Lencana Baru yang Perlu Ditampilkan di Modal
   unlockedBadgeQueue: BadgeDefinition[];
@@ -51,6 +52,7 @@ interface AppState {
   setUserName: (name: string) => Promise<void>;
   setShowWelcomeModal: (show: boolean) => void;
   setAppLocked: (locked: boolean) => void;
+  setSplashFinished: (done: boolean) => void;
   setAppLockEnabled: (enabled: boolean) => Promise<void>;
   setBiometricEnabled: (enabled: boolean) => Promise<void>;
   syncWithCloud: () => Promise<{ success: boolean; uploadedCount: number; downloadedCount: number }>;
@@ -76,6 +78,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   lastSyncedAt: null,
   showWelcomeModal: false,
   isAppLocked: false,
+  splashFinished: false,
   unlockedBadgeQueue: [],
   mapFilter: 'ALL',
   mapTheme: 'RETRO',
@@ -106,6 +109,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setAppLocked: (locked: boolean) => {
     set({ isAppLocked: locked });
+  },
+
+  setSplashFinished: (done: boolean) => {
+    set({ splashFinished: done });
   },
 
   setAppLockEnabled: async (enabled: boolean) => {
